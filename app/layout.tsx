@@ -6,8 +6,8 @@ import Script from 'next/script'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'VantaWeb',
-  description: 'Modern website with Vanta.js effects',
+  title: 'Amarillo Automation',
+  description: 'Amarillo Automation provides simplified and programmable productivity for SMBs using smart platforms and accessible automation.',
 }
 
 export default function RootLayout({

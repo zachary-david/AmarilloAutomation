@@ -4,6 +4,7 @@
 import { useEffect, useRef } from 'react'
 import Navigation from '../components/Navigation'
 import AnimatedText from '../components/AnimatedText'
+import Link from 'next/link'
 
 export default function Solutions() {
   const vantaRef = useRef<HTMLDivElement>(null)
@@ -38,24 +39,24 @@ export default function Solutions() {
 
   const solutions = [
     {
-      title: "Enterprise Infrastructure",
-      description: "Comprehensive monitoring and management for large-scale deployments with 99.9% uptime guarantee.",
-      features: ["24/7 Monitoring", "Auto-scaling", "Load Balancing", "Disaster Recovery"]
+      title: "AI Consultation",
+      description: "Let our real AI consultants automate what slows you down -- from marketing to admin to operations.",
+      features: ["Use Case Discovery", "Workflow Mapping", "Teck Stack Integration", "Ongoing Support and Fine-Tuning"]
     },
     {
-      title: "Cloud Integration",
-      description: "Seamless integration with AWS, Azure, GCP, and hybrid cloud environments.",
-      features: ["Multi-cloud Support", "Cost Optimization", "Security Compliance", "Migration Tools"]
+      title: "Lead Generation",
+      description: "We build lead engines that run on autopilot — fueled by paid ads, optimized websites, and follow-up automation that converts clicks to contracts.",
+      features: ["Social Media Ads", "Conversion Funnels", "CRM Setup & Follow-Up", "Custom Outreach Tools"]
     },
     {
-      title: "Real-time Analytics",
-      description: "Advanced analytics and reporting with machine learning-powered insights.",
-      features: ["Predictive Analytics", "Custom Dashboards", "Real-time Alerts", "Performance Metrics"]
+      title: "Web Development and Optimization",
+      description: "We build sites that drive SEO traffic, capture leads, and run smart automations under the hood.",
+      features: ["Sales-First Design", "SEO & Structured Data", "Forms & Automations", "Analytics & Heatmaps"]
     },
     {
-      title: "Security & Compliance",
-      description: "Enterprise-grade security with compliance frameworks and audit trails.",
-      features: ["SOC 2 Compliance", "Encryption at Rest", "Role-based Access", "Audit Logging"]
+      title: "Smart Assistant Buildouts",
+      description: "Branded AI assistants trained on your services, FAQs, and sales workflows to handle leads, scheduling, and more -- 24/7.",
+      features: ["Custom GPT Shells", "VAPI Voice Agents", "Knowledge Base Integration", "Lead Tagging and CRM Sync"]
     }
   ]
 
@@ -72,7 +73,7 @@ export default function Solutions() {
                 className="text-4xl md:text-5xl font-bold text-white mb-6"
               />
               <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                Powerful, scalable solutions designed to meet the demands of modern infrastructure management. 
+                Powerful, scalable solutions designed to meet the demands of modern business infrastructure. 
                 From startups to enterprise, we've got you covered.
               </p>
             </div>
@@ -107,11 +108,14 @@ export default function Solutions() {
               <div className="bg-gradient-to-r from-blue-600/20 to-green-600/20 border border-gray-700 rounded-xl p-8">
                 <h3 className="text-2xl font-bold text-white mb-4">Ready to Get Started?</h3>
                 <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-                  Contact our team to discuss your specific requirements and learn how our solutions can transform your infrastructure.
+                  Contact our team to discuss your specific requirements and learn how our solutions can transform your operations.
                 </p>
-                <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg">
+                <Link
+                  href="/contact"
+                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg"
+                  >
                   Schedule a Demo
-                </button>
+                  </Link>
               </div>
             </div>
           </div>

@@ -48,12 +48,11 @@ export default function Home() {
           <section className="flex-1 flex items-center justify-center px-4 py-20 min-h-screen">
             <div className="max-w-4xl mx-auto text-center">
               <AnimatedText 
-                text="Welcome to the Future"
+                text="Tomorrow's Tools. Today."
                 className="text-4xl md:text-6xl font-bold text-white mb-6"
               />
               <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
-                Visualize your secure, real-time infrastructure with cutting-edge technology. 
-                Experience the power of modern web development.
+                Intelligent integrations and AI-powered automations to simplify your business and supercharge growth.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -69,39 +68,6 @@ export default function Home() {
                 >
                   Get in Touch
                 </Link>
-              </div>
-            </div>
-          </section>
-
-          {/* Features Section */}
-          <section className="py-20 px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-white text-center mb-4">
-                How It Works
-              </h2>
-              <p className="text-gray-300 text-center mb-12 max-w-2xl mx-auto">
-                Get started in three simple steps and transform your infrastructure management experience.
-              </p>
-              
-              <div className="grid gap-6 md:gap-8">
-                <FeatureCard
-                  number="1"
-                  title="Connect Your Network"
-                  description="Seamlessly integrate your accounts and data streams with enterprise-grade security. Our platform supports all major cloud providers and on-premise solutions."
-                  delay={0}
-                />
-                <FeatureCard
-                  number="2"
-                  title="View Real-Time Insights"
-                  description="Access comprehensive dashboards with live network status, performance metrics, and predictive analytics. Make informed decisions with actionable intelligence."
-                  delay={200}
-                />
-                <FeatureCard
-                  number="3"
-                  title="Take Intelligent Action"
-                  description="Automate responses, manage alerts, and optimize settings with AI-powered recommendations. Scale your operations efficiently and reliably."
-                  delay={400}
-                />
               </div>
             </div>
           </section>
