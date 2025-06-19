@@ -1,10 +1,9 @@
-// app/components/CookieBanner.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
-// Google Analytics helper functions
+// GTM helper functions
 declare global {
   interface Window {
     gtag: (...args: any[]) => void
@@ -20,8 +19,8 @@ export default function CookieBanner() {
     // Check if user has already consented
     const hasConsented = localStorage.getItem('cookie-consent')
     
-    // Always initialize GA with consent mode
-    initializeGoogleAnalytics()
+    // Initialize consent mode for GTM
+    initializeConsentMode()
     
     if (!hasConsented) {
       // Show banner after a brief delay for better UX
@@ -32,71 +31,69 @@ export default function CookieBanner() {
       return () => clearTimeout(timer)
     } else if (hasConsented === 'accepted') {
       // If previously accepted, grant consent
-      setTimeout(() => {
-        window.gtag?.('consent', 'update', {
-          'analytics_storage': 'granted',
-          'ad_storage': 'granted'
-        })
-      }, 500)
+      updateConsent('granted', 'granted')
     } else if (hasConsented === 'declined') {
       // If previously declined, keep consent denied
-      setTimeout(() => {
-        window.gtag?.('consent', 'update', {
-          'analytics_storage': 'denied',
-          'ad_storage': 'denied'
-        })
-      }, 500)
+      updateConsent('denied', 'denied')
     }
   }, [])
 
-  const initializeGoogleAnalytics = () => {
-    const GA_MEASUREMENT_ID = 'G-8KX0BFBD36'
-    
-    // Load Google Analytics script
-    const script1 = document.createElement('script')
-    script1.async = true
-    script1.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`
-    document.head.appendChild(script1)
-
-    // Initialize gtag with consent mode
+  const initializeConsentMode = () => {
+    // Initialize dataLayer if not exists
     window.dataLayer = window.dataLayer || []
+    
+    // Define gtag function
     window.gtag = function() {
       window.dataLayer.push(arguments)
     }
     
-    // Configure consent mode first
+    // Set default consent state (denied until user chooses)
     window.gtag('consent', 'default', {
       'analytics_storage': 'denied',
       'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
       'wait_for_update': 500
     })
-    
-    window.gtag('js', new Date())
-    window.gtag('config', GA_MEASUREMENT_ID, {
-      anonymize_ip: true, // GDPR compliance
-      cookie_flags: 'secure;samesite=strict' // Enhanced security
-    })
 
-    console.log('Google Analytics initialized with consent mode')
+    console.log('GTM Consent Mode initialized')
   }
 
-  const disableAllTracking = () => {
-    // Disable Google Analytics tracking
+  const updateConsent = (analyticsStorage: string, adStorage: string) => {
     window.gtag?.('consent', 'update', {
-      'analytics_storage': 'denied'
+      'analytics_storage': analyticsStorage,
+      'ad_storage': adStorage,
+      'ad_user_data': adStorage,
+      'ad_personalization': adStorage
     })
-    
-    // Clear any existing GA cookies
+
+    // Push consent event to dataLayer for GTM
+    window.dataLayer?.push({
+      'event': 'consent_update',
+      'consent_analytics': analyticsStorage,
+      'consent_ads': adStorage
+    })
+
+    console.log(`Consent updated: Analytics=${analyticsStorage}, Ads=${adStorage}`)
+  }
+
+  const clearTrackingCookies = () => {
+    // Clear GA cookies
     const gaCookies = document.cookie.split(';').filter(cookie => 
-      cookie.trim().startsWith('_ga') || cookie.trim().startsWith('_gid')
+      cookie.trim().startsWith('_ga') || 
+      cookie.trim().startsWith('_gid') ||
+      cookie.trim().startsWith('_gat')
     )
     
     gaCookies.forEach(cookie => {
       const cookieName = cookie.split('=')[0].trim()
+      // Clear for current domain
       document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+      // Clear for parent domain
+      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.amarilloautomation.com`
     })
 
-    console.log('Tracking disabled and cookies cleared')
+    console.log('Tracking cookies cleared')
   }
 
   const acceptCookies = async () => {
@@ -107,26 +104,16 @@ export default function CookieBanner() {
       localStorage.setItem('cookie-consent', 'accepted')
       localStorage.setItem('cookie-consent-date', new Date().toISOString())
       
-      // Initialize Google Analytics if not already done
-      if (!window.gtag) {
-        initializeGoogleAnalytics()
-      }
+      // Update consent for GTM
+      updateConsent('granted', 'granted')
       
-      // Update GTM consent - grant analytics and ad storage
-      window.gtag?.('consent', 'update', {
-        'analytics_storage': 'granted',
-        'ad_storage': 'granted'
-      })
-      
-      // Track the consent event
+      // Track the consent event via GTM
       setTimeout(() => {
-        window.gtag?.('event', 'cookie_consent', {
-          event_category: 'engagement',
-          event_label: 'accepted',
-          consent_analytics: 'granted',
-          consent_ads: 'granted'
+        window.dataLayer?.push({
+          'event': 'cookie_consent_granted',
+          'consent_method': 'banner_accept'
         })
-      }, 1000)
+      }, 500)
       
       setShowBanner(false)
     } catch (error) {
@@ -144,27 +131,17 @@ export default function CookieBanner() {
       localStorage.setItem('cookie-consent', 'declined')
       localStorage.setItem('cookie-consent-date', new Date().toISOString())
       
-      // Initialize GA with consent mode (if not already initialized)
-      if (!window.gtag) {
-        initializeGoogleAnalytics()
-      }
+      // Keep consent denied
+      updateConsent('denied', 'denied')
       
-      // Keep GTM consent denied for analytics and ads
-      window.gtag?.('consent', 'update', {
-        'analytics_storage': 'denied',
-        'ad_storage': 'denied'
-      })
+      // Clear any existing tracking cookies
+      clearTrackingCookies()
       
-      // Disable additional tracking
-      disableAllTracking()
-      
-      // Track decline event (this will still work with essential cookies)
+      // Track decline event via GTM (this should still work with essential functionality)
       setTimeout(() => {
-        window.gtag?.('event', 'cookie_consent', {
-          event_category: 'engagement',
-          event_label: 'declined',
-          consent_analytics: 'denied',
-          consent_ads: 'denied'
+        window.dataLayer?.push({
+          'event': 'cookie_consent_denied',
+          'consent_method': 'banner_decline'
         })
       }, 500)
       
@@ -180,6 +157,7 @@ export default function CookieBanner() {
   const resetConsent = () => {
     localStorage.removeItem('cookie-consent')
     localStorage.removeItem('cookie-consent-date')
+    clearTrackingCookies()
     setShowBanner(true)
   }
 

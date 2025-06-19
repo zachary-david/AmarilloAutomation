@@ -12,7 +12,7 @@ export default function Navigation() {
   const navItems = [
     { href: '/', label: 'Home' },
     { href: '/solutions', label: 'Solutions' },
-    { href: '/demo', label: 'Do a Demo' },      // ← ADDED DEMO LINK
+    { href: '/demo', label: 'Demo' }, 
     { href: '/contact', label: 'Contact' },
   ]
 
