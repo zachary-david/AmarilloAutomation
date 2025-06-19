@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: {
-    default: 'Amarillo Automation - Workflow Automation & AI Integration | Texas',
+    default: 'Amarillo Automation - Workflow Automation & AI Integration',
     template: '%s | Amarillo Automation'
   },
   description: 'Expert workflow automation, tech integration, and AI agents for business growth. Custom web development and lead generation solutions in Amarillo, Texas.',
