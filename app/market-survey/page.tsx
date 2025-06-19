@@ -706,7 +706,7 @@ export default function MarketSurvey() {
           {/* Trust Indicators */}
           <div className="mt-12 text-center">
             <p className="text-blue-200 text-sm mb-4">
-              Join 100+ Texas Panhandle businesses that have discovered their automation potential
+              Join 100+ Businesses that have discovered their automation potential
             </p>
             <div className="flex justify-center items-center space-x-8 opacity-60">
               <div className="text-blue-200 text-xs">🔒 Secure & Confidential</div>
@@ -716,7 +716,6 @@ export default function MarketSurvey() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   )
 }
