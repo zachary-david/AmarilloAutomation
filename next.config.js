@@ -1,16 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
+  // Remove any output: 'export' if present - this breaks API routes
+  // output: 'export', // ← Remove this line if it exists
+  
+  // Ensure API routes are properly handled
   experimental: {
-    appDir: true,
+    runtime: 'nodejs',
   },
-  // Ensure static export works properly
-  output: 'export',
-  trailingSlash: true,
+  
+  // Cloudflare Pages specific settings
   images: {
     unoptimized: true
-  }
+  },
+  
+  // Ensure proper routing
+  trailingSlash: false,
+  
+  // Skip build static optimization that might interfere with API routes
+  skipBuildStaticGeneration: false
 }
 
 module.exports = nextConfig
