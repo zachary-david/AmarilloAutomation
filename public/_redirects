@@ -1,0 +1,8 @@
+/market-survey /market-survey/index.html 200
+/contact /contact/index.html 200
+/solutions /solutions/index.html 200
+/privacy-policy /privacy-policy/index.html 200
+/terms-conditions /terms-conditions/index.html 200
+
+# Catch-all for other routes
+/* /index.html 200
