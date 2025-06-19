@@ -277,8 +277,8 @@ export default function Demo() {
       const submitData = new FormData()
       submitData.append('Product', formData.product)
       submitData.append('Product Description', formData.productDescription)
-      submitData.append('Your E-Mail', formData.email)
-      submitData.append('Photo', formData.photo)
+      submitData.append('E-Mail', formData.email)
+      submitData.append('Photo(s)', formData.photo)
 
       // Production n8n webhook call
       const response = await fetch(N8N_WEBHOOK_URL, {
