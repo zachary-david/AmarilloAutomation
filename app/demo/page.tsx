@@ -242,17 +242,14 @@ export default function Demo() {
               {/* Demo Benefits */}
               <div className="grid md:grid-cols-3 gap-6 mb-12">
                 <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-6">
-                  <div className="text-3xl mb-3">🚀</div>
                   <h3 className="text-lg font-semibold text-white mb-2">Fast Processing</h3>
                   <p className="text-gray-400 text-sm">Get your video in under 5 minutes</p>
                 </div>
                 <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-6">
-                  <div className="text-3xl mb-3">🎨</div>
                   <h3 className="text-lg font-semibold text-white mb-2">AI-Powered</h3>
                   <p className="text-gray-400 text-sm">Advanced AI creates professional content</p>
                 </div>
                 <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-6">
-                  <div className="text-3xl mb-3">📧</div>
                   <h3 className="text-lg font-semibold text-white mb-2">Email Delivery</h3>
                   <p className="text-gray-400 text-sm">Receive your video directly in your inbox</p>
                 </div>
