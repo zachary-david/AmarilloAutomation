@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Navigation from '../components/Navigation'
 import AnimatedText from '../components/AnimatedText'
+import Link from 'next/link'
 
 export default function Contact() {
   const vantaRef = useRef<HTMLDivElement>(null)
@@ -169,6 +170,19 @@ export default function Contact() {
                       className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors resize-none"
                       placeholder="Tell us about your project or requirements..."
                     ></textarea>
+                  </div>
+
+                  {/* Privacy Notice */}
+                  <div className="text-xs text-gray-500 leading-relaxed">
+                    By submitting this form, you agree to our{' '}
+                    <Link href="/privacy-policy" className="text-blue-400 hover:underline">
+                      Privacy Policy
+                    </Link>{' '}
+                    and{' '}
+                    <Link href="/terms-conditions" className="text-blue-400 hover:underline">
+                      Terms & Conditions
+                    </Link>
+                    . Your information will be processed according to our privacy practices.
                   </div>
 
                   <button

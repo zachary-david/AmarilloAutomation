@@ -7,6 +7,9 @@ import AnimatedText from './components/AnimatedText'
 import FeatureCard from './components/FeatureCard'
 import Link from 'next/link'
 
+// NOTE: Metadata should be exported from layout.tsx or a server component wrapper
+// You cannot export metadata from client components
+
 export default function Home() {
   const vantaRef = useRef<HTMLDivElement>(null)
   const vantaEffect = useRef<any>(null)
@@ -48,7 +51,7 @@ export default function Home() {
           <section className="flex-1 flex items-center justify-center px-4 py-20 min-h-screen">
             <div className="max-w-4xl mx-auto text-center">
               <AnimatedText 
-                text="Tomorrow's Tools. Today."
+                text="Tomorrow's tools, today."
                 className="text-4xl md:text-6xl font-bold text-white mb-6"
               />
               <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">

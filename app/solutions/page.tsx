@@ -41,7 +41,7 @@ export default function Solutions() {
     {
       title: "AI Consultation",
       description: "Let our real AI consultants automate what slows you down -- from marketing to admin to operations.",
-      features: ["Use Case Discovery", "Workflow Mapping", "Teck Stack Integration", "Ongoing Support and Fine-Tuning"]
+      features: ["Use Case Discovery", "Workflow Mapping", "Tech Stack Integration", "Ongoing Support and Fine-Tuning"]
     },
     {
       title: "Lead Generation",
