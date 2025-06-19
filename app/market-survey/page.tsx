@@ -299,6 +299,42 @@ const MarketSurvey = () => {
     e.preventDefault()
     setIsSubmitting(true)
     
+    // Calculate automation score client-side (since API route isn't working)
+    const calculateScore = () => {
+      let score = 0;
+      
+      // Operational status scoring
+      const statusScores: Record<string, number> = { 
+        'manual': 25, 'basic-tools': 20, 'some-automation': 15, 
+        'integrated-systems': 10, 'advanced-automation': 5 
+      };
+      score += statusScores[formData.currentAIUsage] || 0;
+      
+      // Pain points scoring
+      const automatablePains = [
+        'lead-follow-up', 'manual-scheduling', 'data-entry', 'customer-questions',
+        'inventory-tracking', 'marketing-tasks', 'billing-invoicing', 'lead-generation',
+        'team-coordination', 'reporting-analytics'
+      ];
+      const userAutomatablePains = formData.painPoints.filter(pain => 
+        automatablePains.includes(pain)
+      );
+      score += Math.min(userAutomatablePains.length * 4, 40);
+      
+      // Business size scoring
+      const sizeScores: Record<string, number> = { 'solo': 10, 'small': 20, 'medium': 15, 'large': 10 };
+      score += sizeScores[formData.businessSize] || 0;
+      
+      // Urgency scoring
+      const urgencyScores: Record<string, number> = { 'urgent': 15, 'soon': 12, 'planning': 8, 'exploring': 3 };
+      score += urgencyScores[formData.contactInfo.urgency] || 0;
+      
+      return Math.min(score, 100);
+    };
+
+    const automationScore = calculateScore();
+    const leadQuality = automationScore > 70 ? 'high' : automationScore > 40 ? 'medium' : 'low';
+    
     // Track survey submission attempt
     window.dataLayer?.push({
       event: 'survey_submission',
@@ -311,41 +347,70 @@ const MarketSurvey = () => {
     })
     
     try {
-      // Submit to our new API
-      const response = await fetch('/api/market-survey', {
+      // Use Formspree (your original contact form solution) as fallback
+      const response = await fetch('https://formspree.io/f/xqabllkq', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          businessType: formData.businessType,
-          businessSize: formData.businessSize,
-          currentAIUsage: formData.currentAIUsage,
-          painPoints: formData.painPoints,
-          growthGoals: formData.growthGoals,
-          contactInfo: formData.contactInfo
+          // Contact Information
+          name: formData.contactInfo.name,
+          email: formData.contactInfo.email,
+          phone: formData.contactInfo.phone || '',
+          company: formData.contactInfo.company,
+          
+          // Survey Details (formatted for email)
+          subject: `Market Survey: ${formData.contactInfo.name} - ${formData.businessType} (Score: ${automationScore}/100)`,
+          message: `MARKET SURVEY SUBMISSION:
+
+Business Profile:
+- Business Type: ${formData.businessType}
+- Business Size: ${formData.businessSize}
+- Current Operations: ${formData.currentAIUsage}
+- Implementation Timeline: ${formData.contactInfo.urgency}
+
+Operational Challenges:
+- Pain Points: ${formData.painPoints.join(', ')}
+- Primary Growth Goal: ${formData.growthGoals}
+
+AUTOMATION ANALYSIS:
+- Automation Score: ${automationScore}/100
+- Lead Quality: ${leadQuality.toUpperCase()}
+- Recommended Priority: ${formData.contactInfo.urgency === 'urgent' ? 'IMMEDIATE FOLLOW-UP' : leadQuality === 'high' ? 'HIGH PRIORITY' : 'STANDARD FOLLOW-UP'}
+
+Contact Details:
+- Phone: ${formData.contactInfo.phone || 'Not provided'}
+- Email: ${formData.contactInfo.email}
+- Company: ${formData.contactInfo.company}
+
+This submission came from the Market Survey form.`,
+          
+          // Additional metadata for tracking
+          leadScore: automationScore,
+          serviceType: 'market_survey',
+          projectUrgency: formData.contactInfo.urgency,
+          _subject: `🎯 Market Survey: ${formData.contactInfo.name} - ${formData.businessType} (Score: ${automationScore}/100)`
         })
       })
 
       if (!response.ok) {
-        throw new Error('Failed to submit survey')
+        throw new Error('Survey submission failed')
       }
 
-      const result = await response.json()
-      
-      // Use API response data
-      setAutomationScore(result.automationScore)
+      // Success! Show results with calculated score
+      setAutomationScore(automationScore)
       setShowResults(true)
 
       // Track successful survey completion
       window.dataLayer?.push({
         event: 'survey_complete',
-        automation_score: result.automationScore,
+        automation_score: automationScore,
         business_type: formData.businessType,
         operational_status: formData.currentAIUsage,
         pain_points: formData.painPoints.length,
-        lead_quality: result.leadQuality,
-        conversion_value: result.automationScore > 70 ? 150 : result.automationScore > 40 ? 75 : 25,
+        lead_quality: leadQuality,
+        conversion_value: automationScore > 70 ? 150 : automationScore > 40 ? 75 : 25,
         business_vertical: 'automation_consulting'
       })
 
@@ -354,7 +419,7 @@ const MarketSurvey = () => {
         event: 'purchase', // Using ecommerce event for lead tracking
         ecommerce: {
           transaction_id: `survey_${Date.now()}`,
-          value: result.automationScore > 70 ? 150 : result.automationScore > 40 ? 75 : 25,
+          value: automationScore > 70 ? 150 : automationScore > 40 ? 75 : 25,
           currency: 'USD',
           items: [{
             item_id: 'market_survey_completion',
@@ -362,7 +427,7 @@ const MarketSurvey = () => {
             item_category: 'Lead Generation',
             item_variant: formData.businessType,
             quantity: 1,
-            price: result.automationScore > 70 ? 150 : result.automationScore > 40 ? 75 : 25
+            price: automationScore > 70 ? 150 : automationScore > 40 ? 75 : 25
           }]
         }
       })
@@ -570,7 +635,7 @@ const MarketSurvey = () => {
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 break-words hyphens-auto"
               />
               <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                Help us understand your business to get specific integration opportunities
+                Discover specific opportunities to integrate into your current operations
               </p>
             </div>
 
@@ -846,7 +911,7 @@ const MarketSurvey = () => {
 
                     {/* Survey Privacy Notice */}
                     <div className="text-xs text-gray-500 leading-relaxed">
-                      By participating in this market survey, you agree to receive your personalized automation analysis and occasional updates about business automation trends in the area. We respect your privacy and will never share your information.
+                      By participating in this market survey, you agree to receive your personalized automation analysis and occasional updates about business automation trends in the Texas Panhandle region. We respect your privacy and will never share your information.
                     </div>
                   </div>
                 )}
