@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
-// GTM helper functions
+// GTM and Consent Mode helper functions
 declare global {
   interface Window {
     gtag: (...args: any[]) => void
@@ -53,10 +53,12 @@ export default function CookieBanner() {
       'ad_storage': 'denied',
       'ad_user_data': 'denied',
       'ad_personalization': 'denied',
+      'functionality_storage': 'granted', // Essential cookies
+      'security_storage': 'granted', // Essential cookies
       'wait_for_update': 500
     })
 
-    console.log('GTM Consent Mode initialized')
+    console.log('GTM Consent Mode initialized for Amarillo Automation')
   }
 
   const updateConsent = (analyticsStorage: string, adStorage: string) => {
@@ -67,25 +69,28 @@ export default function CookieBanner() {
       'ad_personalization': adStorage
     })
 
-    // Push consent event to dataLayer for GTM
+    // Push consent event to dataLayer for GTM tracking
     window.dataLayer?.push({
       'event': 'consent_update',
       'consent_analytics': analyticsStorage,
-      'consent_ads': adStorage
+      'consent_ads': adStorage,
+      'consent_timestamp': new Date().toISOString(),
+      'business_type': 'industrial_automation'
     })
 
     console.log(`Consent updated: Analytics=${analyticsStorage}, Ads=${adStorage}`)
   }
 
   const clearTrackingCookies = () => {
-    // Clear GA cookies
-    const gaCookies = document.cookie.split(';').filter(cookie => 
+    // Clear GA and GTM cookies
+    const trackingCookies = document.cookie.split(';').filter(cookie => 
       cookie.trim().startsWith('_ga') || 
       cookie.trim().startsWith('_gid') ||
-      cookie.trim().startsWith('_gat')
+      cookie.trim().startsWith('_gat') ||
+      cookie.trim().startsWith('_gtm')
     )
     
-    gaCookies.forEach(cookie => {
+    trackingCookies.forEach(cookie => {
       const cookieName = cookie.split('=')[0].trim()
       // Clear for current domain
       document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
@@ -100,18 +105,21 @@ export default function CookieBanner() {
     setIsLoading(true)
     
     try {
-      // Save consent
+      // Save consent with business context
       localStorage.setItem('cookie-consent', 'accepted')
       localStorage.setItem('cookie-consent-date', new Date().toISOString())
+      localStorage.setItem('consent-business-type', 'industrial_automation')
       
       // Update consent for GTM
       updateConsent('granted', 'granted')
       
-      // Track the consent event via GTM
+      // Track the consent event via GTM with business context
       setTimeout(() => {
         window.dataLayer?.push({
           'event': 'cookie_consent_granted',
-          'consent_method': 'banner_accept'
+          'consent_method': 'banner_accept',
+          'business_type': 'technlogy_company',
+          'service_focus': 'automation_solutions'
         })
       }, 500)
       
@@ -127,7 +135,7 @@ export default function CookieBanner() {
     setIsLoading(true)
     
     try {
-      // Save decline
+      // Save decline with timestamp
       localStorage.setItem('cookie-consent', 'declined')
       localStorage.setItem('cookie-consent-date', new Date().toISOString())
       
@@ -137,11 +145,12 @@ export default function CookieBanner() {
       // Clear any existing tracking cookies
       clearTrackingCookies()
       
-      // Track decline event via GTM (this should still work with essential functionality)
+      // Track decline event via GTM (essential functionality still works)
       setTimeout(() => {
         window.dataLayer?.push({
           'event': 'cookie_consent_denied',
-          'consent_method': 'banner_decline'
+          'consent_method': 'banner_decline',
+          'business_type': 'technology_company'
         })
       }, 500)
       
@@ -157,6 +166,7 @@ export default function CookieBanner() {
   const resetConsent = () => {
     localStorage.removeItem('cookie-consent')
     localStorage.removeItem('cookie-consent-date')
+    localStorage.removeItem('consent-business-type')
     clearTrackingCookies()
     setShowBanner(true)
   }
@@ -183,8 +193,8 @@ export default function CookieBanner() {
             <div>
               <h3 className="text-white font-semibold text-lg mb-2">We Value Your Privacy</h3>
               <p className="text-gray-300 text-sm leading-relaxed">
-                We use cookies to enhance your browsing experience, analyze site traffic, and provide analytics. 
-                By clicking "Accept All", you consent to our use of cookies including Google Analytics.
+                We use cookies to enhance your experience, analyze site traffic, and understand how our 
+                automation solutions can best serve your business needs.
               </p>
             </div>
           </div>
@@ -202,9 +212,16 @@ export default function CookieBanner() {
               <div className="flex justify-between items-center">
                 <span className="flex items-center gap-1">
                   <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                  Analytics cookies (Google Analytics)
+                  Analytics cookies
                 </span>
-                <span className="text-gray-300">Your choice</span>
+                <span className="text-gray-300">Help us improve</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="flex items-center gap-1">
+                  <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                  Marketing cookies
+                </span>
+                <span className="text-gray-300">Better targeting</span>
               </div>
             </div>
           </div>
@@ -263,6 +280,7 @@ export default function CookieBanner() {
           {process.env.NODE_ENV === 'development' && (
             <div className="mt-3 pt-3 border-t border-gray-700 text-xs text-gray-500">
               <p>Debug: Run <code>resetCookieConsent()</code> in console to test banner</p>
+              <p>GTM Container: GTM-KR6QDVHS</p>
             </div>
           )}
 

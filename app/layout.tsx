@@ -3,17 +3,18 @@ import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import Footer from './components/Footer'
 import CookieBanner from './components/CookieBanner'
+import GoogleTagManager, { GTMNoScript } from './components/GoogleTagManager'
 import type { Metadata } from 'next'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: {
-    default: 'Amarillo Automation - AI Integration Solutions',
+    default: 'Amarillo Automation - Workflow Automation & AI Integration | Texas',
     template: '%s | Amarillo Automation'
   },
-  description: 'Expert automation and tech integration services. 24/7 support, enterprise solutions, and cutting-edge technology for your business. Intelligent integrations and AI-powered automations to simplify your business and supercharge growth.',
-  keywords: 'automation, AI, artificial intelligence, AI bots, chat bots, lead generation, marketing, agency, business automation, tech integration, product video generator',
+  description: 'Expert workflow automation, tech integration, and AI agents for business growth. Custom web development and lead generation solutions in Amarillo, Texas.',
+  keywords: 'workflow automation, tech integration, AI agents, lead generation, web development, business automation, Amarillo Texas, digital transformation',
   authors: [{ name: 'Amarillo Automation' }],
   creator: 'Amarillo Automation',
   publisher: 'Amarillo Automation',
@@ -33,28 +34,26 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://amarilloautomation.com',
     siteName: 'Amarillo Automation',
-    title: 'Amarillo Automation - AI Integration Solutions',
-    description: 'Expert automation and tech integration services. 24/7 support, enterprise solutions, and cutting-edge technology for your business.',
+    title: 'Amarillo Automation - Workflow Automation & AI Integration',
+    description: 'Expert workflow automation, tech integration, and AI agents for business growth. Custom solutions in Amarillo, Texas.',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Amarillo Automation - AI Integration Solutions',
+        alt: 'Amarillo Automation - Industrial AI & Automation Solutions',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Amarillo Automation - AI Integration Solutions',
-    description: 'Expert automation and tech integration services. 24/7 support, enterprise solutions, and cutting-edge technology for your business.',
+    title: 'Amarillo Automation - Workflow Automation & AI Integration',
+    description: 'Expert workflow automation, tech integration, and AI agents for business growth. Custom solutions in Amarillo, Texas.',
     images: ['/og-image.jpg'],
   },
   verification: {
-    // Add your verification codes here when you have them
+    // Add your verification codes when you have them
     // google: 'google-verification-code',
-    // yandex: 'yandex-verification-code',
-    // yahoo: 'yahoo-verification-code',
   },
   category: 'technology',
 }
@@ -66,29 +65,103 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen bg-[#0a1224] font-inter relative overflow-x-hidden`}>
-        {/* Google Tag Manager - Load first with highest priority */}
+      <head>
+        {/* Google Tag Manager - Replace with your actual GTM ID */}
+        <GoogleTagManager gtmId="GTM-KR6QDVHS" />
+        
+        {/* Structured Data for Local Business */}
         <Script
-          id="gtm-script"
-          strategy="beforeInteractive"
+          id="structured-data"
+          type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-KR6QDVHS');`,
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "TechnologyCompany",
+              "name": "Amarillo Automation",
+              "url": "https://amarilloautomation.com",
+              "logo": "https://amarilloautomation.com/logo.png",
+              "description": "Workflow automation, tech integration, and AI agents for business growth in Amarillo, Texas.",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Amarillo",
+                "addressRegion": "TX",
+                "addressCountry": "US"
+              },
+              "areaServed": [
+                {
+                  "@type": "State",
+                  "name": "Texas"
+                },
+                {
+                  "@type": "City", 
+                  "name": "Amarillo"
+                },
+                {
+                  "@type": "City",
+                  "name": "Lubbock"
+                }
+              ],
+              "serviceType": [
+                "Workflow Automation",
+                "Tech Integration", 
+                "AI Agents",
+                "Lead Generation",
+                "Web Development"
+              ],
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "customer service",
+                "email": "admin@amarilloautomation.com",
+                "availableLanguage": "English"
+              },
+              "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Automation Services",
+                "itemListElement": [
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Workflow Automation Solutions"
+                    }
+                  },
+                  {
+                    "@type": "Offer", 
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Tech Integration Services"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service", 
+                      "name": "AI Agents & Chatbots"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service", 
+                      "name": "Lead Generation Systems"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service", 
+                      "name": "Custom Web Development"
+                    }
+                  }
+                ]
+              }
+            })
           }}
         />
-
-        {/* Google Tag Manager (noscript) - Immediately after opening <body> tag */}
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-KR6QDVHS"
-            height="0"
-            width="0"
-            style={{ display: 'none', visibility: 'hidden' }}
-          />
-        </noscript>
+      </head>
+      <body className={`${inter.className} min-h-screen bg-[#0a1224] font-inter relative overflow-x-hidden`}>
+        {/* GTM NoScript Fallback */}
+        <GTMNoScript gtmId="GTM-KR6QDVHS" />
 
         {/* Three.js and Vanta scripts - Load after GTM */}
         <Script 

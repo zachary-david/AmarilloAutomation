@@ -1,4 +1,4 @@
-// app/demo/page.tsx (Demo Page - Production Ready)
+// app/demo/page.tsx (Demo Page with GTM Integration + n8n)
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
@@ -6,7 +6,12 @@ import Navigation from '../components/Navigation'
 import AnimatedText from '../components/AnimatedText'
 import Link from 'next/link'
 
-// Metadata is handled in layout.tsx or a parent server component
+// GTM Event Tracking Functions
+declare global {
+  interface Window {
+    dataLayer: any[]
+  }
+}
 
 export default function Demo() {
   const vantaRef = useRef<HTMLDivElement>(null)
@@ -22,6 +27,8 @@ export default function Demo() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<{type: 'success' | 'error', message: string} | null>(null)
   const [filePreview, setFilePreview] = useState<string | null>(null)
+  const [demoStarted, setDemoStarted] = useState(false)
+  const [formProgress, setFormProgress] = useState(0)
 
   // Production n8n webhook URL
   const N8N_WEBHOOK_URL = 'https://howiedewitt.app.n8n.cloud/form/286bbe75-954f-46dd-9a8f-04ca1fa3894f'
@@ -54,16 +61,92 @@ export default function Demo() {
     }
   }, [])
 
+  // Track demo page view and start
+  useEffect(() => {
+    // Track demo page access
+    window.dataLayer?.push({
+      event: 'page_view_enhanced',
+      page_title: 'AI Product Video Generator Demo',
+      page_section: 'demo',
+      business_vertical: 'automation_consulting',
+      service_offering: 'ai_agents'
+    })
+
+    // Track demo start after user lands
+    const timer = setTimeout(() => {
+      if (!demoStarted) {
+        setDemoStarted(true)
+        window.dataLayer?.push({
+          event: 'demo_start',
+          demo_type: 'ai_video_generator',
+          service_category: 'ai_agents',
+          page_section: 'demo_page'
+        })
+      }
+    }, 3000) // Track after 3 seconds on page
+
+    return () => clearTimeout(timer)
+  }, [demoStarted])
+
+  // Calculate form completion percentage
+  const calculateFormProgress = () => {
+    const fields = [formData.product, formData.productDescription, formData.email, formData.photo]
+    const completedFields = fields.filter(field => field && field.toString().length > 0).length
+    return Math.round((completedFields / fields.length) * 100)
+  }
+
+  // Update form progress when data changes
+  useEffect(() => {
+    const newProgress = calculateFormProgress()
+    setFormProgress(newProgress)
+    
+    // Track progress milestones
+    if (newProgress === 25 || newProgress === 50 || newProgress === 75) {
+      window.dataLayer?.push({
+        event: 'demo_form_progress',
+        progress_percentage: newProgress,
+        demo_type: 'ai_video_generator',
+        engagement_level: newProgress > 50 ? 'high' : 'medium'
+      })
+    }
+  }, [formData])
+
+  // Track form start when user begins typing
+  const handleFormStart = () => {
+    if (!demoStarted) {
+      setDemoStarted(true)
+      window.dataLayer?.push({
+        event: 'demo_interaction',
+        interaction_type: 'form_start',
+        demo_type: 'ai_video_generator',
+        service_category: 'ai_agents'
+      })
+    }
+  }
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
+    handleFormStart()
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
     }))
+
+    // Track specific field completions
+    if (value.length > 2) {
+      window.dataLayer?.push({
+        event: 'demo_field_completion',
+        field_name: name,
+        demo_type: 'ai_video_generator',
+        form_progress: calculateFormProgress()
+      })
+    }
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
+    handleFormStart()
     
     if (file) {
       // Validate file type
@@ -74,6 +157,13 @@ export default function Demo() {
           message: 'Please select a JPG or PNG file only.'
         })
         e.target.value = ''
+        
+        // Track file upload error
+        window.dataLayer?.push({
+          event: 'demo_error',
+          error_type: 'invalid_file_type',
+          demo_type: 'ai_video_generator'
+        })
         return
       }
 
@@ -85,6 +175,13 @@ export default function Demo() {
           message: 'File size must be less than 10MB.'
         })
         e.target.value = ''
+        
+        // Track file size error
+        window.dataLayer?.push({
+          event: 'demo_error',
+          error_type: 'file_too_large',
+          demo_type: 'ai_video_generator'
+        })
         return
       }
 
@@ -100,6 +197,15 @@ export default function Demo() {
       
       // Clear any previous error messages
       setSubmitStatus(null)
+
+      // Track successful file upload
+      window.dataLayer?.push({
+        event: 'demo_file_upload',
+        file_type: file.type,
+        file_size: file.size,
+        demo_type: 'ai_video_generator',
+        engagement_level: 'high'
+      })
     }
   }
 
@@ -107,6 +213,16 @@ export default function Demo() {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmitStatus(null)
+
+    // Track demo submission attempt
+    window.dataLayer?.push({
+      event: 'demo_submission',
+      demo_type: 'ai_video_generator',
+      service_category: 'ai_agents',
+      product_name: formData.product,
+      has_description: formData.productDescription.length > 10,
+      engagement_level: 'high'
+    })
 
     // Validation
     if (!formData.product.trim()) {
@@ -181,6 +297,32 @@ export default function Demo() {
         type: 'success',
         message: 'Your product video request has been submitted successfully! Processing will begin shortly and you\'ll receive an email when ready.'
       })
+
+      // Track successful demo completion
+      window.dataLayer?.push({
+        event: 'demo_completion',
+        demo_type: 'ai_video_generator',
+        service_category: 'ai_agents',
+        success: true,
+        conversion_value: 30 // AI demo lead value
+      })
+
+      // Track as high-value conversion
+      window.dataLayer?.push({
+        event: 'purchase', // Using ecommerce event for lead tracking
+        ecommerce: {
+          transaction_id: `demo_${Date.now()}`,
+          value: 30,
+          currency: 'USD',
+          items: [{
+            item_id: 'ai_demo_completion',
+            item_name: 'AI Video Demo Completed',
+            item_category: 'AI Agents',
+            quantity: 1,
+            price: 30
+          }]
+        }
+      })
       
       // Reset form
       setFormData({
@@ -190,6 +332,7 @@ export default function Demo() {
         photo: null
       })
       setFilePreview(null)
+      setFormProgress(0)
       
       // Reset file input
       const photoInput = document.getElementById('photo-input') as HTMLInputElement
@@ -197,6 +340,13 @@ export default function Demo() {
         
     } catch (error) {
       console.error('Error submitting form:', error)
+      
+      // Track submission error
+      window.dataLayer?.push({
+        event: 'demo_error',
+        error_type: 'submission_failed',
+        demo_type: 'ai_video_generator'
+      })
       
       // More specific error handling
       let errorMessage = 'There was an error submitting your request. Please try again.'
@@ -220,6 +370,17 @@ export default function Demo() {
     }
   }
 
+  // Track CTA clicks
+  const handleCTAClick = (ctaType: string) => {
+    window.dataLayer?.push({
+      event: 'cta_click',
+      cta_text: ctaType,
+      cta_location: 'demo_page',
+      demo_completion_status: submitStatus?.type === 'success' ? 'completed' : 'in_progress',
+      lead_qualification: submitStatus?.type === 'success' ? 'high' : 'medium'
+    })
+  }
+
   return (
     <div className="min-h-screen relative">
       <div ref={vantaRef} className="fixed inset-0 z-0" />
@@ -236,7 +397,7 @@ export default function Demo() {
               />
               <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
                 Experience our AI-powered product video generator. Upload a photo of your product 
-                and get a professional marketing video sample in minutes.
+                and get a professional marketing video sample in minutes. Perfect showcase of our AI agent capabilities.
               </p>
               
               {/* Demo Benefits */}
@@ -262,6 +423,22 @@ export default function Demo() {
                 <h2 className="text-2xl font-bold text-white mb-6 text-center">
                   Product Video Generator
                 </h2>
+                
+                {/* Form Progress Indicator */}
+                {demoStarted && (
+                  <div className="bg-gray-800/50 rounded-lg p-4 mb-6">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-gray-300 text-sm">Demo Progress</span>
+                      <span className="text-green-400 text-sm font-medium">{formProgress}%</span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div 
+                        className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${formProgress}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
                 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   
@@ -363,6 +540,19 @@ export default function Demo() {
                         : 'bg-red-900/50 text-red-300 border-red-600'
                     }`}>
                       {submitStatus.message}
+                      {submitStatus.type === 'success' && (
+                        <div className="mt-4 space-y-2">
+                          <button 
+                            onClick={() => {
+                              handleCTAClick('contact_for_ai_services')
+                              window.location.href = '/contact'
+                            }}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all"
+                          >
+                            Get Custom AI Solutions
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -401,6 +591,28 @@ export default function Demo() {
 
                 </form>
               </div>
+
+              {/* Call-to-Action Section */}
+              {submitStatus?.type === 'success' && (
+                <div className="mt-12 text-center bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-gray-700 rounded-xl p-8">
+                  <h3 className="text-2xl font-bold text-white mb-4">
+                    Impressed with Our AI Capabilities?
+                  </h3>
+                  <p className="text-gray-300 mb-6">
+                    This demo showcases just one example of what our AI agents can do. 
+                    We create custom workflow automation and AI integration solutions for businesses.
+                  </p>
+                  <button 
+                    onClick={() => {
+                      handleCTAClick('schedule_ai_consultation')
+                      window.location.href = '/contact'
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all transform hover:scale-105"
+                  >
+                    Schedule AI Consultation
+                  </button>
+                </div>
+              )}
 
               {/* How It Works */}
               <div className="mt-16 bg-gray-900/60 border border-gray-800 rounded-xl p-8">
