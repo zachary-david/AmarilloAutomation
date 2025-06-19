@@ -5,292 +5,205 @@ import React, { useState, useEffect, useRef } from 'react'
 import Navigation from '../components/Navigation'
 import Footer from '../components/Footer'
 import AnimatedText from '../components/AnimatedText'
-// Using individual icon imports to avoid lucide-react module issues
-import { 
-  ChevronRight, 
-  ChevronLeft, 
-  Building2, 
-  Zap, 
-  Target, 
-  Brain, 
-  Users, 
-  Clock, 
-  DollarSign, 
-  TrendingUp, 
-  AlertTriangle, 
-  CheckCircle, 
-  ArrowRight, 
-  BarChart3, 
-  Phone, 
-  Mail, 
-  MapPin 
-} from 'lucide-react'
+import { BarChart3, TrendingUp, Clock, Users, Zap, CheckCircle, ArrowRight, Star } from 'lucide-react'
 
-// GTM Event Tracking Functions
 declare global {
   interface Window {
-    dataLayer: any[]
-    VANTA?: any
+    gtag: (...args: any[]) => void;
   }
-}
-
-// Define proper types for the form data
-interface ContactInfo {
-  name: string;
-  email: string;
-  phone: string;
-  company: string;
-  urgency: string;
 }
 
 interface FormData {
-  businessType: string;
-  businessSize: string;
-  currentAIUsage: string;
-  aiAwareness: string;
-  aiTools: string[];
-  painPoints: string[];
-  leadSources: string[];
-  timeWasters: string[];
-  revenue: string;
-  growthGoals: string;
-  contactInfo: ContactInfo;
+  businessType: string
+  businessSize: string
+  currentOperations: string
+  implementationTimeline: string
+  painPoints: string[]
+  primaryGoal: string
+  email: string
+  phone: string
+  businessName: string
 }
 
-const MarketSurvey = () => {
-  // Check if lucide-react icons are available, provide fallbacks if needed
-  const IconFallback = ({ children }: { children: React.ReactNode }) => children || <div>📊</div>
-  const vantaRef = useRef<HTMLDivElement>(null)
-  const vantaEffect = useRef<any>(null)
-  const [currentStep, setCurrentStep] = useState(0)
+interface AutomationResult {
+  score: number
+  leadQuality: 'LOW' | 'MEDIUM' | 'HIGH'
+  priority: 'LOW_PRIORITY' | 'MEDIUM_PRIORITY' | 'IMMEDIATE_FOLLOW_UP'
+  recommendations: string[]
+}
+
+export default function MarketSurvey() {
+  const [currentStep, setCurrentStep] = useState(1)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showResults, setShowResults] = useState(false)
+  const [automationResult, setAutomationResult] = useState<AutomationResult | null>(null)
+  const formRef = useRef<HTMLFormElement>(null)
+
   const [formData, setFormData] = useState<FormData>({
     businessType: '',
     businessSize: '',
-    currentAIUsage: '',
-    aiAwareness: '',
-    aiTools: [],
+    currentOperations: '',
+    implementationTimeline: '',
     painPoints: [],
-    leadSources: [],
-    timeWasters: [],
-    revenue: '',
-    growthGoals: '',
-    contactInfo: {
-      name: '',
-      email: '',
-      phone: '',
-      company: '',
-      urgency: ''
-    }
+    primaryGoal: '',
+    email: '',
+    phone: '',
+    businessName: ''
   })
-  const [showResults, setShowResults] = useState(false)
-  const [automationScore, setAutomationScore] = useState(0)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [surveyStarted, setSurveyStarted] = useState(false)
 
-  // Vanta.js background
-  useEffect(() => {
-    if (!vantaEffect.current && window.VANTA && vantaRef.current) {
-      vantaEffect.current = window.VANTA.NET({
-        el: vantaRef.current,
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0x3b82f6, // Blue theme for assessment
-        backgroundColor: 0x0a1224,
-        points: 10,
-        maxDistance: 22,
-        spacing: 18,
-      })
+  // Calculate automation score client-side
+  const calculateAutomationScore = (data: FormData): AutomationResult => {
+    let score = 30 // Base score
+
+    // Business type scoring
+    const businessTypeScores: { [key: string]: number } = {
+      'restaurant': 15,
+      'retail': 12,
+      'healthcare': 18,
+      'real-estate': 20,
+      'professional-services': 16,
+      'construction': 10,
+      'automotive': 14,
+      'other': 8
+    }
+    score += businessTypeScores[data.businessType] || 8
+
+    // Business size scoring
+    const sizeScores: { [key: string]: number } = {
+      'small': 20,
+      'medium': 15,
+      'large': 10
+    }
+    score += sizeScores[data.businessSize] || 10
+
+    // Current operations scoring
+    const operationsScores: { [key: string]: number } = {
+      'manual': 25,
+      'partially-automated': 15,
+      'mostly-automated': 5
+    }
+    score += operationsScores[data.currentOperations] || 15
+
+    // Timeline urgency scoring
+    const timelineScores: { [key: string]: number } = {
+      'urgent': 20,
+      'soon': 15,
+      'eventually': 10,
+      'exploring': 5
+    }
+    score += timelineScores[data.implementationTimeline] || 10
+
+    // Pain points scoring (high-value pain points)
+    const painPointValues: { [key: string]: number } = {
+      'lead-follow-up': 8,
+      'appointment-scheduling': 6,
+      'customer-communication': 7,
+      'inventory-management': 5,
+      'social-media': 4,
+      'email-marketing': 6,
+      'data-entry': 5,
+      'reporting': 4,
+      'manual-scheduling': 7,
+      'customer-service': 6
     }
     
-    return () => {
-      if (vantaEffect.current) {
-        vantaEffect.current.destroy()
-        vantaEffect.current = null
-      }
-    }
-  }, [])
-
-  // GTM Tracking - Page View
-  useEffect(() => {
-    window.dataLayer?.push({
-      event: 'page_view_enhanced',
-      page_title: 'Market Survey - Amarillo Automation',
-      page_section: 'market_survey',
-      business_vertical: 'automation_consulting',
-      service_offering: 'business_assessment'
+    data.painPoints.forEach(painPoint => {
+      score += painPointValues[painPoint] || 3
     })
-  }, [])
 
-  // GTM Tracking - Survey Start
-  const handleSurveyStart = () => {
-    if (!surveyStarted) {
-      setSurveyStarted(true)
-      window.dataLayer?.push({
-        event: 'survey_start',
-        form_type: 'market_survey',
-        lead_source: 'website',
-        qualification_level: 'high_intent',
-        business_vertical: 'automation_consulting'
+    // Ensure score doesn't exceed 100
+    score = Math.min(score, 100)
+
+    // Determine lead quality and priority
+    let leadQuality: 'LOW' | 'MEDIUM' | 'HIGH'
+    let priority: 'LOW_PRIORITY' | 'MEDIUM_PRIORITY' | 'IMMEDIATE_FOLLOW_UP'
+
+    if (score >= 75) {
+      leadQuality = 'HIGH'
+      priority = 'IMMEDIATE_FOLLOW_UP'
+    } else if (score >= 55) {
+      leadQuality = 'MEDIUM'
+      priority = 'MEDIUM_PRIORITY'
+    } else {
+      leadQuality = 'LOW'
+      priority = 'LOW_PRIORITY'
+    }
+
+    // Generate recommendations based on pain points and business type
+    const recommendations: string[] = []
+    
+    if (data.painPoints.includes('lead-follow-up')) {
+      recommendations.push('Automated lead nurturing sequences')
+    }
+    if (data.painPoints.includes('appointment-scheduling')) {
+      recommendations.push('Online booking and scheduling system')
+    }
+    if (data.painPoints.includes('customer-communication')) {
+      recommendations.push('Automated customer communication workflows')
+    }
+    if (data.painPoints.includes('social-media')) {
+      recommendations.push('Social media automation and scheduling')
+    }
+    if (data.painPoints.includes('email-marketing')) {
+      recommendations.push('Email marketing automation campaigns')
+    }
+
+    // Business-specific recommendations
+    if (data.businessType === 'restaurant') {
+      recommendations.push('Online ordering and delivery integration')
+    } else if (data.businessType === 'real-estate') {
+      recommendations.push('CRM automation for property management')
+    } else if (data.businessType === 'healthcare') {
+      recommendations.push('Patient appointment and reminder systems')
+    }
+
+    return {
+      score,
+      leadQuality,
+      priority,
+      recommendations: recommendations.slice(0, 4) // Limit to top 4 recommendations
+    }
+  }
+
+  // Track GTM events
+  const trackGTMEvent = (eventName: string, parameters: any = {}) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', eventName, {
+        event_category: 'Market Survey',
+        ...parameters
       })
     }
   }
 
-  const steps = [
-    {
-      id: 'business-basics',
-      title: 'Business Information',
-      icon: Building2,
-      question: 'Tell us about your business',
-      description: 'Help us understand your business to provide relevant automation insights'
-    },
-    {
-      id: 'current-operations',
-      title: 'Current Operations',
-      icon: Brain,
-      question: 'How do you currently handle business processes?',
-      description: 'Understanding your current workflow and technology usage'
-    },
-    {
-      id: 'pain-points',
-      title: 'Operational Challenges',
-      icon: Target,
-      question: 'What challenges slow down your business?',
-      description: 'Identify areas where automation could provide the most value'
-    },
-    {
-      id: 'growth-goals',
-      title: 'Business Goals',
-      icon: TrendingUp,
-      question: 'What are your primary growth objectives?',
-      description: 'Align automation solutions with your business priorities'
-    },
-    {
-      id: 'contact',
-      title: 'Survey Results',
-      icon: BarChart3,
-      question: 'Where should we send your automation analysis?',
-      description: 'Receive detailed recommendations specific to your business needs'
-    }
-  ]
+  useEffect(() => {
+    trackGTMEvent('survey_started')
+  }, [])
 
-  const businessTypes = [
-    { value: 'restaurant', label: 'Restaurant/Food Service', icon: Building2 },
-    { value: 'contractor', label: 'Contractor/Construction', icon: Building2 },
-    { value: 'professional', label: 'Professional Services', icon: Building2 },
-    { value: 'retail', label: 'Retail/E-commerce', icon: Building2 },
-    { value: 'healthcare', label: 'Healthcare/Medical', icon: Building2 },
-    { value: 'real-estate', label: 'Real Estate', icon: Building2 },
-    { value: 'automotive', label: 'Automotive Services', icon: Building2 },
-    { value: 'beauty', label: 'Beauty/Wellness', icon: Building2 },
-    { value: 'other', label: 'Other', icon: Building2 }
-  ]
-
-  const operationalStatus = [
-    { value: 'manual', label: 'Mostly manual processes', description: 'We handle everything by hand or basic tools' },
-    { value: 'basic-tools', label: 'Using basic business software', description: 'QuickBooks, basic CRM, standard office tools' },
-    { value: 'some-automation', label: 'Some automated processes', description: 'A few automated workflows but mostly manual' },
-    { value: 'integrated-systems', label: 'Integrated business systems', description: 'Multiple systems working together with some automation' },
-    { value: 'advanced-automation', label: 'Advanced automation in place', description: 'Sophisticated workflows and business process automation' }
-  ]
-
-  const painPointOptions = [
-    { value: 'lead-follow-up', label: 'Following up with potential customers takes too long', impact: 'high', automatable: true },
-    { value: 'manual-scheduling', label: 'Scheduling appointments is time-consuming', impact: 'high', automatable: true },
-    { value: 'data-entry', label: 'Too much manual data entry and paperwork', impact: 'medium', automatable: true },
-    { value: 'customer-questions', label: 'Answering repetitive customer questions', impact: 'medium', automatable: true },
-    { value: 'inventory-tracking', label: 'Managing inventory and supplies manually', impact: 'high', automatable: true },
-    { value: 'marketing-tasks', label: 'Social media and marketing takes too much time', impact: 'medium', automatable: true },
-    { value: 'billing-invoicing', label: 'Creating and managing invoices', impact: 'high', automatable: true },
-    { value: 'lead-generation', label: 'Not generating enough qualified leads', impact: 'critical', automatable: true },
-    { value: 'team-coordination', label: 'Coordinating team schedules and tasks', impact: 'medium', automatable: true },
-    { value: 'reporting-analytics', label: 'Creating business reports and tracking performance', impact: 'medium', automatable: true }
-  ]
-
-  const getRecommendations = () => {
-    const recommendations = []
-    
-    // Lead generation recommendations
-    if (formData.painPoints.includes('lead-generation' as any) || formData.painPoints.includes('lead-follow-up' as any)) {
-      recommendations.push({
-        title: 'Lead Generation Automation System',
-        description: 'Automated lead capture, qualification, and follow-up processes',
-        impact: 'Critical',
-        timeline: '2-3 weeks implementation',
-        investment: '$1,500 setup + $499/month management'
-      })
-    }
-    
-    // Scheduling automation
-    if (formData.painPoints.includes('manual-scheduling' as any)) {
-      recommendations.push({
-        title: 'Appointment Scheduling Automation',
-        description: 'Online booking system with automated confirmations and reminders',
-        impact: 'High',
-        timeline: '1-2 weeks implementation',
-        investment: '$800 setup + $199/month'
-      })
-    }
-    
-    // Administrative automation
-    if (formData.painPoints.includes('data-entry' as any) || formData.painPoints.includes('billing-invoicing' as any)) {
-      recommendations.push({
-        title: 'Business Process Automation',
-        description: 'Streamline data entry, invoicing, and administrative workflows',
-        impact: 'High',
-        timeline: '1-2 weeks implementation',
-        investment: '$1,200 setup + $299/month'
-      })
-    }
-    
-    // Customer service automation
-    if (formData.painPoints.includes('customer-questions' as any)) {
-      recommendations.push({
-        title: 'Customer Service Automation',
-        description: 'Automated responses to common inquiries and support tickets',
-        impact: 'Medium',
-        timeline: '2-3 weeks implementation',
-        investment: '$2,000 setup + $399/month'
-      })
-    }
-    
-    // Default recommendation if no specific pain points
-    if (recommendations.length === 0) {
-      recommendations.push({
-        title: 'Business Operations Assessment',
-        description: 'Comprehensive analysis of automation opportunities in your business',
-        impact: 'High',
-        timeline: '1 week analysis',
-        investment: '$500 consultation fee'
-      })
-    }
-    
-    return recommendations
+  const handleInputChange = (field: keyof FormData, value: string | string[]) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
   }
 
-  const handleNext = () => {
-    handleSurveyStart()
-    
-    // Track step completion
-    window.dataLayer?.push({
-      event: 'survey_step_complete',
-      step_number: currentStep + 1,
-      step_name: steps[currentStep].id,
-      form_progress: Math.round(((currentStep + 1) / steps.length) * 100),
-      business_vertical: 'automation_consulting'
-    })
+  const handlePainPointChange = (painPoint: string) => {
+    setFormData(prev => ({
+      ...prev,
+      painPoints: prev.painPoints.includes(painPoint)
+        ? prev.painPoints.filter(p => p !== painPoint)
+        : [...prev.painPoints, painPoint]
+    }))
+  }
 
-    if (currentStep < steps.length - 1) {
+  const nextStep = () => {
+    if (currentStep < 6) {
       setCurrentStep(currentStep + 1)
+      trackGTMEvent('survey_step_completed', { step: currentStep })
     }
   }
 
-  const handleBack = () => {
-    if (currentStep > 0) {
+  const prevStep = () => {
+    if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
     }
   }
@@ -299,683 +212,511 @@ const MarketSurvey = () => {
     e.preventDefault()
     setIsSubmitting(true)
     
-    // Calculate automation score client-side (since API route isn't working)
-    const calculateScore = () => {
-      let score = 0;
-      
-      // Operational status scoring
-      const statusScores: Record<string, number> = { 
-        'manual': 25, 'basic-tools': 20, 'some-automation': 15, 
-        'integrated-systems': 10, 'advanced-automation': 5 
-      };
-      score += statusScores[formData.currentAIUsage] || 0;
-      
-      // Pain points scoring
-      const automatablePains = [
-        'lead-follow-up', 'manual-scheduling', 'data-entry', 'customer-questions',
-        'inventory-tracking', 'marketing-tasks', 'billing-invoicing', 'lead-generation',
-        'team-coordination', 'reporting-analytics'
-      ];
-      const userAutomatablePains = formData.painPoints.filter(pain => 
-        automatablePains.includes(pain)
-      );
-      score += Math.min(userAutomatablePains.length * 4, 40);
-      
-      // Business size scoring
-      const sizeScores: Record<string, number> = { 'solo': 10, 'small': 20, 'medium': 15, 'large': 10 };
-      score += sizeScores[formData.businessSize] || 0;
-      
-      // Urgency scoring
-      const urgencyScores: Record<string, number> = { 'urgent': 15, 'soon': 12, 'planning': 8, 'exploring': 3 };
-      score += urgencyScores[formData.contactInfo.urgency] || 0;
-      
-      return Math.min(score, 100);
-    };
-
-    const automationScore = calculateScore();
-    const leadQuality = automationScore > 70 ? 'high' : automationScore > 40 ? 'medium' : 'low';
-    
-    // Track survey submission attempt
-    window.dataLayer?.push({
-      event: 'survey_submission',
-      form_name: 'market_survey',
-      business_type: formData.businessType,
-      operational_status: formData.currentAIUsage,
-      pain_points: formData.painPoints.length,
-      implementation_urgency: formData.contactInfo.urgency,
-      business_vertical: 'automation_consulting'
-    })
-    
     try {
-      // Use Formspree (your original contact form solution) as fallback
-      const response = await fetch('https://formspree.io/f/xqabllkq', {
+      // Calculate automation score client-side
+      const result = calculateAutomationScore(formData)
+      setAutomationResult(result)
+
+      // Create form data for Formspree submission
+      const submissionData = new FormData()
+      
+      // Add all form fields with proper names for Formspree
+      submissionData.append('business_name', formData.businessName)
+      submissionData.append('email', formData.email)
+      submissionData.append('phone', formData.phone)
+      submissionData.append('business_type', formData.businessType)
+      submissionData.append('business_size', formData.businessSize)
+      submissionData.append('current_operations', formData.currentOperations)
+      submissionData.append('implementation_timeline', formData.implementationTimeline)
+      submissionData.append('pain_points', formData.painPoints.join(', '))
+      submissionData.append('primary_goal', formData.primaryGoal)
+      
+      // Add automation analysis results
+      submissionData.append('automation_score', result.score.toString())
+      submissionData.append('lead_quality', result.leadQuality)
+      submissionData.append('priority', result.priority)
+      submissionData.append('recommendations', result.recommendations.join(', '))
+      
+      // Add subject line for better email organization
+      submissionData.append('_subject', `New Market Survey - ${result.leadQuality} Quality Lead (Score: ${result.score}/100)`)
+
+      // Submit to Formspree using standard form submission
+      const response = await fetch('https://formspree.io/f/xanjdybj', {
         method: 'POST',
+        body: submissionData,
         headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          // Contact Information
-          name: formData.contactInfo.name,
-          email: formData.contactInfo.email,
-          phone: formData.contactInfo.phone || '',
-          company: formData.contactInfo.company,
-          
-          // Survey Details (formatted for email)
-          subject: `Market Survey: ${formData.contactInfo.name} - ${formData.businessType} (Score: ${automationScore}/100)`,
-          message: `MARKET SURVEY SUBMISSION:
-
-Business Profile:
-- Business Type: ${formData.businessType}
-- Business Size: ${formData.businessSize}
-- Current Operations: ${formData.currentAIUsage}
-- Implementation Timeline: ${formData.contactInfo.urgency}
-
-Operational Challenges:
-- Pain Points: ${formData.painPoints.join(', ')}
-- Primary Growth Goal: ${formData.growthGoals}
-
-AUTOMATION ANALYSIS:
-- Automation Score: ${automationScore}/100
-- Lead Quality: ${leadQuality.toUpperCase()}
-- Recommended Priority: ${formData.contactInfo.urgency === 'urgent' ? 'IMMEDIATE FOLLOW-UP' : leadQuality === 'high' ? 'HIGH PRIORITY' : 'STANDARD FOLLOW-UP'}
-
-Contact Details:
-- Phone: ${formData.contactInfo.phone || 'Not provided'}
-- Email: ${formData.contactInfo.email}
-- Company: ${formData.contactInfo.company}
-
-This submission came from the Market Survey form.`,
-          
-          // Additional metadata for tracking
-          leadScore: automationScore,
-          serviceType: 'market_survey',
-          projectUrgency: formData.contactInfo.urgency,
-          _subject: `🎯 Market Survey: ${formData.contactInfo.name} - ${formData.businessType} (Score: ${automationScore}/100)`
-        })
-      })
-
-      if (!response.ok) {
-        throw new Error('Survey submission failed')
-      }
-
-      // Success! Show results with calculated score
-      setAutomationScore(automationScore)
-      setShowResults(true)
-
-      // Track successful survey completion
-      window.dataLayer?.push({
-        event: 'survey_complete',
-        automation_score: automationScore,
-        business_type: formData.businessType,
-        operational_status: formData.currentAIUsage,
-        pain_points: formData.painPoints.length,
-        lead_quality: leadQuality,
-        conversion_value: automationScore > 70 ? 150 : automationScore > 40 ? 75 : 25,
-        business_vertical: 'automation_consulting'
-      })
-
-      // Track as conversion event
-      window.dataLayer?.push({
-        event: 'purchase', // Using ecommerce event for lead tracking
-        ecommerce: {
-          transaction_id: `survey_${Date.now()}`,
-          value: automationScore > 70 ? 150 : automationScore > 40 ? 75 : 25,
-          currency: 'USD',
-          items: [{
-            item_id: 'market_survey_completion',
-            item_name: 'Business Automation Survey Completed',
-            item_category: 'Lead Generation',
-            item_variant: formData.businessType,
-            quantity: 1,
-            price: automationScore > 70 ? 150 : automationScore > 40 ? 75 : 25
-          }]
+          'Accept': 'application/json'
         }
       })
 
+      if (response.ok) {
+        // Track successful submission
+        trackGTMEvent('survey_completed', {
+          automation_score: result.score,
+          lead_quality: result.leadQuality,
+          business_type: formData.businessType
+        })
+        
+        setIsSubmitting(false)
+        setShowResults(true)
+      } else {
+        throw new Error('Form submission failed')
+      }
     } catch (error) {
       console.error('Survey submission error:', error)
-      
-      // Track error
-      window.dataLayer?.push({
-        event: 'survey_error',
-        error_type: 'submission_failed',
-        business_vertical: 'automation_consulting'
-      })
-      
-      alert('There was an error submitting your survey. Please try again or contact us directly at admin@amarilloautomation.com')
-    } finally {
       setIsSubmitting(false)
+      alert('There was an error submitting your survey. Please try again or contact us directly at admin@amarilloautomation.com')
     }
   }
 
-  const handleMultiSelect = (field: keyof Pick<FormData, 'aiTools' | 'painPoints' | 'leadSources' | 'timeWasters'>, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: (prev[field] as string[]).includes(value) 
-        ? (prev[field] as string[]).filter((item: string) => item !== value)
-        : [...(prev[field] as string[]), value]
-    }))
-  }
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">What type of business do you operate?</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                { value: 'restaurant', label: 'Restaurant/Food Service', icon: '🍽️' },
+                { value: 'retail', label: 'Retail/E-commerce', icon: '🛍️' },
+                { value: 'healthcare', label: 'Healthcare/Medical', icon: '🏥' },
+                { value: 'real-estate', label: 'Real Estate', icon: '🏠' },
+                { value: 'professional-services', label: 'Professional Services', icon: '💼' },
+                { value: 'construction', label: 'Construction/Contracting', icon: '🔨' },
+                { value: 'automotive', label: 'Automotive', icon: '🚗' },
+                { value: 'other', label: 'Other', icon: '📋' }
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handleInputChange('businessType', option.value)}
+                  className={`p-4 border-2 rounded-lg text-left transition-all ${
+                    formData.businessType === option.value
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <span className="text-2xl mr-3">{option.icon}</span>
+                  <span className="font-medium">{option.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )
 
-  const handleCTAClick = (ctaType: string) => {
-    window.dataLayer?.push({
-      event: 'survey_cta_click',
-      cta_type: ctaType,
-      automation_score: automationScore,
-      lead_quality: automationScore > 70 ? 'high' : automationScore > 40 ? 'medium' : 'low',
-      business_vertical: 'automation_consulting'
-    })
-    
-    if (ctaType === 'schedule_call') {
-      window.location.href = '/contact'
-    }
-  }
+      case 2:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">What's your business size?</h3>
+            <div className="space-y-4">
+              {[
+                { value: 'small', label: 'Small (1-10 employees)', description: 'Solo entrepreneur or small team' },
+                { value: 'medium', label: 'Medium (11-50 employees)', description: 'Growing business with multiple departments' },
+                { value: 'large', label: 'Large (50+ employees)', description: 'Established enterprise' }
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handleInputChange('businessSize', option.value)}
+                  className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
+                    formData.businessSize === option.value
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="font-medium">{option.label}</div>
+                  <div className="text-sm text-gray-600 mt-1">{option.description}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )
 
-  if (showResults) {
-    const recommendations = getRecommendations()
-    
-    return (
-      <div className="min-h-screen relative">
-        <div ref={vantaRef} className="fixed inset-0 z-0" />
-        <div className="relative z-10">
-          <Navigation />
-          <main className="py-20 px-4">
-            <div className="max-w-4xl mx-auto">
-              {/* Results Header */}
-              <div className="text-center mb-12">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 border border-blue-500/30 rounded-full text-blue-300 text-sm mb-6">
-                  <CheckCircle className="w-4 h-4" />
-                  Survey Complete
-                </div>
-                
-                <AnimatedText 
-                  text="Your Business Automation Analysis"
-                  className="text-4xl md:text-5xl font-bold text-white mb-6"
-                />
-                <p className="text-xl text-gray-300">
-                  Based on your responses, here are our findings for {formData.contactInfo.company}
-                </p>
-              </div>
+      case 3:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">How would you describe your current operations?</h3>
+            <div className="space-y-4">
+              {[
+                { value: 'manual', label: 'Mostly Manual', description: 'Most tasks done by hand, minimal automation' },
+                { value: 'partially-automated', label: 'Partially Automated', description: 'Some automated processes, but many manual tasks remain' },
+                { value: 'mostly-automated', label: 'Mostly Automated', description: 'Most processes automated, looking to optimize further' }
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handleInputChange('currentOperations', option.value)}
+                  className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
+                    formData.currentOperations === option.value
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="font-medium">{option.label}</div>
+                  <div className="text-sm text-gray-600 mt-1">{option.description}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )
 
-              {/* Automation Score */}
-              <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-8 mb-8 text-center">
-                <h2 className="text-2xl font-semibold text-white mb-4">Automation Opportunity Score</h2>
-                <div className="relative w-32 h-32 mx-auto mb-4">
-                  <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 36 36">
-                    <path
-                      d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
-                      fill="none"
-                      stroke="#374151"
-                      strokeWidth="2"
-                    />
-                    <path
-                      d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
-                      fill="none"
-                      stroke="#3b82f6"
-                      strokeWidth="2"
-                      strokeDasharray={`${automationScore}, 100`}
-                      className="transition-all duration-1000 ease-out"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-3xl font-bold text-blue-400">{automationScore}</span>
+      case 4:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">What are your biggest operational challenges? (Select all that apply)</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                { value: 'lead-follow-up', label: 'Lead Follow-up & Nurturing' },
+                { value: 'appointment-scheduling', label: 'Appointment Scheduling' },
+                { value: 'customer-communication', label: 'Customer Communication' },
+                { value: 'inventory-management', label: 'Inventory Management' },
+                { value: 'social-media', label: 'Social Media Management' },
+                { value: 'email-marketing', label: 'Email Marketing' },
+                { value: 'data-entry', label: 'Data Entry & Management' },
+                { value: 'reporting', label: 'Reporting & Analytics' },
+                { value: 'manual-scheduling', label: 'Staff Scheduling' },
+                { value: 'customer-service', label: 'Customer Service' }
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handlePainPointChange(option.value)}
+                  className={`p-4 border-2 rounded-lg text-left transition-all ${
+                    formData.painPoints.includes(option.value)
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center">
+                    {formData.painPoints.includes(option.value) && (
+                      <CheckCircle className="w-5 h-5 text-blue-500 mr-2" />
+                    )}
+                    <span className="font-medium">{option.label}</span>
                   </div>
-                </div>
-                <p className="text-gray-300">
-                  {automationScore > 70 ? 'High automation potential - significant opportunities identified' :
-                   automationScore > 40 ? 'Moderate automation potential - several opportunities available' :
-                   'Basic automation potential - foundational improvements recommended'}
-                </p>
-              </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )
 
-              {/* Recommendations */}
-              <div className="mb-8">
-                <h2 className="text-2xl font-semibold text-white mb-6">Recommended Solutions</h2>
-                <div className="space-y-4">
-                  {recommendations.map((rec, index) => (
-                    <div key={index} className="bg-gray-900/80 border border-gray-800 rounded-xl p-6">
-                      <div className="flex justify-between items-start mb-4">
-                        <h3 className="text-xl font-semibold text-blue-400">{rec.title}</h3>
-                        <span className={`px-3 py-1 rounded-full text-sm border ${
-                          rec.impact === 'Critical' ? 'bg-red-600/20 text-red-300 border-red-500/30' :
-                          rec.impact === 'High' ? 'bg-blue-600/20 text-blue-300 border-blue-500/30' :
-                          'bg-gray-600/20 text-gray-300 border-gray-500/30'
-                        }`}>
-                          {rec.impact} Impact
-                        </span>
-                      </div>
-                      <p className="text-gray-300 mb-4">{rec.description}</p>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-gray-400" />
-                          <span className="text-gray-400">Timeline:</span>
-                          <span className="text-white">{rec.timeline}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <DollarSign className="w-4 h-4 text-gray-400" />
-                          <span className="text-gray-400">Investment:</span>
-                          <span className="text-white">{rec.investment}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+      case 5:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">What's your primary goal with automation?</h3>
+            <div className="space-y-4">
+              {[
+                { value: 'save-time', label: 'Save Time & Reduce Manual Work', icon: <Clock className="w-6 h-6" /> },
+                { value: 'increase-revenue', label: 'Increase Revenue & Sales', icon: <TrendingUp className="w-6 h-6" /> },
+                { value: 'improve-customer-experience', label: 'Improve Customer Experience', icon: <Star className="w-6 h-6" /> },
+                { value: 'scale-business', label: 'Scale Business Operations', icon: <Users className="w-6 h-6" /> },
+                { value: 'reduce-costs', label: 'Reduce Operational Costs', icon: <BarChart3 className="w-6 h-6" /> },
+                { value: 'competitive-advantage', label: 'Gain Competitive Advantage', icon: <Zap className="w-6 h-6" /> }
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handleInputChange('primaryGoal', option.value)}
+                  className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
+                    formData.primaryGoal === option.value
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center">
+                    <div className="text-blue-500 mr-3">{option.icon}</div>
+                    <span className="font-medium">{option.label}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )
 
-              {/* Next Steps */}
-              <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-8 mb-8">
-                <h2 className="text-2xl font-semibold text-white mb-6">Next Steps</h2>
-                <div className="grid md:grid-cols-3 gap-6 mb-6">
-                  <div className="text-center">
-                    <Phone className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                    <h3 className="font-semibold text-white mb-2">Schedule a Call</h3>
-                    <p className="text-gray-300 text-sm">Discuss your specific needs and get detailed recommendations</p>
-                  </div>
-                  <div className="text-center">
-                    <BarChart3 className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                    <h3 className="font-semibold text-white mb-2">Custom Analysis</h3>
-                    <p className="text-gray-300 text-sm">Receive a detailed automation plan tailored to your business</p>
-                  </div>
-                  <div className="text-center">
-                    <Zap className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                    <h3 className="font-semibold text-white mb-2">Implementation</h3>
-                    <p className="text-gray-300 text-sm">Start seeing results within 2-3 weeks of implementation</p>
-                  </div>
-                </div>
-              </div>
+      case 6:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">When are you looking to implement automation?</h3>
+            <div className="space-y-4 mb-8">
+              {[
+                { value: 'urgent', label: 'ASAP (Within 1 month)', description: 'Ready to start immediately' },
+                { value: 'soon', label: 'Soon (1-3 months)', description: 'Planning to implement in the near future' },
+                { value: 'eventually', label: 'Eventually (3-6 months)', description: 'Considering for later implementation' },
+                { value: 'exploring', label: 'Just Exploring', description: 'Researching options and possibilities' }
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handleInputChange('implementationTimeline', option.value)}
+                  className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
+                    formData.implementationTimeline === option.value
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="font-medium">{option.label}</div>
+                  <div className="text-sm text-gray-600 mt-1">{option.description}</div>
+                </button>
+              ))}
+            </div>
 
-              {/* CTA */}
-              <div className="bg-gradient-to-r from-blue-600/20 to-gray-700/20 border border-gray-700 rounded-xl p-8 text-center">
-                <h2 className="text-2xl font-bold text-white mb-4">Ready to Automate Your Business Operations?</h2>
-                <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-                  Based on your survey, automation could save your business significant time and increase efficiency. 
-                  Let's discuss how to implement these solutions for your specific needs.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <button 
-                    onClick={() => handleCTAClick('schedule_call')}
-                    className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg"
-                  >
-                    Schedule Strategy Session
-                  </button>
-                  <button 
-                    onClick={() => handleCTAClick('download_report')}
-                    className="px-8 py-4 border border-gray-600 text-gray-300 hover:text-white hover:border-gray-500 font-bold rounded-lg transition-all duration-300 active:scale-95"
-                  >
-                    Download Full Report
-                  </button>
+            <div className="border-t pt-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h4>
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="businessName" className="block text-sm font-medium text-gray-700 mb-2">
+                    Business Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="businessName"
+                    name="business_name"
+                    required
+                    value={formData.businessName}
+                    onChange={(e) => handleInputChange('businessName', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Your Business Name"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="your.email@example.com"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    required
+                    value={formData.phone}
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="(806) 555-0123"
+                  />
                 </div>
               </div>
             </div>
-          </main>
-          <Footer />
+          </div>
+        )
+
+      default:
+        return null
+    }
+  }
+
+  if (showResults && automationResult) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
+        <Navigation />
+        <div className="pt-20 pb-16">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                Your Automation Analysis Results
+              </h1>
+              <div className="bg-white rounded-2xl shadow-2xl p-8">
+                <div className="text-center mb-8">
+                  <div className="text-6xl font-bold text-blue-600 mb-2">
+                    {automationResult.score}/100
+                  </div>
+                  <div className="text-xl text-gray-600">Automation Opportunity Score</div>
+                  <div className={`inline-block px-4 py-2 rounded-full text-sm font-semibold mt-4 ${
+                    automationResult.leadQuality === 'HIGH' ? 'bg-green-100 text-green-800' :
+                    automationResult.leadQuality === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {automationResult.leadQuality} POTENTIAL
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-8 mb-8">
+                  <div>
+                    <h3 className="text-xl font-semibold mb-4 text-gray-900">Recommended Solutions:</h3>
+                    <ul className="space-y-2">
+                      {automationResult.recommendations.map((rec, index) => (
+                        <li key={index} className="flex items-start">
+                          <CheckCircle className="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                          <span className="text-gray-700">{rec}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-xl font-semibold mb-4 text-gray-900">Next Steps:</h3>
+                    <ul className="space-y-2">
+                      <li className="flex items-start">
+                        <ArrowRight className="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700">We'll contact you within 24 hours</span>
+                      </li>
+                      <li className="flex items-start">
+                        <ArrowRight className="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700">Free consultation and strategy session</span>
+                      </li>
+                      <li className="flex items-start">
+                        <ArrowRight className="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700">Custom automation roadmap for your business</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <p className="text-lg text-gray-600 mb-6">
+                    Thank you for completing our market survey! We're excited to help you transform your business with automation.
+                  </p>
+                  <div className="space-y-4">
+                    <a
+                      href="tel:+18065551234"
+                      className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors mr-4"
+                    >
+                      Call Now: (806) 555-1234
+                    </a>
+                    <a
+                      href="/"
+                      className="inline-block bg-gray-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-700 transition-colors"
+                    >
+                      Return Home
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        <Footer />
       </div>
     )
   }
 
-  const currentStepData = steps[currentStep]
-  const progress = ((currentStep + 1) / steps.length) * 100
-
   return (
-    <div className="min-h-screen relative">
-      <div ref={vantaRef} className="fixed inset-0 z-0" />
-      <div className="relative z-10">
-        <Navigation />
-        <main className="py-20 px-4">
-          <div className="max-w-4xl mx-auto">
-            {/* Header */}
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 border border-blue-500/30 rounded-full text-blue-300 text-sm mb-6">
-                <BarChart3 className="w-4 h-4" />
-                Business Market Survey
-              </div>
-              <AnimatedText 
-                text="Try It Now"
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 break-words hyphens-auto"
-              />
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                Discover specific opportunities to integrate into your current operations
-              </p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
+      <Navigation />
+      <div className="pt-20 pb-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center mb-6">
+              <BarChart3 className="w-4 h-4" />
+              <span className="text-blue-200 text-sm font-medium ml-2">Texas Panhandle Business Market Survey</span>
             </div>
+            <AnimatedText 
+              text="Discover Your Automation Opportunities"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 break-words hyphens-auto"
+            />
+            <p className="text-xl text-blue-100 max-w-3xl mx-auto">
+              Take our 2-minute survey to get a personalized automation score and discover how much time and money you could save.
+            </p>
+          </div>
 
+          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
             {/* Progress Bar */}
-            <div className="mb-8">
-              <div className="flex justify-between text-sm text-gray-400 mb-2">
-                <span>Step {currentStep + 1} of {steps.length}</span>
-                <span>{Math.round(progress)}% Complete</span>
+            <div className="bg-gray-100 px-6 py-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-600">
+                  Step {currentStep} of 6
+                </span>
+                <span className="text-sm font-medium text-gray-600">
+                  {Math.round((currentStep / 6) * 100)}% Complete
+                </span>
               </div>
-              <div className="w-full bg-gray-800 rounded-full h-2">
+              <div className="w-full bg-gray-200 rounded-full h-2">
                 <div 
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                  style={{ width: `${progress}%` }}
-                />
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${(currentStep / 6) * 100}%` }}
+                ></div>
               </div>
             </div>
 
-            {/* Current Step */}
-            <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-8">
-              <div className="flex items-center mb-6">
-                <div className="h-12 w-12 bg-blue-600/20 rounded-lg flex items-center justify-center mr-4">
-                  <currentStepData.icon className="h-6 w-6 text-blue-400" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-white">{currentStepData.question}</h2>
-                  <p className="text-gray-400">{currentStepData.description}</p>
-                </div>
-              </div>
+            {/* Form */}
+            <form ref={formRef} onSubmit={handleSubmit} className="p-6 md:p-8">
+              {renderStep()}
 
-              <form onSubmit={currentStep === steps.length - 1 ? handleSubmit : (e) => { e.preventDefault(); handleNext(); }}>
-                {/* Step Content */}
-                {currentStep === 0 && (
-                  <div className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-4">What type of business do you operate?</label>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        {businessTypes.map((type) => (
-                          <button
-                            key={type.value}
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, businessType: type.value }))}
-                            className={`p-4 border rounded-lg text-left transition-all flex items-center gap-3 ${
-                              formData.businessType === type.value
-                                ? 'border-blue-500 bg-blue-600/10'
-                                : 'border-gray-700 hover:border-gray-600'
-                            }`}
-                          >
-                            <type.icon className="w-5 h-5 text-blue-400" />
-                            <span className="font-medium">{type.label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-4">How many people work in your business?</label>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        {[
-                          { value: 'solo', label: 'Just me' },
-                          { value: 'small', label: '2-10 people' },
-                          { value: 'medium', label: '11-50 people' },
-                          { value: 'large', label: '50+ people' }
-                        ].map((size) => (
-                          <button
-                            key={size.value}
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, businessSize: size.value }))}
-                            className={`p-4 border rounded-lg text-center transition-all ${
-                              formData.businessSize === size.value
-                                ? 'border-blue-500 bg-blue-600/10'
-                                : 'border-gray-700 hover:border-gray-600'
-                            }`}
-                          >
-                            <span className="font-medium">{size.label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {currentStep === 1 && (
-                  <div className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-4">
-                        Which statement best describes your current business operations?
-                      </label>
-                      <div className="space-y-3">
-                        {operationalStatus.map((option) => (
-                          <button
-                            key={option.value}
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, currentAIUsage: option.value }))}
-                            className={`w-full p-4 border rounded-lg text-left transition-all ${
-                              formData.currentAIUsage === option.value
-                                ? 'border-blue-500 bg-blue-600/10'
-                                : 'border-gray-700 hover:border-gray-600'
-                            }`}
-                          >
-                            <div className="font-medium text-white mb-1">{option.label}</div>
-                            <div className="text-sm text-gray-400">{option.description}</div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {currentStep === 2 && (
-                  <div className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-4">
-                        What are your biggest operational challenges? (Select all that apply)
-                      </label>
-                      <div className="grid grid-cols-1 gap-3">
-                        {painPointOptions.map((pain) => (
-                          <button
-                            key={pain.value}
-                            type="button"
-                            onClick={() => handleMultiSelect('painPoints', pain.value)}
-                            className={`p-4 border rounded-lg text-left transition-all ${
-                              formData.painPoints.includes(pain.value)
-                                ? 'border-blue-500 bg-blue-600/10'
-                                : 'border-gray-700 hover:border-gray-600'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <span className="font-medium text-white">{pain.label}</span>
-                              {pain.automatable && (
-                                <Zap className="h-4 w-4 text-blue-400" />
-                              )}
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {currentStep === 3 && (
-                  <div className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-4">
-                        What is your primary business goal for the next 12 months?
-                      </label>
-                      <div className="space-y-3">
-                        {[
-                          { value: 'more-leads', label: 'Generate more qualified leads', icon: TrendingUp },
-                          { value: 'save-time', label: 'Reduce time spent on administrative tasks', icon: Clock },
-                          { value: 'increase-revenue', label: 'Increase revenue per customer', icon: DollarSign },
-                          { value: 'improve-service', label: 'Improve customer service quality', icon: Users },
-                          { value: 'expand-business', label: 'Expand operations or market reach', icon: Building2 }
-                        ].map((goal) => (
-                          <button
-                            key={goal.value}
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, growthGoals: goal.value }))}
-                            className={`w-full p-4 border rounded-lg text-left transition-all flex items-center ${
-                              formData.growthGoals === goal.value
-                                ? 'border-blue-500 bg-blue-600/10'
-                                : 'border-gray-700 hover:border-gray-600'
-                            }`}
-                          >
-                            <goal.icon className="h-5 w-5 text-blue-400 mr-3" />
-                            <span className="font-medium text-white">{goal.label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {currentStep === 4 && (
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Your Name *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={formData.contactInfo.name}
-                          onChange={(e) => setFormData(prev => ({
-                            ...prev,
-                            contactInfo: { ...prev.contactInfo, name: e.target.value }
-                          }))}
-                          className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
-                          placeholder="Your full name"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Company Name *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={formData.contactInfo.company}
-                          onChange={(e) => setFormData(prev => ({
-                            ...prev,
-                            contactInfo: { ...prev.contactInfo, company: e.target.value }
-                          }))}
-                          className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
-                          placeholder="Your business name"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Email Address *
-                        </label>
-                        <input
-                          type="email"
-                          required
-                          value={formData.contactInfo.email}
-                          onChange={(e) => setFormData(prev => ({
-                            ...prev,
-                            contactInfo: { ...prev.contactInfo, email: e.target.value }
-                          }))}
-                          className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
-                          placeholder="your.email@company.com"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Phone Number
-                        </label>
-                        <input
-                          type="tel"
-                          value={formData.contactInfo.phone}
-                          onChange={(e) => setFormData(prev => ({
-                            ...prev,
-                            contactInfo: { ...prev.contactInfo, phone: e.target.value }
-                          }))}
-                          className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
-                          placeholder="(806) 555-0123"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-4">
-                        When would you like to implement automation solutions?
-                      </label>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {[
-                          { value: 'urgent', label: 'Immediately - We need solutions now' },
-                          { value: 'soon', label: 'Within the next 4 weeks' },
-                          { value: 'planning', label: 'Next 2-3 months' },
-                          { value: 'exploring', label: 'Currently researching options' }
-                        ].map((urgency) => (
-                          <button
-                            key={urgency.value}
-                            type="button"
-                            onClick={() => setFormData(prev => ({
-                              ...prev,
-                              contactInfo: { ...prev.contactInfo, urgency: urgency.value }
-                            }))}
-                            className={`p-4 border rounded-lg text-left transition-all ${
-                              formData.contactInfo.urgency === urgency.value
-                                ? 'border-blue-500 bg-blue-600/10'
-                                : 'border-gray-700 hover:border-gray-600'
-                            }`}
-                          >
-                            <span className="font-medium text-white">{urgency.label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Survey Privacy Notice */}
-                    <div className="text-xs text-gray-500 leading-relaxed">
-                      By participating in this market survey, you agree to receive your personalized automation analysis and occasional updates about business automation trends in the Texas Panhandle region. We respect your privacy and will never share your information.
-                    </div>
-                  </div>
-                )}
-
-                {/* Navigation */}
-                <div className="flex justify-between mt-8">
+              {/* Navigation Buttons */}
+              <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
+                {currentStep > 1 && (
                   <button
                     type="button"
-                    onClick={handleBack}
-                    disabled={currentStep === 0}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-colors ${
-                      currentStep === 0
-                        ? 'text-gray-500 cursor-not-allowed'
-                        : 'text-gray-300 hover:text-white border border-gray-700 hover:border-gray-600'
-                    }`}
+                    onClick={prevStep}
+                    className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
                   >
-                    <ChevronLeft className="h-4 w-4" />
-                    Back
+                    Previous
                   </button>
-
-                  <button
-                    type="submit"
-                    disabled={
-                      isSubmitting ||
-                      (currentStep === 0 && (!formData.businessType || !formData.businessSize)) ||
-                      (currentStep === 1 && !formData.currentAIUsage) ||
-                      (currentStep === 2 && formData.painPoints.length === 0) ||
-                      (currentStep === 3 && !formData.growthGoals) ||
-                      (currentStep === 4 && (!formData.contactInfo.name || !formData.contactInfo.email || !formData.contactInfo.company))
-                    }
-                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-colors ${
-                      isSubmitting ||
-                      (currentStep === 0 && (!formData.businessType || !formData.businessSize)) ||
-                      (currentStep === 1 && !formData.currentAIUsage) ||
-                      (currentStep === 2 && formData.painPoints.length === 0) ||
-                      (currentStep === 3 && !formData.growthGoals) ||
-                      (currentStep === 4 && (!formData.contactInfo.name || !formData.contactInfo.email || !formData.contactInfo.company))
-                        ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                        : 'bg-blue-600 hover:bg-blue-700 text-white'
-                    }`}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        Submitting...
-                      </>
-                    ) : currentStep === steps.length - 1 ? (
-                      'Get My Assessment Results'
-                    ) : (
-                      <>
-                        Continue
-                        <ChevronRight className="h-4 w-4" />
-                      </>
-                    )}
-                  </button>
+                )}
+                
+                <div className="ml-auto">
+                  {currentStep < 6 ? (
+                    <button
+                      type="button"
+                      onClick={nextStep}
+                      disabled={
+                        (currentStep === 1 && !formData.businessType) ||
+                        (currentStep === 2 && !formData.businessSize) ||
+                        (currentStep === 3 && !formData.currentOperations) ||
+                        (currentStep === 4 && formData.painPoints.length === 0) ||
+                        (currentStep === 5 && !formData.primaryGoal)
+                      }
+                      className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center"
+                    >
+                      Next Step
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={
+                        isSubmitting ||
+                        !formData.implementationTimeline ||
+                        !formData.businessName ||
+                        !formData.email ||
+                        !formData.phone
+                      }
+                      className="px-8 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Analyzing...
+                        </>
+                      ) : (
+                        <>
+                          Get My Results
+                          <CheckCircle className="w-4 h-4 ml-2" />
+                        </>
+                      )}
+                    </button>
+                  )}
                 </div>
-              </form>
+              </div>
+            </form>
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="mt-12 text-center">
+            <p className="text-blue-200 text-sm mb-4">
+              Join 100+ Texas Panhandle businesses that have discovered their automation potential
+            </p>
+            <div className="flex justify-center items-center space-x-8 opacity-60">
+              <div className="text-blue-200 text-xs">🔒 Secure & Confidential</div>
+              <div className="text-blue-200 text-xs">⚡ 2-Minute Survey</div>
+              <div className="text-blue-200 text-xs">📧 Instant Results</div>
             </div>
           </div>
-        </main>
-        <Footer />
+        </div>
       </div>
+      <Footer />
     </div>
   )
 }
-
-export default MarketSurvey
