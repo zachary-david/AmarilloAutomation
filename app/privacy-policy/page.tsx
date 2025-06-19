@@ -5,11 +5,6 @@ import { useEffect, useRef } from 'react'
 import Navigation from '../components/Navigation'
 import Link from 'next/link'
 
-export const metadata = {
-  title: 'Privacy Policy - Amarillo Automation',
-  description: 'Privacy Policy for Amarillo Automation - Learn how we collect, use, and protect your personal information.',
-}
-
 export default function PrivacyPolicy() {
   const vantaRef = useRef<HTMLDivElement>(null)
   const vantaEffect = useRef<any>(null)

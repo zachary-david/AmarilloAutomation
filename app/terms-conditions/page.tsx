@@ -5,11 +5,6 @@ import { useEffect, useRef } from 'react'
 import Navigation from '../components/Navigation'
 import Link from 'next/link'
 
-export const metadata = {
-  title: 'Terms and Conditions - Amarillo Automation',
-  description: 'Terms and Conditions for Amarillo Automation - Our terms of service and user agreement.',
-}
-
 export default function TermsConditions() {
   const vantaRef = useRef<HTMLDivElement>(null)
   const vantaEffect = useRef<any>(null)
