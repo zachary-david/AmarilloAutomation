@@ -1,12 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Remove any output: 'export' if present - this breaks API routes
-  // output: 'export', // ← Remove this line if it exists
-  
-  // Ensure API routes are properly handled
-  experimental: {
-    runtime: 'nodejs',
-  },
+  // DO NOT use output: 'export' - this breaks API routes
   
   // Cloudflare Pages specific settings
   images: {
@@ -15,14 +9,10 @@ const nextConfig = {
   
   // Ensure proper routing
   trailingSlash: false,
-  
-  // Skip build static optimization that might interfere with API routes
-  skipBuildStaticGeneration: false,
 
   // Add redirects for legal pages
   async redirects() {
     return [
-      // Redirect common URL variations to your new legal pages
       {
         source: '/terms',
         destination: '/terms-of-service',
@@ -43,7 +33,6 @@ const nextConfig = {
         destination: '/privacy-policy',
         permanent: true,
       },
-      // This redirect is now more important since you renamed the folder
       {
         source: '/terms-conditions',
         destination: '/terms-of-service',
