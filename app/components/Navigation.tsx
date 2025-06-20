@@ -1,6 +1,5 @@
-/// app/components/Navigation.tsx
+// app/components/Navigation.tsx
 'use client'
-
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -19,10 +18,11 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // MARKET SURVEY HIDDEN - Remove the market-survey line to hide it
   const navItems = [
     { href: '/', label: 'Home' },
     { href: '/solutions', label: 'Solutions' },
-    { href: '/market-survey', label: 'Market Survey' }, // Updated from 'Demo'
+    // { href: '/market-survey', label: 'Market Survey' }, // HIDDEN - Commented out
     { href: '/contact', label: 'Contact' }
   ]
 

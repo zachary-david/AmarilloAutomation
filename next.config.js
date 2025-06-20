@@ -17,7 +17,40 @@ const nextConfig = {
   trailingSlash: false,
   
   // Skip build static optimization that might interfere with API routes
-  skipBuildStaticGeneration: false
+  skipBuildStaticGeneration: false,
+
+  // Add redirects for legal pages
+  async redirects() {
+    return [
+      // Redirect common URL variations to your new legal pages
+      {
+        source: '/terms',
+        destination: '/terms-of-service',
+        permanent: true,
+      },
+      {
+        source: '/privacy',
+        destination: '/privacy-policy',
+        permanent: true,
+      },
+      {
+        source: '/tos',
+        destination: '/terms-of-service',
+        permanent: true,
+      },
+      {
+        source: '/pp',
+        destination: '/privacy-policy',
+        permanent: true,
+      },
+      // This redirect is now more important since you renamed the folder
+      {
+        source: '/terms-conditions',
+        destination: '/terms-of-service',
+        permanent: true,
+      },
+    ];
+  },
 }
 
 module.exports = nextConfig
