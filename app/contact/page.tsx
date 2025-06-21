@@ -393,12 +393,13 @@ export default function Contact() {
 
                   <div>
                     <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">
-                      Company
+                      Company *
                     </label>
                     <input
                       type="text"
                       id="company"
                       name="company"
+                      required
                       value={formData.company}
                       onChange={handleChange}
                       className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors"
@@ -471,12 +472,11 @@ export default function Contact() {
 
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                      Project Details *
+                      Project Details 
                     </label>
                     <textarea
                       id="message"
                       name="message"
-                      required
                       rows={5}
                       value={formData.message}
                       onChange={handleChange}
