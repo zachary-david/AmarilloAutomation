@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-interface ContactFormData {
+export interface ContactFormData {
   name: string
   email: string
   company: string
@@ -95,7 +95,7 @@ export default function Contact() {
   }
 
   // Calculate lead score based on form data
-  const calculateLeadScore = (data: ContactFormData): number => {
+  export const calculateLeadScore = (data: ContactFormData): number => {
     let score = 50 // Base score
 
     // Service type scoring based on your actual services
