@@ -1,4 +1,4 @@
-// app/components/Navigation.tsx - Updated with Introductory Offer Styling
+// app/components/Navigation.tsx - Updated for Day One launch
 'use client'
 
 import Link from 'next/link'
@@ -9,11 +9,14 @@ export default function Navigation() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
 
+  // Day One navigation items (removed Demo and Assessment)
   const navItems = [
     { href: '/', label: 'Home' },
     { href: '/solutions', label: 'Solutions' },
-    { href: '/intro-offer', label: 'Introductory Offer', isSpecial: true }, // Special styling for the offer
     { href: '/contact', label: 'Contact' },
+    // TODO: Add back when ready for launch
+    // { href: '/demo', label: 'Demo' }, 
+    // { href: '/assessment', label: 'Assessment' },
   ]
 
   return (
@@ -32,28 +35,10 @@ export default function Navigation() {
                 href={item.href}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   pathname === item.href
-                    ? item.isSpecial 
-                      ? 'text-amber-400 bg-amber-900/20' // Special active styling for offer
-                      : 'text-blue-400 bg-blue-900/20'
-                    : item.isSpecial
-                      ? 'text-amber-300 hover:text-amber-400 hover:bg-amber-900/20' // Special styling for offer
-                      : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
+                    ? 'text-blue-400 bg-blue-900/20'
+                    : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
                 }`}
-                onClick={() => {
-                  // Track navigation clicks for analytics
-                  if (typeof window !== 'undefined' && window.dataLayer && item.isSpecial) {
-                    window.dataLayer.push({
-                      event: 'navigation_click',
-                      nav_item: 'introductory_offer',
-                      click_location: 'main_navigation',
-                      conversion_intent: 'high'
-                    })
-                  }
-                }}
               >
-                {item.isSpecial && (
-                  <span className="inline-block mr-1">⚡</span>
-                )}
                 {item.label}
               </Link>
             ))}
@@ -85,29 +70,11 @@ export default function Navigation() {
                 href={item.href}
                 className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
                   pathname === item.href
-                    ? item.isSpecial 
-                      ? 'text-amber-400 bg-amber-900/20'
-                      : 'text-blue-400 bg-blue-900/20'
-                    : item.isSpecial
-                      ? 'text-amber-300 hover:text-amber-400 hover:bg-amber-900/20'
-                      : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
+                    ? 'text-blue-400 bg-blue-900/20'
+                    : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
                 }`}
-                onClick={() => {
-                  setIsOpen(false)
-                  // Track mobile navigation clicks
-                  if (typeof window !== 'undefined' && window.dataLayer && item.isSpecial) {
-                    window.dataLayer.push({
-                      event: 'navigation_click',
-                      nav_item: 'introductory_offer',
-                      click_location: 'mobile_navigation',
-                      conversion_intent: 'high'
-                    })
-                  }
-                }}
+                onClick={() => setIsOpen(false)}
               >
-                {item.isSpecial && (
-                  <span className="inline-block mr-1">⚡</span>
-                )}
                 {item.label}
               </Link>
             ))}
