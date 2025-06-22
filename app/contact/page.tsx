@@ -19,7 +19,6 @@ interface ContactFormData {
   company: string
   serviceType: string
   companySize: string
-  projectUrgency: string
   message: string
 }
 
@@ -36,7 +35,6 @@ export default function Contact() {
     company: '',
     serviceType: '',
     companySize: '',
-    projectUrgency: '',
     message: ''
   })
 
@@ -163,7 +161,7 @@ export default function Contact() {
     e.preventDefault()
     setIsSubmitting(true)
     
-    if (!formData.name || !formData.email || !formData.message) {
+    if (!formData.name || !formData.email || !formData.company || !formData.serviceType || !formData.companySize) {
       alert('Please fill in all required fields.')
       setIsSubmitting(false)
       return
@@ -263,7 +261,6 @@ export default function Contact() {
           company: '',
           serviceType: '',
           companySize: '',
-          projectUrgency: '',
           message: ''
         })
 
@@ -336,7 +333,7 @@ export default function Contact() {
                       setSubmitted(false)
                       setFormData({
                         name: '', email: '', company: '', serviceType: '',
-                        companySize: '', projectUrgency: '', message: ''
+                        companySize: '', message: ''
                       })
                       setFormStarted(false)
                     }}
@@ -425,12 +422,13 @@ export default function Contact() {
 
                   <div>
                     <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">
-                      Company
+                      Company Name *
                     </label>
                     <input
                       type="text"
                       id="company"
                       name="company"
+                      required
                       value={formData.company}
                       onChange={handleChange}
                       className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors"
@@ -442,74 +440,52 @@ export default function Contact() {
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="serviceType" className="block text-sm font-medium text-gray-300 mb-2">
-                        Service Interest
+                        Service Interest *
                       </label>
                       <select
                         id="serviceType"
                         name="serviceType"
+                        required
                         value={formData.serviceType}
                         onChange={handleChange}
                         className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors"
                       >
                         <option value="">Select a service</option>
-                        <option value="workflow-automation">Workflow Automation</option>
-                        <option value="ai-agents">AI Agents & Chatbots</option>
-                        <option value="tech-integration">Tech Integration</option>
-                        <option value="lead-generation">Lead Generation Systems</option>
-                        <option value="web-development">Web Development</option>
-                        <option value="consultation">General Consultation</option>
-                        <option value="other">Other</option>
+                        <option value="introductory-offer">Introductory Offer</option>
+                        <option value="general-consultation">General Consultation (any service)</option>
+                        <option value="automations">Automations</option>
+                        <option value="digital-marketing">Digital Marketing</option>
+                        <option value="ai-integration">AI Integration</option>
                       </select>
                     </div>
 
                     <div>
                       <label htmlFor="companySize" className="block text-sm font-medium text-gray-300 mb-2">
-                        Company Size
+                        Company Size *
                       </label>
                       <select
                         id="companySize"
                         name="companySize"
+                        required
                         value={formData.companySize}
                         onChange={handleChange}
                         className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors"
                       >
                         <option value="">Select company size</option>
-                        <option value="startup">Startup (1-10 employees)</option>
-                        <option value="small">Small Business (11-50 employees)</option>
-                        <option value="medium">Medium Business (51-200 employees)</option>
-                        <option value="large">Large Business (201-1000 employees)</option>
-                        <option value="enterprise">Enterprise (1000+ employees)</option>
+                        <option value="just-me">Just Me</option>
+                        <option value="small-team">Small Team</option>
+                        <option value="large-team">Large Team (50+ employees)</option>
                       </select>
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="projectUrgency" className="block text-sm font-medium text-gray-300 mb-2">
-                      Project Timeline
-                    </label>
-                    <select
-                      id="projectUrgency"
-                      name="projectUrgency"
-                      value={formData.projectUrgency}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors"
-                    >
-                      <option value="">Select timeline</option>
-                      <option value="urgent">Urgent (This Week)</option>
-                      <option value="soon">Soon (This Month)</option>
-                      <option value="planning">Planning (Next 3 Months)</option>
-                      <option value="exploring">Exploring (Future)</option>
-                    </select>
-                  </div>
-
-                  <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                      Project Details *
+                      Project Details
                     </label>
                     <textarea
                       id="message"
                       name="message"
-                      required
                       value={formData.message}
                       onChange={handleChange}
                       rows={4}
