@@ -98,33 +98,21 @@ export default function Contact() {
 
     // Service type scoring based on your actual services
     const serviceScores: Record<string, number> = {
-      'workflow-automation': 30,     // Your primary high-value service
-      'ai-agents': 25,              // High-value AI service
-      'tech-integration': 20,        // Complex integration = value
-      'lead-generation': 25,         // Direct ROI service
-      'web-development': 15,         // Standard web work
-      'consultation': 20             // Discovery/planning
+      'introductory-offer': 35,      // Your highest value service
+      'general-consultation': 20,    // Discovery/planning
+      'automations': 30,             // High-value automation service
+      'digital-marketing': 25,       // Marketing automation
+      'ai-integration': 30           // AI service integration
     }
     score += serviceScores[data.serviceType] || 10
 
     // Company size scoring
     const sizeScores: Record<string, number> = {
-      'enterprise': 25,    // Large automation projects
-      'large': 20,         // Multi-department workflow needs
-      'medium': 20,        // Sweet spot for your services
-      'small': 15,         // Still valuable, simpler projects
-      'startup': 10        // Budget constraints but growth potential
+      'just-me': 15,        // Individual/freelancer
+      'small-team': 25,     // Small team with growth potential
+      'large-team': 30      // Large team with complex needs
     }
     score += sizeScores[data.companySize] || 10
-
-    // Project urgency scoring
-    const urgencyScores: Record<string, number> = {
-      'urgent': 25,        // Rush project = premium pricing
-      'soon': 20,          // Normal timeline
-      'planning': 15,      // Future project pipeline
-      'exploring': 10      // Early research phase
-    }
-    score += urgencyScores[data.projectUrgency] || 5
 
     return Math.min(score, 100) // Cap at 100
   }
@@ -134,7 +122,7 @@ export default function Contact() {
     setFormData(prev => ({ ...prev, [fieldName]: value }))
     
     // Track important field completions
-    if (value.length > 2 && ['serviceType', 'companySize', 'projectUrgency'].includes(fieldName)) {
+    if (value.length > 2 && ['serviceType', 'companySize'].includes(fieldName)) {
       window.dataLayer?.push({
         event: 'form_field_completion',
         field_name: fieldName,
@@ -146,8 +134,8 @@ export default function Contact() {
 
   // Calculate form completion percentage
   const calculateFormProgress = () => {
-    const requiredFields = ['name', 'email', 'message']
-    const optionalFields = ['company', 'serviceType', 'companySize', 'projectUrgency']
+    const requiredFields = ['name', 'email', 'company', 'serviceType', 'companySize']
+    const optionalFields = ['message']
     const allFields = [...requiredFields, ...optionalFields]
     
     const completedFields = allFields.filter(field => 
@@ -176,7 +164,6 @@ export default function Contact() {
       form_name: 'main_contact_form',
       service_interest: formData.serviceType,
       company_size: formData.companySize,
-      project_urgency: formData.projectUrgency,
       lead_score: leadScore,
       business_vertical: 'automation_consulting',
       conversion_value: leadScore
@@ -195,11 +182,10 @@ export default function Contact() {
           // Contact Information
           name: formData.name,
           email: formData.email,
-          company: formData.company || 'Not Provided',
-          serviceType: formData.serviceType || 'General Inquiry',
-          companySize: formData.companySize || 'Not Specified',
-          projectUrgency: formData.projectUrgency || 'Not Specified',
-          message: formData.message,
+          company: formData.company,
+          serviceType: formData.serviceType,
+          companySize: formData.companySize,
+          message: formData.message || 'No additional details provided',
           
           // Lead Intelligence for Zapier processing
           leadScore: leadScore,
@@ -244,11 +230,10 @@ export default function Contact() {
         })
 
         // Track high-value urgent projects separately
-        if (formData.projectUrgency === 'urgent') {
+        if (formData.serviceType === 'introductory-offer') {
           window.dataLayer?.push({
-            event: 'urgent_project_contact',
+            event: 'intro_offer_contact',
             contact_method: 'contact_form',
-            urgency: 'high',
             service_type: formData.serviceType,
             conversion_value: 100
           })
