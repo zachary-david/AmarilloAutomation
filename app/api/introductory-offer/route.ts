@@ -1,6 +1,6 @@
 // app/api/introductory-offer/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { sendToAirtable } from '../../../lib/airtable'
+import { sendIntroOfferToAirtable } from '../../../lib/airtable'
 
 interface IntroOfferData {
   businessName: string
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Store in Airtable (will gracefully handle missing config in dev)
-    const airtableResult = await sendToAirtable(introOfferData)
+    const airtableResult = await sendIntroOfferToAirtable(introOfferData)
     
     if (!airtableResult.success) {
       console.error('❌ Airtable integration failed:', airtableResult.error)
