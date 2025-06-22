@@ -75,7 +75,7 @@ export default function CookieBanner() {
       'consent_analytics': analyticsStorage,
       'consent_ads': adStorage,
       'consent_timestamp': new Date().toISOString(),
-      'business_type': 'industrial_automation'
+      'business_type': 'AI and automation'
     })
 
     console.log(`Consent updated: Analytics=${analyticsStorage}, Ads=${adStorage}`)
@@ -108,7 +108,7 @@ export default function CookieBanner() {
       // Save consent with business context
       localStorage.setItem('cookie-consent', 'accepted')
       localStorage.setItem('cookie-consent-date', new Date().toISOString())
-      localStorage.setItem('consent-business-type', 'industrial_automation')
+      localStorage.setItem('consent-business-type', 'ai_automation')
       
       // Update consent for GTM
       updateConsent('granted', 'granted')
@@ -118,7 +118,7 @@ export default function CookieBanner() {
         window.dataLayer?.push({
           'event': 'cookie_consent_granted',
           'consent_method': 'banner_accept',
-          'business_type': 'technlogy_company',
+          'business_type': 'technology_company',
           'service_focus': 'automation_solutions'
         })
       }, 500)
