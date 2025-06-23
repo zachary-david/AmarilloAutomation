@@ -1,4 +1,4 @@
-// app/components/Navigation.tsx - Updated for Day One launch
+// app/components/Navigation.tsx - Updated with Assessment
 'use client'
 
 import Link from 'next/link'
@@ -9,14 +9,11 @@ export default function Navigation() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
 
-  // Day One navigation items (removed Demo and Assessment)
   const navItems = [
     { href: '/', label: 'Home' },
     { href: '/solutions', label: 'Solutions' },
+    { href: '/intro-offer', label: '⚡ 10-Day Offer', special: true },
     { href: '/contact', label: 'Contact' },
-    // TODO: Add back when ready for launch
-    // { href: '/demo', label: 'Demo' }, 
-    // { href: '/assessment', label: 'Assessment' },
   ]
 
   return (
@@ -34,9 +31,11 @@ export default function Navigation() {
                 key={item.href}
                 href={item.href}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  pathname === item.href
-                    ? 'text-blue-400 bg-blue-900/20'
-                    : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
+                  item.special
+                    ? 'bg-gradient-to-r from-orange-600 to-amber-600 text-white hover:from-orange-700 hover:to-amber-700 shadow-lg hover:shadow-xl transform hover:scale-105'
+                    : pathname === item.href
+                      ? 'text-blue-400 bg-blue-900/20'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
                 }`}
               >
                 {item.label}
@@ -69,9 +68,11 @@ export default function Navigation() {
                 key={item.href}
                 href={item.href}
                 className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                  pathname === item.href
-                    ? 'text-blue-400 bg-blue-900/20'
-                    : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
+                  item.special
+                    ? 'bg-gradient-to-r from-orange-600 to-amber-600 text-white mb-2 text-center'
+                    : pathname === item.href
+                      ? 'text-blue-400 bg-blue-900/20'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
                 }`}
                 onClick={() => setIsOpen(false)}
               >
