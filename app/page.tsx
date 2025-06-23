@@ -73,9 +73,9 @@ export default function Home() {
         scaleMobile: 1.00,
         color: 0x60a5fa, // Start with blue
         backgroundColor: 0x0a1224,
-        points: 2.00,
-        maxDistance: 15.00,
-        spacing: 14.00,
+        points: 4.00,
+        maxDistance: 25.00,
+        spacing: 20.00,
       } : {
         // Desktop Configuration - More dynamic
         el: vantaRef.current,
