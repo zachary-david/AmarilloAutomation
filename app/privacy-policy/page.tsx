@@ -21,9 +21,9 @@ export default function PrivacyPolicy() {
         scaleMobile: 1.00,
         color: 0x6366f1,
         backgroundColor: 0x0a1224,
-        points: 8,
-        maxDistance: 15,
-        spacing: 14,
+        points: 3,
+        maxDistance: 18,
+        spacing: 11,
       })
     }
     

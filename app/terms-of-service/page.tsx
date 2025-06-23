@@ -22,9 +22,9 @@ export default function TermsConditions() {
         scaleMobile: 1.00,
         color: 0x7c3aed, // Different purple for terms
         backgroundColor: 0x0a1224,
-        points: 8,
-        maxDistance: 15,
-        spacing: 14,
+        points: 3,
+        maxDistance: 18,
+        spacing: 11,
       })
     }
     

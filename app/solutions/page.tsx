@@ -1,4 +1,4 @@
-// app/solutions/page.tsx (Solutions Page)
+// app/solutions/page.tsx (Solutions Page with Responsive Vanta.js)
 'use client'
 
 import { useEffect, useRef } from 'react'
@@ -10,9 +10,14 @@ export default function Solutions() {
   const vantaRef = useRef<HTMLDivElement>(null)
   const vantaEffect = useRef<any>(null)
 
+  // Vanta.js background effect - Responsive configurations (Green theme)
   useEffect(() => {
     if (!vantaEffect.current && (window as any).VANTA && vantaRef.current) {
-      vantaEffect.current = (window as any).VANTA.NET({
+      // Check if mobile/tablet (768px and below)
+      const isMobile = window.innerWidth <= 768
+      
+      const vantaConfig = isMobile ? {
+        // Mobile Configuration - More subtle
         el: vantaRef.current,
         mouseControls: true,
         touchControls: true,
@@ -21,12 +26,81 @@ export default function Solutions() {
         minWidth: 200.00,
         scale: 1.00,
         scaleMobile: 1.00,
-        color: 0x10b981,
+        color: 0x10b981, // Keeping green theme
         backgroundColor: 0x0a1224,
-        points: 8,
-        maxDistance: 25,
-        spacing: 15,
-      })
+        points: 2.00, // Even fewer points on mobile
+        maxDistance: 15.00, // Shorter connections
+        spacing: 14.00, // More spacing for cleaner look
+      } : {
+        // Desktop Configuration - More dynamic
+        el: vantaRef.current,
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color: 0x10b981, // Keeping green theme
+        backgroundColor: 0x0a1224,
+        points: 10.00, // Updated desktop settings
+        maxDistance: 20.00,
+        spacing: 15.00,
+      }
+      
+      vantaEffect.current = (window as any).VANTA.NET(vantaConfig)
+      
+      // Handle window resize to update Vanta config
+      const handleResize = () => {
+        const newIsMobile = window.innerWidth <= 768
+        if ((isMobile && !newIsMobile) || (!isMobile && newIsMobile)) {
+          // Screen size category changed, reinitialize Vanta
+          if (vantaEffect.current) {
+            vantaEffect.current.destroy()
+            vantaEffect.current = null
+          }
+          
+          const newConfig = newIsMobile ? {
+            el: vantaRef.current,
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x10b981,
+            backgroundColor: 0x0a1224,
+            points: 2.00,
+            maxDistance: 15.00,
+            spacing: 14.00,
+          } : {
+            el: vantaRef.current,
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x10b981,
+            backgroundColor: 0x0a1224,
+            points: 10.00,
+            maxDistance: 20.00,
+            spacing: 15.00,
+          }
+          
+          if (vantaRef.current) {
+            vantaEffect.current = (window as any).VANTA.NET(newConfig)
+          }
+        }
+      }
+      
+      window.addEventListener('resize', handleResize)
+      
+      return () => {
+        window.removeEventListener('resize', handleResize)
+      }
     }
     
     return () => {
