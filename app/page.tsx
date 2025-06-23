@@ -371,11 +371,7 @@ export default function Home() {
               <AnimatedText 
                 text="Tomorrow's tools, today."
                 className="text-4xl md:text-6xl font-bold text-white mb-6"
-              />
-              <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
-                Intelligent integrations and AI-powered automations to simplify your business and supercharge growth.
-              </p>
-              
+              />              
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
                   href="#solutions"
@@ -397,10 +393,6 @@ export default function Home() {
           <section id="solutions" className="py-20 px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
-                <AnimatedText 
-                  text="Solutions That Actually Work"
-                  className="text-4xl md:text-5xl font-bold text-white mb-6"
-                />
                 <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
                   We're automation platform experts who connect your business tools, eliminate manual work, 
                   and create intelligent workflows that save time and increase revenue.
