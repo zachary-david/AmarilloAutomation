@@ -5,6 +5,8 @@ import { useState, useEffect, useRef } from 'react'
 import Navigation from './components/Navigation'
 import AnimatedText from './components/AnimatedText'
 import Link from 'next/link'
+import Footer from './components/Footer'
+
 
 // GTM Event Tracking Functions
 declare global {
@@ -217,26 +219,48 @@ export default function Home() {
     })
   }, [])
 
+  // UPDATED SOLUTIONS ARRAY - Workflow Automation Focus
   const solutions = [
     {
-      title: "AI Consultation",
-      description: "Let our real AI consultants automate what slows you down -- from marketing to admin to operations.",
-      features: ["Use Case Discovery", "Workflow Mapping", "Tech Stack Integration", "Ongoing Support and Fine-Tuning"]
+      title: "Workflow Automations",
+      description: "Expert implementation of no-code automation platforms that connect your business tools and eliminate repetitive tasks. We're certified specialists in Zapier, Make.com, n8n, and Power Automate.",
+      features: [
+        "Zapier Advanced Workflows", 
+        "Make.com Complex Scenarios", 
+        "n8n Custom Deployments", 
+        "Microsoft Power Automate",
+        "Custom API Integrations"
+      ]
     },
     {
-      title: "Lead Generation",
-      description: "We build lead engines that run on autopilot — fueled by paid ads, optimized websites, and follow-up automation that converts clicks to contracts.",
-      features: ["Social Media Ads", "Conversion Funnels", "CRM Setup & Follow-Up", "Custom Outreach Tools"]
+      title: "AI Consultation & Implementation",
+      description: "Let our AI consultants automate what slows you down — from marketing to admin to operations. We identify automation opportunities and implement intelligent solutions.",
+      features: [
+        "AI Process Discovery", 
+        "Workflow Mapping & Analysis", 
+        "Tech Stack Integration", 
+        "Ongoing Support & Optimization"
+      ]
     },
     {
-      title: "Web Development and Optimization",
-      description: "We build sites that drive SEO traffic, capture leads, and run smart automations under the hood.",
-      features: ["Sales-First Design", "SEO & Structured Data", "Forms & Automations", "Analytics & Heatmaps"]
+      title: "Lead Generation Automation",
+      description: "We build lead engines that run on autopilot — fueled by automated outreach, optimized funnels, and follow-up sequences that convert prospects to customers.",
+      features: [
+        "Automated Lead Capture", 
+        "Email Sequence Automation", 
+        "CRM Workflow Setup", 
+        "Multi-Channel Follow-up"
+      ]
     },
     {
-      title: "Smart Assistant Buildouts",
-      description: "Branded AI assistants trained on your services, FAQs, and sales workflows to handle leads, scheduling, and more -- 24/7.",
-      features: ["Custom GPT Shells", "VAPI Voice Agents", "Knowledge Base Integration", "Lead Tagging and CRM Sync"]
+      title: "Smart Assistant & Chatbot Development",
+      description: "Branded AI assistants trained on your business data to handle customer inquiries, qualify leads, schedule appointments, and provide 24/7 support.",
+      features: [
+        "Custom GPT Training", 
+        "Voice Agent Integration", 
+        "Knowledge Base Automation", 
+        "Multi-Platform Deployment"
+      ]
     }
   ]
 
@@ -369,17 +393,17 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Section 2: Solutions */}
+          {/* Section 2: Solutions - ENHANCED WITH WORKFLOW AUTOMATION */}
           <section id="solutions" className="py-20 px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
                 <AnimatedText 
-                  text="Our Solutions"
+                  text="Automation Solutions That Actually Work"
                   className="text-4xl md:text-5xl font-bold text-white mb-6"
                 />
-                <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                  Powerful, scalable solutions designed to meet the demands of modern business infrastructure. 
-                  From startups to enterprise, we've got you covered.
+                <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                  We're automation platform experts who connect your business tools, eliminate manual work, 
+                  and create intelligent workflows that save time and increase revenue.
                 </p>
               </div>
 
@@ -408,7 +432,7 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-
+              {/* Existing CTA Section */}
               <div className="text-center mt-16">
                 <div className="bg-gradient-to-r from-blue-600/20 to-green-600/20 border border-gray-700 rounded-xl p-8">
                   <h3 className="text-2xl font-bold text-white mb-4">Ready to Get Started?</h3>
@@ -659,6 +683,7 @@ export default function Home() {
           </section>
         </main>
       </div>
+      <Footer />
     </div>
   )
 }

@@ -1,200 +1,103 @@
-// app/solutions/page.tsx (Solutions Page with Responsive Vanta.js)
-'use client'
+// REPLACE the Workflow Automation Expertise Section with this emoji-free version
 
-import { useEffect, useRef } from 'react'
-import Navigation from '../components/Navigation'
-import AnimatedText from '../components/AnimatedText'
-import Link from 'next/link'
-
-export default function Solutions() {
-  const vantaRef = useRef<HTMLDivElement>(null)
-  const vantaEffect = useRef<any>(null)
-
-  // Vanta.js background effect - Responsive configurations (Green theme)
-  useEffect(() => {
-    if (!vantaEffect.current && (window as any).VANTA && vantaRef.current) {
-      // Check if mobile/tablet (768px and below)
-      const isMobile = window.innerWidth <= 768
+{/* Workflow Automation Expertise Section */}
+<div className="mt-16 mb-16">
+  <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-gray-700 rounded-xl p-8">
+    <div className="text-center">
+      <h3 className="text-3xl font-bold text-white mb-4">
+        Certified Automation Platform Experts
+      </h3>
+      <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+        We're not just users — we're certified specialists in the top automation platforms. 
+        From simple Zapier workflows to complex n8n deployments, we speak fluent automation.
+      </p>
       
-      const vantaConfig = isMobile ? {
-        // Mobile Configuration - More subtle
-        el: vantaRef.current,
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0x10b981, // Keeping green theme
-        backgroundColor: 0x0a1224,
-        points: 2.00, // Even fewer points on mobile
-        maxDistance: 15.00, // Shorter connections
-        spacing: 14.00, // More spacing for cleaner look
-      } : {
-        // Desktop Configuration - More dynamic
-        el: vantaRef.current,
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0x10b981, // Keeping green theme
-        backgroundColor: 0x0a1224,
-        points: 10.00, // Updated desktop settings
-        maxDistance: 20.00,
-        spacing: 15.00,
-      }
-      
-      vantaEffect.current = (window as any).VANTA.NET(vantaConfig)
-      
-      // Handle window resize to update Vanta config
-      const handleResize = () => {
-        const newIsMobile = window.innerWidth <= 768
-        if ((isMobile && !newIsMobile) || (!isMobile && newIsMobile)) {
-          // Screen size category changed, reinitialize Vanta
-          if (vantaEffect.current) {
-            vantaEffect.current.destroy()
-            vantaEffect.current = null
-          }
-          
-          const newConfig = newIsMobile ? {
-            el: vantaRef.current,
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00,
-            color: 0x10b981,
-            backgroundColor: 0x0a1224,
-            points: 2.00,
-            maxDistance: 15.00,
-            spacing: 14.00,
-          } : {
-            el: vantaRef.current,
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00,
-            color: 0x10b981,
-            backgroundColor: 0x0a1224,
-            points: 10.00,
-            maxDistance: 20.00,
-            spacing: 15.00,
-          }
-          
-          if (vantaRef.current) {
-            vantaEffect.current = (window as any).VANTA.NET(newConfig)
-          }
-        }
-      }
-      
-      window.addEventListener('resize', handleResize)
-      
-      return () => {
-        window.removeEventListener('resize', handleResize)
-      }
-    }
-    
-    return () => {
-      if (vantaEffect.current) {
-        vantaEffect.current.destroy()
-        vantaEffect.current = null
-      }
-    }
-  }, [])
-
-  const solutions = [
-    {
-      title: "AI Consultation",
-      description: "Let our real AI consultants automate what slows you down -- from marketing to admin to operations.",
-      features: ["Use Case Discovery", "Workflow Mapping", "Tech Stack Integration", "Ongoing Support and Fine-Tuning"]
-    },
-    {
-      title: "Lead Generation",
-      description: "We build lead engines that run on autopilot — fueled by paid ads, optimized websites, and follow-up automation that converts clicks to contracts.",
-      features: ["Social Media Ads", "Conversion Funnels", "CRM Setup & Follow-Up", "Custom Outreach Tools"]
-    },
-    {
-      title: "Web Development and Optimization",
-      description: "We build sites that drive SEO traffic, capture leads, and run smart automations under the hood.",
-      features: ["Sales-First Design", "SEO & Structured Data", "Forms & Automations", "Analytics & Heatmaps"]
-    },
-    {
-      title: "Smart Assistant Buildouts",
-      description: "Branded AI assistants trained on your services, FAQs, and sales workflows to handle leads, scheduling, and more -- 24/7.",
-      features: ["Custom GPT Shells", "VAPI Voice Agents", "Knowledge Base Integration", "Lead Tagging and CRM Sync"]
-    }
-  ]
-
-  return (
-    <div className="min-h-screen relative">
-      <div ref={vantaRef} className="fixed inset-0 z-0" />
-      <div className="relative z-10">
-        <Navigation />
-        <main className="py-20 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <AnimatedText 
-                text="Our Solutions"
-                className="text-4xl md:text-5xl font-bold text-white mb-6"
-              />
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                Powerful, scalable solutions designed to meet the demands of modern business infrastructure. 
-                From startups to enterprise, we've got you covered.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              {solutions.map((solution, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-900/80 border border-gray-800 rounded-xl p-8 hover:border-green-500/30 transition-all duration-300 hover:shadow-xl"
-                >
-                  <h3 className="text-2xl font-bold text-white mb-4">{solution.title}</h3>
-                  <p className="text-gray-300 mb-6 leading-relaxed">{solution.description}</p>
-                  
-                  <div className="space-y-2">
-                    <h4 className="text-lg font-semibold text-white mb-3">Key Features:</h4>
-                    <ul className="space-y-2">
-                      {solution.features.map((feature, featureIndex) => (
-                        <li key={featureIndex} className="flex items-center text-gray-300">
-                          <svg className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center mt-16">
-              <div className="bg-gradient-to-r from-blue-600/20 to-green-600/20 border border-gray-700 rounded-xl p-8">
-                <h3 className="text-2xl font-bold text-white mb-4">Ready to Get Started?</h3>
-                <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-                  Contact our team to discuss your specific requirements and learn how our solutions can transform your operations.
-                </p>
-                <Link
-                  href="/contact"
-                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg"
-                  >
-                  Schedule a Demo
-                  </Link>
-              </div>
-            </div>
-          </div>
-        </main>
+      {/* Platform Expertise Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+        <div className="bg-gray-800/50 rounded-lg p-4 text-center">
+          <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center text-white font-bold text-xl mx-auto mb-3">Z</div>
+          <div className="font-semibold text-orange-400">Zapier</div>
+          <div className="text-sm text-gray-400">Advanced Certified</div>
+        </div>
+        <div className="bg-gray-800/50 rounded-lg p-4 text-center">
+          <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center text-white font-bold text-xl mx-auto mb-3">M</div>
+          <div className="font-semibold text-purple-400">Make.com</div>
+          <div className="text-sm text-gray-400">Expert Partner</div>
+        </div>
+        <div className="bg-gray-800/50 rounded-lg p-4 text-center">
+          <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-xl mx-auto mb-3">n8n</div>
+          <div className="font-semibold text-blue-400">n8n</div>
+          <div className="text-sm text-gray-400">Self-Hosted Specialist</div>
+        </div>
+        <div className="bg-gray-800/50 rounded-lg p-4 text-center">
+          <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold text-xl mx-auto mb-3">PA</div>
+          <div className="font-semibold text-green-400">Power Automate</div>
+          <div className="text-sm text-gray-400">Microsoft Certified</div>
+        </div>
       </div>
+
+      {/* Real Automation Examples */}
+      <div className="mb-8">
+        <h4 className="text-xl font-semibold text-white mb-4">Real Automation Examples We Build:</h4>
+        <div className="grid md:grid-cols-2 gap-4 text-left">
+          <div className="bg-gray-800/30 rounded-lg p-4">
+            <div className="text-blue-400 font-semibold mb-2">Lead Processing Pipeline</div>
+            <div className="text-sm text-gray-300">Website form → instant email response → CRM entry → sales team notification → follow-up sequence</div>
+          </div>
+          <div className="bg-gray-800/30 rounded-lg p-4">
+            <div className="text-green-400 font-semibold mb-2">Invoice Automation</div>
+            <div className="text-sm text-gray-300">Service completion → invoice generation → client approval → payment processing → accounting sync</div>
+          </div>
+          <div className="bg-gray-800/30 rounded-lg p-4">
+            <div className="text-purple-400 font-semibold mb-2">Customer Support Flow</div>
+            <div className="text-sm text-gray-300">Ticket creation → team assignment → status updates → resolution tracking → satisfaction survey</div>
+          </div>
+          <div className="bg-gray-800/30 rounded-lg p-4">
+            <div className="text-amber-400 font-semibold mb-2">E-commerce Workflow</div>
+            <div className="text-sm text-gray-300">Order placement → inventory update → shipping label → tracking notification → review request</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Process Overview */}
+      <div className="mb-8">
+        <h4 className="text-xl font-semibold text-white mb-6">Our Proven Automation Process:</h4>
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="bg-gray-800/40 rounded-lg p-6">
+            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto mb-3">1</div>
+            <h5 className="font-semibold text-white mb-2">Audit & Map</h5>
+            <p className="text-sm text-gray-300">We analyze your current processes and identify the biggest automation opportunities.</p>
+          </div>
+          <div className="bg-gray-800/40 rounded-lg p-6">
+            <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto mb-3">2</div>
+            <h5 className="font-semibold text-white mb-2">Build & Test</h5>
+            <p className="text-sm text-gray-300">Using the best platform for each use case, we create robust automations with error handling.</p>
+          </div>
+          <div className="bg-gray-800/40 rounded-lg p-6">
+            <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto mb-3">3</div>
+            <h5 className="font-semibold text-white mb-2">Monitor & Optimize</h5>
+            <p className="text-sm text-gray-300">We provide ongoing monitoring and optimization to ensure maximum ROI from your automations.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Button */}
+      <a
+        href="#contact"
+        className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg"
+        onClick={() => {
+          if (typeof window !== 'undefined' && window.dataLayer) {
+            window.dataLayer.push({
+              event: 'cta_click',
+              cta_text: 'workflow_automation_expert',
+              cta_location: 'solutions_section',
+              conversion_intent: 'high'
+            })
+          }
+        }}
+      >
+        Get Your Workflow Automated
+      </a>
     </div>
-  )
-}
+  </div>
+</div>

@@ -1,3 +1,4 @@
+// components/Footer.tsx - Basic footer with legal links
 import Link from 'next/link'
 
 export default function Footer() {
@@ -9,6 +10,7 @@ export default function Footer() {
           {/* Company Name */}
           <div className="text-center">
             <h3 className="text-2xl font-bold text-white">Amarillo Automation</h3>
+            <p className="text-gray-400 text-sm mt-2">AI-Powered Business Automation Solutions</p>
           </div>
           
           {/* Legal Links */}

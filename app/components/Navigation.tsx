@@ -21,8 +21,7 @@ export default function Navigation() {
 
   // Contact info for header (since contact page is hidden)
   const contactInfo = {
-    email: 'admin@amarilloautomation.com',
-    phone: '+1 (806) 640-4586' // Replace with your actual phone number
+    email: 'hello@amarilloautomation.com'
   }
 
   return (
@@ -52,8 +51,8 @@ export default function Navigation() {
               </Link>
             ))}
             
-            {/* Contact Info */}
-            <div className="flex items-center space-x-6 text-sm">
+            {/* Contact Info - Email Only */}
+            <div className="flex items-center">
               <a 
                 href={`mailto:${contactInfo.email}`}
                 className="text-gray-300 hover:text-blue-400 transition-colors flex items-center space-x-2"
@@ -72,26 +71,6 @@ export default function Navigation() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <span>{contactInfo.email}</span>
-              </a>
-              
-              <a 
-                href={`tel:${contactInfo.phone}`}
-                className="text-gray-300 hover:text-green-400 transition-colors flex items-center space-x-2"
-                onClick={() => {
-                  // Track phone clicks
-                  if (typeof window !== 'undefined' && window.dataLayer) {
-                    window.dataLayer.push({
-                      event: 'contact_click',
-                      contact_method: 'phone',
-                      click_location: 'header_navigation'
-                    })
-                  }
-                }}
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                <span>{contactInfo.phone}</span>
               </a>
             </div>
           </div>
@@ -133,8 +112,8 @@ export default function Navigation() {
               </Link>
             ))}
             
-            {/* Mobile Contact Info */}
-            <div className="mt-4 pt-4 border-t border-gray-700 space-y-3">
+            {/* Mobile Contact Info - Email Only */}
+            <div className="mt-4 pt-4 border-t border-gray-700">
               <a 
                 href={`mailto:${contactInfo.email}`}
                 className="flex items-center px-3 py-2 text-gray-300 hover:text-blue-400 transition-colors"
@@ -154,27 +133,6 @@ export default function Navigation() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 Email Us
-              </a>
-              
-              <a 
-                href={`tel:${contactInfo.phone}`}
-                className="flex items-center px-3 py-2 text-gray-300 hover:text-green-400 transition-colors"
-                onClick={() => {
-                  setIsOpen(false)
-                  // Track mobile phone clicks
-                  if (typeof window !== 'undefined' && window.dataLayer) {
-                    window.dataLayer.push({
-                      event: 'contact_click',
-                      contact_method: 'phone',
-                      click_location: 'mobile_navigation'
-                    })
-                  }
-                }}
-              >
-                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                Call Us
               </a>
             </div>
             
