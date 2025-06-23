@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react'
 import Navigation from '../components/Navigation'
 import Link from 'next/link'
 
-export default function TermsConditions() {
+export default function TermsOfService() {
   const vantaRef = useRef<HTMLDivElement>(null)
   const vantaEffect = useRef<any>(null)
 
@@ -46,8 +46,8 @@ export default function TermsConditions() {
             
             {/* Header */}
             <div className="text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Terms and Conditions</h1>
-              <p className="text-gray-300 text-lg">Last updated: June 18, 2025</p>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Terms of Service</h1>
+              <p className="text-gray-300 text-lg">Last updated: {new Date().toLocaleDateString()}</p>
               <div className="mt-6 p-4 bg-purple-900/20 border border-purple-600/30 rounded-lg">
                 <p className="text-purple-200 text-sm">
                   <strong>Quick Summary:</strong> These terms govern your use of our website and services. 
@@ -73,7 +73,11 @@ export default function TermsConditions() {
               </p>
               
               <p className="text-gray-300 leading-relaxed mb-6">
-                Your access to and use of the Service is also conditioned on Your acceptance of and compliance with the Privacy Policy of the Company. Please read Our <Link href="/privacy-policy" className="text-blue-400 hover:underline">Privacy Policy</Link> carefully before using Our Service.
+                Your access to and use of the Service is also conditioned on Your acceptance of and compliance with the Privacy Policy of the Company. Please read Our{' '}
+                <Link href="/privacy-policy" className="text-blue-400 hover:underline">Privacy Policy</Link>{' '}
+                and{' '}
+                <Link href="/data-deletion" className="text-amber-400 hover:underline">Data Deletion Policy</Link>{' '}
+                carefully before using Our Service.
               </p>
 
               <h2 className="text-2xl font-bold text-white mt-8 mb-4">Service Usage</h2>
@@ -95,6 +99,26 @@ export default function TermsConditions() {
                 <li>• Not upload inappropriate, offensive, or copyrighted content</li>
                 <li>• Respect our intellectual property and that of others</li>
               </ul>
+
+              {/* Updated Data Rights Section */}
+              <h2 className="text-2xl font-bold text-white mt-8 mb-4">Data Rights and Privacy</h2>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                Your data rights are important to us. You have various rights regarding your personal information, including the right to request deletion of your data.
+              </p>
+              
+              <div className="bg-amber-900/20 border border-amber-600/30 rounded-lg p-4 mb-6">
+                <h4 className="text-amber-200 font-semibold mb-2">Data Deletion Rights</h4>
+                <p className="text-amber-100 text-sm mb-2">
+                  If you wish to delete your personal data from our systems, please review our comprehensive{' '}
+                  <Link href="/data-deletion" className="text-amber-400 hover:text-amber-300 underline font-medium">
+                    Data Deletion Policy
+                  </Link>{' '}
+                  for detailed procedures and timelines.
+                </p>
+                <p className="text-amber-100 text-sm">
+                  Note: Data deletion may impact our ability to provide ongoing services to active clients.
+                </p>
+              </div>
 
               <h2 className="text-2xl font-bold text-white mt-8 mb-4">Limitation of Liability</h2>
               <p className="text-gray-300 leading-relaxed mb-6">
@@ -121,10 +145,10 @@ export default function TermsConditions() {
               
               <ul className="text-gray-300 space-y-2 mb-8">
                 <li>• By email: <a href="mailto:admin@amarilloautomation.com" className="text-blue-400 hover:underline">admin@amarilloautomation.com</a></li>
-                <li>• By visiting this page on our website: <a href="/terms-conditions" className="text-blue-400 hover:underline">Terms and Conditions</a></li>
+                <li>• By visiting this page on our website: <a href="/terms-of-service" className="text-blue-400 hover:underline">Terms of Service</a></li>
               </ul>
 
-              {/* Navigation Links */}
+              {/* Updated Navigation Links */}
               <div className="mt-12 pt-8 border-t border-gray-700">
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                   <Link 
@@ -134,10 +158,10 @@ export default function TermsConditions() {
                     ← Privacy Policy
                   </Link>
                   <Link 
-                    href="/"
-                    className="text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-2"
+                    href="/data-deletion"
+                    className="text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-2"
                   >
-                    Back to Home →
+                    Data Deletion Policy →
                   </Link>
                 </div>
               </div>

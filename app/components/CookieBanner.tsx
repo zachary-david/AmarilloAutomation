@@ -260,8 +260,8 @@ export default function CookieBanner() {
             </button>
           </div>
 
-          {/* Links */}
-          <div className="mt-4 flex flex-col sm:flex-row justify-center gap-3 text-center">
+          {/* Links - Updated to include Data Deletion Policy */}
+          <div className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 text-center">
             <Link 
               href="/privacy-policy" 
               className="text-blue-400 hover:text-blue-300 text-xs transition-colors"
@@ -269,10 +269,16 @@ export default function CookieBanner() {
               Privacy Policy
             </Link>
             <Link 
-              href="/terms-conditions" 
+              href="/terms-of-service" 
               className="text-blue-400 hover:text-blue-300 text-xs transition-colors"
             >
-              Terms & Conditions
+              Terms of Service
+            </Link>
+            <Link 
+              href="/data-deletion" 
+              className="text-amber-400 hover:text-amber-300 text-xs transition-colors"
+            >
+              Data Deletion
             </Link>
           </div>
 
