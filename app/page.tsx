@@ -371,7 +371,11 @@ export default function Home() {
               <AnimatedText 
                 text="Tomorrow's tools, today."
                 className="text-4xl md:text-6xl font-bold text-white mb-6"
-              />              
+              />
+              <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
+                Intelligent integrations and smart solutions to simplify your business.
+              </p>
+              
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
                   href="#solutions"
