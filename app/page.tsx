@@ -398,7 +398,7 @@ export default function Home() {
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
                 <AnimatedText 
-                  text="Automation Solutions That Actually Work"
+                  text="Solutions That Actually Work"
                   className="text-4xl md:text-5xl font-bold text-white mb-6"
                 />
                 <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
