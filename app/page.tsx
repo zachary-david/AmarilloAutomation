@@ -73,8 +73,8 @@ export default function Home() {
         scaleMobile: 1.00,
         color: 0x60a5fa, // Start with blue
         backgroundColor: 0x0a1224,
-        points: 10.00,
-        maxDistance: 20.00,
+        points: 2.00,
+        maxDistance: 15.00,
         spacing: 14.00,
       } : {
         // Desktop Configuration - More dynamic
@@ -461,13 +461,13 @@ export default function Home() {
                   </div>
                 </div>
               ) : (
-                <div className="grid lg:grid-cols-2 gap-12">
-                  {/* Contact Form */}
-                  <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-8">
-                    <h3 className="text-2xl font-bold text-white mb-6">Tell us about your project</h3>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+                  {/* Contact Form - Same styling as solution cards */}
+                  <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-6 md:p-8">
+                    <h3 className="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6">Tell us about your project</h3>
                     
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                      <div className="grid md:grid-cols-2 gap-4">
+                    <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                         <div>
                           <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
                             Full Name *
@@ -479,7 +479,7 @@ export default function Home() {
                             required
                             value={formData.name}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors"
+                            className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors text-sm md:text-base"
                             placeholder="Your full name"
                           />
                         </div>
@@ -494,7 +494,7 @@ export default function Home() {
                             required
                             value={formData.email}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors"
+                            className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors text-sm md:text-base"
                             placeholder="your.email@company.com"
                           />
                         </div>
@@ -511,12 +511,12 @@ export default function Home() {
                           required
                           value={formData.company}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors"
+                          className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors text-sm md:text-base"
                           placeholder="Your company name"
                         />
                       </div>
 
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                         <div>
                           <label htmlFor="serviceType" className="block text-sm font-medium text-gray-300 mb-2">
                             Service Interest *
@@ -527,7 +527,7 @@ export default function Home() {
                             required
                             value={formData.serviceType}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors"
+                            className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors text-sm md:text-base"
                           >
                             <option value="">Select a service</option>
                             <option value="introductory-offer">Introductory Offer</option>
@@ -547,7 +547,7 @@ export default function Home() {
                             required
                             value={formData.companySize}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors"
+                            className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors text-sm md:text-base"
                           >
                             <option value="">Select company size</option>
                             <option value="just-me">Just Me</option>
@@ -566,17 +566,17 @@ export default function Home() {
                           name="message"
                           value={formData.message}
                           onChange={handleChange}
-                          rows={4}
-                          className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors resize-none"
+                          rows={3}
+                          className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors resize-none text-sm md:text-base"
                           placeholder="Tell us about your automation needs..."
                         ></textarea>
                       </div>
 
                       {formStarted && (
-                        <div className="bg-gray-800/50 rounded-lg p-4">
+                        <div className="bg-gray-800/50 rounded-lg p-3 md:p-4">
                           <div className="flex justify-between items-center mb-2">
-                            <span className="text-gray-300 text-sm">Form Progress</span>
-                            <span className="text-amber-400 text-sm font-medium">{calculateFormProgress()}%</span>
+                            <span className="text-gray-300 text-xs md:text-sm">Form Progress</span>
+                            <span className="text-amber-400 text-xs md:text-sm font-medium">{calculateFormProgress()}%</span>
                           </div>
                           <div className="w-full bg-gray-700 rounded-full h-2">
                             <div 
@@ -590,7 +590,7 @@ export default function Home() {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className={`w-full py-4 font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg ${
+                        className={`w-full py-3 md:py-4 font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg text-sm md:text-base ${
                           isSubmitting
                             ? 'bg-gray-600 cursor-not-allowed text-gray-400'
                             : 'bg-amber-600 hover:bg-amber-700 text-white'
@@ -601,41 +601,43 @@ export default function Home() {
                     </form>
                   </div>
 
-                  {/* Contact Info */}
-                  <div className="space-y-8">
-                    <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-8">
-                      <h3 className="text-2xl font-bold text-white mb-6">Direct Contact</h3>
-                      <div className="space-y-4">
+                  {/* Contact Info Column - Same styling as solution cards */}
+                  <div className="space-y-6 md:space-y-8">
+                    {/* Direct Contact */}
+                    <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-6 md:p-8">
+                      <h3 className="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6">Direct Contact</h3>
+                      <div className="space-y-3 md:space-y-4">
                         <div className="flex items-center">
-                          <div className="w-12 h-12 bg-amber-600 rounded-lg flex items-center justify-center mr-4">
-                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-10 h-10 md:w-12 md:h-12 bg-amber-600 rounded-lg flex items-center justify-center mr-3 md:mr-4">
+                            <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                           </div>
                           <div>
-                            <p className="text-gray-300 text-sm">Email</p>
-                            <a href="mailto:admin@amarilloautomation.com" className="text-white font-semibold hover:text-amber-400 transition-colors">
+                            <p className="text-gray-300 text-xs md:text-sm">Email</p>
+                            <a href="mailto:admin@amarilloautomation.com" className="text-white font-semibold hover:text-amber-400 transition-colors text-sm md:text-base">
                               admin@amarilloautomation.com
                             </a>
                           </div>
                         </div>
                         <div className="flex items-center">
-                          <div className="w-12 h-12 bg-amber-600 rounded-lg flex items-center justify-center mr-4">
-                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-10 h-10 md:w-12 md:h-12 bg-amber-600 rounded-lg flex items-center justify-center mr-3 md:mr-4">
+                            <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                           </div>
                           <div>
-                            <p className="text-gray-300 text-sm">Response Time</p>
-                            <p className="text-white font-semibold">Within 24 hours</p>
+                            <p className="text-gray-300 text-xs md:text-sm">Response Time</p>
+                            <p className="text-white font-semibold text-sm md:text-base">Within 24 hours</p>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-8">
-                      <h3 className="text-2xl font-bold text-white mb-6">Business Hours</h3>
-                      <div className="space-y-2 text-gray-300">
+                    {/* Business Hours */}
+                    <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-6 md:p-8">
+                      <h3 className="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6">Business Hours</h3>
+                      <div className="space-y-2 text-gray-300 text-sm md:text-base">
                         <div className="flex justify-between">
                           <span>Monday - Friday</span>
                           <span>8:00 AM - 5:00 PM CST</span>
