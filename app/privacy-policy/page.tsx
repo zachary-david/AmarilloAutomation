@@ -86,39 +86,23 @@ export default function PrivacyPolicy() {
 
               <h2 className="text-2xl font-bold text-white mt-8 mb-4">Third-Party Services</h2>
               <p className="text-gray-300 leading-relaxed mb-4">
-                We use the following third-party services to operate our business and provide our services:
+                We use several trusted third-party services to provide our automation and business intelligence solutions:
               </p>
-              
-              <div className="space-y-4 mb-6">
+
+              <div className="grid md:grid-cols-2 gap-4 mb-6">
                 <div className="bg-gray-800/50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-white mb-2">Google Products</h3>
+                  <h3 className="text-lg font-semibold text-white mb-2">Google Analytics</h3>
                   <p className="text-gray-300 text-sm">
-                    <strong>Used for:</strong> Analytics, email communication, document storage, and advertising services<br/>
-                    <strong>Why:</strong> Essential for business operations and measuring website performance
+                    <strong>Used for:</strong> Website analytics and user behavior insights<br/>
+                    <strong>Why:</strong> To understand how visitors use our site and improve user experience
                   </p>
                 </div>
 
                 <div className="bg-gray-800/50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-white mb-2">Meta (Facebook/Instagram)</h3>
+                  <h3 className="text-lg font-semibold text-white mb-2">Meta Business Tools</h3>
                   <p className="text-gray-300 text-sm">
-                    <strong>Used for:</strong> Social media advertising and lead generation campaigns<br/>
-                    <strong>Why:</strong> Reach potential clients through targeted digital marketing
-                  </p>
-                </div>
-
-                <div className="bg-gray-800/50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-white mb-2">GitHub</h3>
-                  <p className="text-gray-300 text-sm">
-                    <strong>Used for:</strong> Code repository and website deployment<br/>
-                    <strong>Why:</strong> Secure development and version control for client projects
-                  </p>
-                </div>
-
-                <div className="bg-gray-800/50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-white mb-2">OpenAI</h3>
-                  <p className="text-gray-300 text-sm">
-                    <strong>Used for:</strong> AI automation tools and chatbot development<br/>
-                    <strong>Why:</strong> Provide cutting-edge AI solutions for client automation needs
+                    <strong>Used for:</strong> Facebook and Instagram business analytics<br/>
+                    <strong>Why:</strong> To provide social media performance insights to our clients
                   </p>
                 </div>
 
@@ -155,12 +139,26 @@ export default function PrivacyPolicy() {
               <p className="text-gray-300 leading-relaxed mb-4">
                 You have the right to:
               </p>
-              <ul className="text-gray-300 mb-6">
+              <ul className="text-gray-300 mb-4">
                 <li>Access your personal information</li>
                 <li>Correct inaccurate data</li>
                 <li>Request deletion of your data</li>
                 <li>Opt out of marketing communications</li>
               </ul>
+
+              {/* Updated Data Deletion Reference */}
+              <div className="bg-amber-900/20 border border-amber-600/30 rounded-lg p-4 mb-6">
+                <h3 className="text-amber-200 font-semibold mb-2">🗑️ Data Deletion Rights</h3>
+                <p className="text-amber-100 text-sm mb-2">
+                  You have the right to request deletion of your personal data. For detailed information about our data deletion process, timelines, and procedures, please visit our comprehensive{' '}
+                  <Link href="/data-deletion" className="text-amber-400 hover:text-amber-300 underline font-medium">
+                    Data Deletion Policy
+                  </Link>.
+                </p>
+                <p className="text-amber-100 text-sm">
+                  This includes step-by-step instructions on how to submit deletion requests and what data can be removed.
+                </p>
+              </div>
 
               <h2 className="text-2xl font-bold text-white mt-8 mb-4">Contact Us</h2>
               <p className="text-gray-300 leading-relaxed mb-4">
@@ -168,7 +166,7 @@ export default function PrivacyPolicy() {
               </p>
               <div className="bg-gray-800/50 p-4 rounded-lg">
                 <p className="text-white font-semibold">Amarillo Automation</p>
-                <p className="text-gray-300">Email: admin@amarilloautomation.com</p>
+                <p className="text-gray-300">Email: <a href="mailto:admin@amarilloautomation.com" className="text-blue-400 hover:underline">admin@amarilloautomation.com</a></p>
                 <p className="text-gray-300 text-sm mt-2">
                   For privacy policy inquiries, please send all correspondence to the email address above.
                 </p>
@@ -180,10 +178,15 @@ export default function PrivacyPolicy() {
                 the new Privacy Policy on this page and updating the "Last updated" date.
               </p>
 
+              {/* Updated Navigation Links */}
               <div className="mt-8 p-4 bg-blue-900/20 border border-blue-600/30 rounded-lg">
                 <p className="text-blue-200 text-center">
-                  <Link href="/terms-conditions" className="text-blue-400 hover:text-blue-300 underline">
-                    View our Terms and Conditions
+                  <Link href="/terms-of-service" className="text-blue-400 hover:text-blue-300 underline">
+                    Terms of Service
+                  </Link>
+                  {" | "}
+                  <Link href="/data-deletion" className="text-amber-400 hover:text-amber-300 underline">
+                    Data Deletion Policy
                   </Link>
                   {" | "}
                   <Link href="/contact" className="text-blue-400 hover:text-blue-300 underline">
