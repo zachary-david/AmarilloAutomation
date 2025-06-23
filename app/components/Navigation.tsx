@@ -21,7 +21,7 @@ export default function Navigation() {
 
   // Contact info for header (since contact page is hidden)
   const contactInfo = {
-    email: 'hello@amarilloautomation.com'
+    email: 'admin@amarilloautomation.com'
   }
 
   return (

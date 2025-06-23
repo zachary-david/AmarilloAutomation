@@ -10,8 +10,7 @@ export default function Footer() {
           {/* Company Name */}
           <div className="text-center">
             <h3 className="text-2xl font-bold text-white">Amarillo Automation</h3>
-            <p className="text-gray-400 text-sm mt-2">AI-Powered Business Automation Solutions</p>
-          </div>
+                      </div>
           
           {/* Legal Links */}
           <div className="flex items-center space-x-6 text-gray-400 text-sm">
