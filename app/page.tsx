@@ -223,10 +223,10 @@ export default function Home() {
   const solutions = [
     {
       title: "Workflow Automations",
-      description: "Expert implementation of no-code automation platforms that connect your business tools and eliminate repetitive tasks. We're certified specialists in Zapier, Make.com, n8n, and Power Automate.",
+      description: "Expert implementation of no-code automation platforms that connect your business tools and eliminate repetitive tasks.",
       features: [
         "Zapier Advanced Workflows", 
-        "Make.com Complex Scenarios", 
+        "AirTable", 
         "n8n Custom Deployments", 
         "Microsoft Power Automate",
         "Custom API Integrations"
@@ -247,6 +247,7 @@ export default function Home() {
       description: "We build lead engines that run on autopilot — fueled by automated outreach, optimized funnels, and follow-up sequences that convert prospects to customers.",
       features: [
         "Automated Lead Capture", 
+        "Advanced Analytics",
         "Email Sequence Automation", 
         "CRM Workflow Setup", 
         "Multi-Channel Follow-up"

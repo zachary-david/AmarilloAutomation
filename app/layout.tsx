@@ -10,10 +10,10 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: {
-    default: 'Amarillo Automation - AI-Powered Digital Marketing & Business Automation',
+    default: 'Amarillo Automation - Marketing and Business Automation',
     template: '%s | Amarillo Automation'
   },
-  description: 'AI-powered digital marketing agency specializing in workflow automation, tech integration, AI agents, lead generation, and web development. Transform your business with intelligent automation solutions.',
+  description: 'Digital marketing agency specializing in workflow automation, tech integration, AI agents, lead generation, and web development. Transform your business with intelligent automation solutions.',
   keywords: [
     'workflow automation',
     'tech integration', 
@@ -91,7 +91,7 @@ export default function RootLayout({
         {/* Facebook SDK for JavaScript */}
         <Script
           id="facebook-sdk"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.fbAsyncInit = function() {
@@ -150,7 +150,7 @@ export default function RootLayout({
               "alternateName": "Amarillo Automation AI Agency",
               "url": "https://amarilloautomation.com",
               "logo": "https://amarilloautomation.com/logo.png",
-              "description": "AI-powered digital marketing agency specializing in business automation, intelligent lead generation, and workflow optimization for growing businesses.",
+              "description": "Digital marketing agency specializing in business automation, intelligent lead generation, and workflow optimization for growing businesses.",
               "foundingDate": "2024",
               "address": {
                 "@type": "PostalAddress",
