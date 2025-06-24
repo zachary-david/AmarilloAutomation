@@ -1,4 +1,4 @@
-// app/layout.tsx - Updated Metadata & Schema
+// app/layout.tsx - Updated Metadata & Schema with Facebook SDK
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
@@ -87,6 +87,34 @@ export default function RootLayout({
       <head>
         {/* Google Tag Manager */}
         <GoogleTagManager gtmId="GTM-KR6QDVHS" />
+        
+        {/* Facebook SDK for JavaScript */}
+        <Script
+          id="facebook-sdk"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.fbAsyncInit = function() {
+                FB.init({
+                  appId      : '1277149313746470',
+                  cookie     : true,
+                  xfbml      : true,
+                  version    : 'v23.0'
+                });
+                  
+                FB.AppEvents.logPageView();   
+                  
+              };
+              (function(d, s, id){
+                 var js, fjs = d.getElementsByTagName(s)[0];
+                 if (d.getElementById(id)) {return;}
+                 js = d.createElement(s); js.id = id;
+                 js.src = "https://connect.facebook.net/en_US/sdk.js";
+                 fjs.parentNode.insertBefore(js, fjs);
+               }(document, 'script', 'facebook-jssdk'));
+            `
+          }}
+        />
         
         {/* Google Analytics 4 Configuration */}
         <Script
@@ -421,7 +449,7 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
         <Script
-          src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"
+          src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.js"
           strategy="beforeInteractive"
         />
       </head>
