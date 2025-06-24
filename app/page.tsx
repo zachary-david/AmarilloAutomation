@@ -223,7 +223,7 @@ export default function Home() {
   const solutions = [
     {
       title: "Workflow Automations",
-      description: "Expert implementation of no-code automation platforms that connect your business tools and eliminate repetitive tasks.",
+      description: "Done for you automations -- built for busy business owners. We'll use the tools you already use. No software headaches, just simple solutions.",
       features: [
         "Zapier Advanced Workflows", 
         "AirTable", 
@@ -232,16 +232,7 @@ export default function Home() {
         "Custom API Integrations"
       ]
     },
-    {
-      title: "AI Consultation & Implementation",
-      description: "Let our AI consultants automate what slows you down — from marketing to admin to operations. We identify automation opportunities and implement intelligent solutions.",
-      features: [
-        "AI Process Discovery", 
-        "Workflow Mapping & Analysis", 
-        "Tech Stack Integration", 
-        "Ongoing Support & Optimization"
-      ]
-    },
+
     {
       title: "Lead Generation Automation",
       description: "We build lead engines that run on autopilot — fueled by automated outreach, optimized funnels, and follow-up sequences that convert prospects to customers.",
