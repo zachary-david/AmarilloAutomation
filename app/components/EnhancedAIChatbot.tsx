@@ -331,21 +331,6 @@ const analyzeResponse = (response: string, questionContext: string): {
   return analysis  
 }
 
-// NEW: Multi-Message Function Implementation
-const sendMultiPartMessage = (messages: string[], messageId: string, role: 'assistant', setMessages: any) => {
-  messages.forEach((message, index) => {
-    setTimeout(() => {
-      const newMessage: Message = {
-        id: `${messageId}-${index}`,
-        role: role,
-        content: message,
-        timestamp: new Date()
-      }
-      setMessages((prev: Message[]) => [...prev, newMessage])
-    }, index * 3500) // 3.5 second delays between messages
-  })
-}
-
 // AUTOMATION responses by industry - CONVERTED TO MULTI-MESSAGE FORMAT  
 const getAutomationResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'): string[] => {  
   const responses: Record<'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general', string[][]> = {  
@@ -567,6 +552,49 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     leadQualification: {},  
     engagementScore: 0  
   }))  
+
+  // CRITICAL: Active timeout management to prevent race conditions
+  const activeTimeouts = useRef<Set<NodeJS.Timeout>>(new Set())
+  const currentConversationId = useRef<string>()
+  
+  // Clear all pending timeouts when flow changes
+  const clearAllTimeouts = () => {
+    activeTimeouts.current.forEach(timeout => clearTimeout(timeout))
+    activeTimeouts.current.clear()
+    currentConversationId.current = Date.now().toString()
+  }
+
+  // Protected timeout function that checks if conversation is still active
+  const safeTimeout = (callback: () => void, delay: number, conversationId?: string) => {
+    const timeout = setTimeout(() => {
+      // Only execute if this is still the active conversation
+      if (!conversationId || conversationId === currentConversationId.current) {
+        callback()
+      }
+      activeTimeouts.current.delete(timeout)
+    }, delay)
+    
+    activeTimeouts.current.add(timeout)
+    return timeout
+  }
+
+  // FIXED: Multi-Message Function with Race Condition Protection
+  const sendMultiPartMessage = (messages: string[], messageId: string, role: 'assistant', conversationId: string) => {
+    messages.forEach((message, index) => {
+      safeTimeout(() => {
+        // Double-check conversation is still active
+        if (conversationId === currentConversationId.current) {
+          const newMessage: Message = {
+            id: `${messageId}-${index}`,
+            role: role,
+            content: message,
+            timestamp: new Date()
+          }
+          setMessages((prev: Message[]) => [...prev, newMessage])
+        }
+      }, index * 3500, conversationId) // 3.5 second delays between messages
+    })
+  }
     
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -581,6 +609,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
   // Track analytics when component unmounts or chat closes  
   useEffect(() => {  
     return () => {  
+      clearAllTimeouts() // Clean up on unmount
       const finalScore = calculateEngagementScore(analytics)  
       trackEvent(analytics, 'conversation_ended', {  
         engagementScore: finalScore,  
@@ -594,6 +623,8 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
 
   // Handle Schedule Free Consultation button click  
   const handleScheduleConsultation = () => {  
+    clearAllTimeouts() // Stop any pending messages
+    
     const newMessage: Message = {  
       id: Date.now().toString(),  
       role: 'assistant',  
@@ -615,6 +646,8 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
 
   // Handle meeting type selection
   const handleMeetingTypeSelection = async (selection: string) => {
+    clearAllTimeouts() // Stop any pending messages
+    
     // Add user selection message
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -626,7 +659,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
 
     if (selection === 'Actually, let me email you instead') {
       // Start email collection flow
-      setTimeout(() => {
+      safeTimeout(() => {
         const emailFlowMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
@@ -634,7 +667,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           timestamp: new Date()
         }
         setMessages(prev => [...prev, emailFlowMessage])
-        setCurrentFlow('emailOnly') // New flow state
+        setCurrentFlow('emailOnly')
         setIsLoading(false)
       }, 1500)
       return
@@ -647,7 +680,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     }))
 
     // Show "thinking" message with delay
-    setTimeout(() => {
+    safeTimeout(() => {
       const thinkingMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -659,7 +692,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
       // Simulate thinking delay  
       setIsLoading(true)  
         
-      setTimeout(async () => {  
+      safeTimeout(async () => {  
         // Generate available slots  
         const slots: Array<{date: string, time: string}> = generateAvailableSlots()  
         setAvailableSlots(slots)  
@@ -700,6 +733,8 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
 
   // Handle time slot confirmation  
   const handleTimeSlotConfirmation = (selection: string, timeSlot?: any) => {  
+    clearAllTimeouts() // Stop any pending messages
+    
     const userMessage: Message = {  
       id: Date.now().toString(),  
       role: 'user',  
@@ -709,7 +744,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     setMessages(prev => [...prev, userMessage])
 
     if (selection === 'Actually, let me just email you') {  
-      setTimeout(() => {  
+      safeTimeout(() => {  
         const emailMessage: Message = {  
           id: (Date.now() + 1).toString(),  
           role: 'assistant',  
@@ -722,7 +757,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     }
 
     // Request booking details with natural delay  
-    setTimeout(() => {  
+    safeTimeout(() => {  
       const detailsMessage: Message = {  
         id: (Date.now() + 1).toString(),  
         role: 'assistant',  
@@ -746,6 +781,8 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
   const sendMessage = async () => {  
     if (!inputValue.trim()) return
 
+    clearAllTimeouts() // Stop any pending messages when user sends a message
+    
     const userMessage: Message = {  
       id: Date.now().toString(),  
       role: 'user',  
@@ -788,7 +825,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
         }))
 
         // Generate intelligent follow-up or transition  
-        setTimeout(() => {  
+        safeTimeout(() => {  
           let response = ""  
             
           if (conversationContext.followupStage < 2) {  
@@ -844,12 +881,12 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
         return  
       }
 
-      // Handle booking flow step by step (existing code)  
+      // Handle booking flow step by step  
       if (currentFlow === 'name') {  
         const name = currentInput.trim()  
         setBookingDetails(prev => ({ ...prev, name }))  
           
-        setTimeout(() => {  
+        safeTimeout(() => {  
           const companyMessage: Message = {  
             id: (Date.now() + 1).toString(),  
             role: 'assistant',  
@@ -867,7 +904,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
         const company = currentInput.trim()  
         setBookingDetails(prev => ({ ...prev, company }))  
           
-        setTimeout(() => {  
+        safeTimeout(() => {  
           const emailMessage: Message = {  
             id: (Date.now() + 1).toString(),  
             role: 'assistant',  
@@ -885,7 +922,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
         const email = currentInput.trim()  
         setBookingDetails(prev => ({ ...prev, email }))  
           
-        setTimeout(() => {  
+        safeTimeout(() => {  
           const bookingMessage: Message = {  
             id: (Date.now() + 1).toString(),  
             role: 'assistant',  
@@ -894,7 +931,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           }  
           setMessages(prev => [...prev, bookingMessage])  
             
-          setTimeout(async () => {  
+          safeTimeout(async () => {  
             try {  
               const bookingData = {  
                 name: bookingDetails.name,  
@@ -933,7 +970,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
               console.error('Booking process error:', error)  
             }  
               
-            setTimeout(() => {  
+            safeTimeout(() => {  
               const helpMessage: Message = {  
                 id: (Date.now() + 2).toString(),  
                 role: 'assistant',  
@@ -951,14 +988,14 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
         return  
       }
 
-      // Handle emailOnly flow - NEW ADDITION
+      // Handle emailOnly flow
       if (currentFlow === 'emailOnly') {
         const email = currentInput.trim()
         
         // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if (!emailRegex.test(email)) {
-          setTimeout(() => {
+          safeTimeout(() => {
             const errorMessage: Message = {
               id: (Date.now() + 1).toString(),
               role: 'assistant',
@@ -995,7 +1032,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           }
 
           // Show success message and return to service options
-          setTimeout(() => {
+          safeTimeout(() => {
             const confirmMessage: Message = {
               id: (Date.now() + 1).toString(),
               role: 'assistant',
@@ -1012,7 +1049,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
         } catch (error) {
           console.error('Email webhook error:', error)
           // Handle error gracefully
-          setTimeout(() => {
+          safeTimeout(() => {
             const errorMessage: Message = {
               id: (Date.now() + 1).toString(),
               role: 'assistant',
@@ -1080,6 +1117,8 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
   }
 
   const handleOptionSelect = (option: string, message: Message) => {  
+    clearAllTimeouts() // CRITICAL: Stop any pending messages when user makes a selection
+    
     if (currentFlow === 'general' && message.options?.includes(option)) {  
       handleTopicSelection(option)  
     } else if (currentFlow === 'scheduling') {  
@@ -1098,7 +1137,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
       }  
       setMessages(prev => [...prev, userMessage])  
         
-      setTimeout(() => {  
+      safeTimeout(() => {  
         const infoMessage: Message = {  
           id: (Date.now() + 1).toString(),  
           role: 'assistant',  
@@ -1110,8 +1149,13 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     }  
   }
 
-  // Enhanced topic selection with follow-up questions - UPDATED FOR MULTI-MESSAGE  
+  // Enhanced topic selection with follow-up questions - UPDATED FOR RACE CONDITION PROTECTION  
   const handleTopicSelection = (topic: string) => {  
+    clearAllTimeouts() // CRITICAL: Clear any pending messages from previous selections
+    
+    const conversationId = Date.now().toString()
+    currentConversationId.current = conversationId
+    
     const userMessage: Message = {  
       id: Date.now().toString(),  
       role: 'user',  
@@ -1154,8 +1198,8 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
       messageCount: messages.length  
     })
 
-    // Generate industry-specific response with multi-message - UPDATED  
-    setTimeout(() => {  
+    // Generate industry-specific response with multi-message - RACE CONDITION PROTECTED  
+    safeTimeout(() => {  
       let responseMessages: string[] = []  
         
       switch (topic) {  
@@ -1175,12 +1219,12 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           responseMessages = ["That's a great question! I'd love to learn more about your specific situation."]  
       }
 
-      // Send multi-part message using new function  
-      sendMultiPartMessage(responseMessages, (Date.now() + 1).toString(), 'assistant', setMessages)  
+      // Send multi-part message using protected function  
+      sendMultiPartMessage(responseMessages, (Date.now() + 1).toString(), 'assistant', conversationId)  
         
       // Add follow-up question after a delay (accounting for multi-message timing)  
       const followUpDelay = responseMessages.length * 3500 + 2000 // Wait for all messages + 2 seconds  
-      setTimeout(() => {  
+      safeTimeout(() => {  
         const followUps = getFollowUpQuestions(topic, detectedIndustry, 0)  
         if (followUps.length > 0) {  
           const selectedFollowUp = followUps[Math.floor(Math.random() * followUps.length)]  
@@ -1211,9 +1255,9 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
             context: selectedFollowUp.context  
           })  
         }  
-      }, followUpDelay)  
+      }, followUpDelay, conversationId)  
         
-    }, 3000) // 3 second initial delay  
+    }, 3000, conversationId) // 3 second initial delay  
   }
 
   if (!isOpen) return null
