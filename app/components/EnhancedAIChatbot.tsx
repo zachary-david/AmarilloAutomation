@@ -114,7 +114,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
         const consultationMessage: Message = {
           id: (Date.now() + 2).toString(),
           role: 'assistant',
-          content: "Want to hop on a quick call to see how we can help with this? I can get you set up with a free consultation.",
+          content: "Want to schedule a free consultation to discuss your specific needs?",
           timestamp: new Date(),
           type: 'selection',
           options: ['Yeah, let\'s schedule something', 'Let me think about it', 'Send me some info instead']
@@ -175,7 +175,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
       handleMeetingTypeSelection(option)  
     } else if (option === "Yeah, let's schedule something" || option.includes('Schedule a Consultation')) {  
       handleScheduleConsultation()  
-    } else if (option.includes('info') || option.includes('think about it')) {  
+    } else if (option === "Let me think about it" || option.includes('info')) {  
       const userMessage: Message = {  
         id: Date.now().toString(),  
         role: 'user',  
@@ -189,6 +189,27 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           id: (Date.now() + 1).toString(),  
           role: 'assistant',  
           content: "No problem! Feel free to reach out at admin@amarilloautomation.com when you're ready. Is there anything else I can help you with?",  
+          timestamp: new Date(),
+          type: 'selection',
+          options: ['Automation', 'Digital Marketing', 'Web Development', 'Advanced Analytics', 'Schedule a Consultation']
+        }  
+        setMessages(prev => [...prev, infoMessage])
+        setCurrentFlow('general')
+      }, 1500)  
+    } else if (option === "Send me some info instead") {
+      const userMessage: Message = {  
+        id: Date.now().toString(),  
+        role: 'user',  
+        content: option,  
+        timestamp: new Date()  
+      }  
+      setMessages(prev => [...prev, userMessage])  
+        
+      setTimeout(() => {  
+        const infoMessage: Message = {  
+          id: (Date.now() + 1).toString(),  
+          role: 'assistant',  
+          content: "Shoot us an email at admin@amarilloautomation.com and mention what you're most interested in. We'll send you some case studies and examples specific to your industry. Usually get back to people within a couple hours!",  
           timestamp: new Date(),
           type: 'selection',
           options: ['Automation', 'Digital Marketing', 'Web Development', 'Advanced Analytics', 'Schedule a Consultation']
