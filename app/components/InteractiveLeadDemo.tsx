@@ -131,37 +131,40 @@ const InteractiveLeadDemo = () => {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Your Phone Number
+              Your Phone Number *
             </label>
             <input
               type="tel"
               placeholder="(806) 555-0123"
               value={userPhone}
               onChange={(e) => setUserPhone(e.target.value)}
+              required
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent"
             />
           </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Your Email
+              Your Email *
             </label>
             <input
               type="email"
               placeholder="your@business.com"
               value={userEmail}
               onChange={(e) => setUserEmail(e.target.value)}
+              required
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Your Business Type
+              Your Business Type *
             </label>
             <select
               value={userBusiness}
               onChange={(e) => setUserBusiness(e.target.value)}
+              required
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
             >
               <option value="">Select your business type</option>
