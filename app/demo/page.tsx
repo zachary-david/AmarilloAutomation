@@ -70,14 +70,15 @@ export default function DemoPage() {
         <section className="hero-mobile flex items-center justify-center mobile-container">
           <div className="max-w-4xl mx-auto text-center content-spacing-mobile">
             <div className="flex justify-center mb-6">
-              <div className="relative">
-                <Play className="w-16 h-16 text-green-400" />
-                <DollarSign className="w-8 h-8 text-yellow-400 absolute -top-2 -right-2" />
+              <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center">
+                  <div className="w-0 h-0 border-l-[6px] border-l-green-400 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent ml-1"></div>
+                </div>
               </div>
             </div>
             
             <h1 className="hero-title-mobile font-bold text-white mb-6">
-              See Your Business Automation in Action
+              See Your <span className="bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">Business Automation</span> in Action
             </h1>
             
             <div className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg p-4 mb-8">
@@ -106,7 +107,9 @@ export default function DemoPage() {
                 </p>
               </div>
               <div className="value-card-mobile">
-                <DollarSign className="w-8 h-8 text-yellow-400 mx-auto mb-4" />
+                <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-5 h-5 rounded-full border-2 border-gray-900 bg-green-400"></div>
+                </div>
                 <h3 className="mobile-subheading-responsive font-bold text-white mb-3">
                   Choose Your Automation
                 </h3>
@@ -139,21 +142,24 @@ export default function DemoPage() {
                 {/* Replace the entire form with Google Form iframe */}
                 <div className="w-full">
                   <iframe 
-                    src="https://docs.google.com/forms/d/e/1FAIpQLSdgo6c6REVyfndd0pKrQ6S0raHRk107l2R6X8ttJGjtDDBcMA/viewform?embedded=true" 
+                    src="https://docs.google.com/forms/d/e/1FAIpQLSdgo6c6REVyfndd0pKrQ6S0raHRk107l2R6X8ttJGjtDDBcMA/viewform?embedded=true&usp=pp_url" 
                     width="100%" 
-                    height="300" 
+                    height="520" 
                     frameBorder="0" 
                     marginHeight={0} 
                     marginWidth={0}
                     className="rounded-lg"
-                    style={{ background: 'transparent' }}
+                    style={{ 
+                      background: 'transparent',
+                      overflow: 'hidden'
+                    }}
                   >
                     Loading…
                   </iframe>
                 </div>
 
                 <p className="mobile-text-responsive text-gray-400 text-center mt-4">
-                  🚀 See 10 automation options + claim your $25 starter in under 5 minutes
+                  See 10 automation options + claim your $25 starter in under 5 minutes
                 </p>
               </div>
             </div>
@@ -210,13 +216,6 @@ export default function DemoPage() {
                   Quick call to help you get your automation running if you need assistance
                 </p>
               </div>
-            </div>
-
-            <div className="mt-8 p-6 bg-yellow-400/10 border border-yellow-400/30 rounded-xl">
-              <p className="text-yellow-400 font-bold mb-2">⏰ This Offer Expires in 48 Hours</p>
-              <p className="text-gray-300 text-sm">
-                Complete the demo request above to see all 10 automation options and lock in your $25 starter before the price returns to $75
-              </p>
             </div>
           </div>
         </section>
