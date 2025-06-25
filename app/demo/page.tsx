@@ -136,7 +136,7 @@ export default function DemoPage() {
                 </h3>
                 
                 <p className="text-sm text-gray-400 mb-6 text-center">
-                  Enter your email below to see 10 automation options and choose the one that fits your business
+                  Confirm your email below and submit to get automation offers that fit your business.
                 </p>
                 
                 {/* Replace the entire form with Google Form iframe */}

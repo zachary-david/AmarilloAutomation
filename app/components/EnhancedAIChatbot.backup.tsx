@@ -212,20 +212,20 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
       // Submit booking to webhook
       setTimeout(async () => {
         try {
-          // Submit booking to webhook using FormData to avoid CORS
-          const formData = new FormData()
-          formData.append('name', bookingDetails.name || '')
-          formData.append('company', bookingDetails.company || '')
-          formData.append('email', email)
-          formData.append('meetingType', bookingDetails.meetingType || '')
-          formData.append('timing', bookingDetails.timing || '')
-          formData.append('timestamp', new Date().toISOString())
-          formData.append('source', 'llm_chatbot')
-          formData.append('conversationCost', conversationCost.toFixed(4))
+          const bookingData = {
+            name: bookingDetails.name,
+            company: bookingDetails.company,
+            email: email,
+            meetingType: bookingDetails.meetingType,
+            timing: bookingDetails.timing,
+            timestamp: new Date().toISOString(),
+            source: 'llm_chatbot',
+            conversationCost: conversationCost.toFixed(4)
+          }
           
           const response = await fetch('https://hooks.zapier.com/hooks/catch/22949842/ub41u30/', {
             method: 'POST',
-            body: formData
+            body: JSON.stringify(bookingData)
           })
 
           if (!response.ok) {
