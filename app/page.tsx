@@ -1,11 +1,16 @@
+// app/page.tsx - Corrected formatting
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronRight, Star, CheckCircle, ArrowRight, Play } from 'lucide-react'
+import AIChatbot from './components/AIChatbot'
+import { useRouter } from 'next/navigation'
 
 export default function Homepage() {
   const vantaRef = useRef<HTMLDivElement>(null)
   const vantaEffect = useRef<any>(null)
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false)
+  const router = useRouter()
 
   // Enhanced Vanta.js effect with mobile optimization
   useEffect(() => {
@@ -34,7 +39,6 @@ export default function Homepage() {
             let vantaConfig
             
             if (isMobile) {
-              // Mobile Configuration - Minimal for performance
               vantaConfig = {
                 el: vantaRef.current,
                 mouseControls: true,
@@ -51,7 +55,6 @@ export default function Homepage() {
                 spacing: 18.00,
               }
             } else if (isTablet) {
-              // Tablet Configuration - Moderate
               vantaConfig = {
                 el: vantaRef.current,
                 mouseControls: true,
@@ -68,7 +71,6 @@ export default function Homepage() {
                 spacing: 16.00,
               }
             } else {
-              // Desktop Configuration - Full effect
               vantaConfig = {
                 el: vantaRef.current,
                 mouseControls: true,
@@ -114,6 +116,17 @@ export default function Homepage() {
     }
   }
 
+  // CTA Button Handlers
+  const handleAskAnything = (source: string) => {
+    trackCTA(`${source}_ask_anything`)
+    setIsChatbotOpen(true)
+  }
+
+  const handleTryDemo = (source: string) => {
+    trackCTA(`${source}_demo`)
+    router.push('/demo')
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       {/* Vanta Background */}
@@ -157,7 +170,7 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* Enhanced CTA Section with new buttons */}
+            {/* Enhanced CTA Section with new functionality */}
             <div>
               <h2 className="mobile-heading-responsive font-bold text-white mb-8">
                 Ready to Automate Your Business?
@@ -166,17 +179,17 @@ export default function Homepage() {
                 Join 40+ West Texas contractors who've streamlined their operations with our proven systems.
               </p>
               
-              {/* Updated CTA buttons - both green with consistent styling */}
+              {/* Updated CTA buttons with functionality */}
               <div className="cta-container-mobile">
                 <button 
-                  onClick={() => trackCTA('hero_primary_ask_anything')}
+                  onClick={() => handleAskAnything('hero')}
                   className="cta-mobile bg-green-600 hover:bg-green-700 text-white transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
                 >
                   Ask us Anything
                   <ArrowRight className="w-5 h-5" />
                 </button>
                 <button 
-                  onClick={() => trackCTA('hero_secondary_demo')}
+                  onClick={() => handleTryDemo('hero')}
                   className="cta-mobile bg-green-600 hover:bg-green-700 text-white transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
                 >
                   Try a Demo
@@ -187,7 +200,7 @@ export default function Homepage() {
           </div>
         </section>
 
-        {/* Section 3: Why Us - Enhanced Mobile */}
+        {/* Section 3: Why Us - Fixed Desktop Layout */}
         <section className="section-padding">
           <div className="max-w-6xl mx-auto content-spacing-mobile">
             <div className="text-center mb-16">
@@ -197,43 +210,46 @@ export default function Homepage() {
               </p>
             </div>
             
-            <div className="service-grid-mobile items-center">
-              <div className="md:col-span-1">
+            {/* Fixed: Center and stretch on desktop, stack on mobile */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+              <div className="text-center lg:text-left">
                 <h3 className="mobile-subheading-responsive font-bold text-white mb-6">Industry Expertise That Delivers Results</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start">
+                <div className="space-y-4 max-w-2xl mx-auto lg:mx-0">
+                  <div className="flex items-start justify-center lg:justify-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="mobile-text-responsive text-gray-300">5+ years automating workflows for contractors, roofers, HVAC, and plumbing companies</p>
+                    <p className="mobile-text-responsive text-gray-300 text-left">5+ years automating workflows for contractors, roofers, HVAC, and plumbing companies</p>
                   </div>
-                  <div className="flex items-start">
+                  <div className="flex items-start justify-center lg:justify-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="mobile-text-responsive text-gray-300">Deep understanding of home service business operations and pain points</p>
+                    <p className="mobile-text-responsive text-gray-300 text-left">Deep understanding of home service business operations and pain points</p>
                   </div>
-                  <div className="flex items-start">
+                  <div className="flex items-start justify-center lg:justify-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="mobile-text-responsive text-gray-300">Proven track record with 40+ local businesses and $2M+ in additional revenue generated</p>
+                    <p className="mobile-text-responsive text-gray-300 text-left">Proven track record with 40+ local businesses and $2M+ in additional revenue generated</p>
                   </div>
-                  <div className="flex items-start">
+                  <div className="flex items-start justify-center lg:justify-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="mobile-text-responsive text-gray-300">Local support you can trust - we're your neighbors, not a distant corporation</p>
+                    <p className="mobile-text-responsive text-gray-300 text-left">Local support you can trust - we're your neighbors, not a distant corporation</p>
                   </div>
                 </div>
               </div>
               
-              <div className="service-card-mobile">
-                <h4 className="mobile-subheading-responsive font-bold text-white mb-4">What Sets Us Apart</h4>
-                <ul className="space-y-3 mobile-text-responsive text-gray-300">
-                  <li>• Same-day response to all inquiries</li>
-                  <li>• Custom solutions, not cookie-cutter templates</li>
-                  <li>• Ongoing support and optimization included</li>
-                  <li>• ROI-focused approach - every automation pays for itself</li>
-                  <li>• No long-term contracts or hidden fees</li>
-                </ul>
+              <div className="text-center lg:text-left">
+                <div className="service-card-mobile max-w-2xl mx-auto lg:mx-0">
+                  <h4 className="mobile-subheading-responsive font-bold text-white mb-4">What Sets Us Apart</h4>
+                  <ul className="space-y-3 mobile-text-responsive text-gray-300 text-left">
+                    <li>• Same-day response to all inquiries</li>
+                    <li>• Custom solutions, not cookie-cutter templates</li>
+                    <li>• Ongoing support and optimization included</li>
+                    <li>• ROI-focused approach - every automation pays for itself</li>
+                    <li>• No long-term contracts or hidden fees</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </section>
-
+        
         {/* Section 4: Reviews/Case Studies - Enhanced Mobile */}
         <section className="section-padding bg-gray-900/50 backdrop-blur-sm">
           <div className="max-w-6xl mx-auto content-spacing-mobile">
@@ -356,26 +372,19 @@ export default function Homepage() {
                       }`}
                     >
                       <div className="text-center">
-                        {/* Description */}
                         <div className="mb-4">
                           <p className="mobile-text-responsive text-gray-300 text-center">
                             {automation.description}
                           </p>
                         </div>
-
-                        {/* Title (Trigger) */}
                         <h3 className="mobile-subheading-responsive font-semibold text-white mb-3">
                           {automation.title}
                         </h3>
-
-                        {/* Arrow */}
                         <div className="flex justify-center mb-3">
                           <svg className="w-8 h-8 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                           </svg>
                         </div>
-
-                        {/* Effect */}
                         <h4 className="mobile-text-responsive font-medium text-green-400">
                           {automation.effect}
                         </h4>
@@ -384,7 +393,6 @@ export default function Homepage() {
                   ))}
                 </div>
 
-                {/* Custom automation callout */}
                 <div className="mt-12 text-center">
                   <div className="bg-green-900/20 border border-green-600/30 rounded-xl p-6 backdrop-blur-sm">
                     <p className="mobile-subheading-responsive text-green-200 font-semibold">
@@ -424,10 +432,10 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* Additional Services - Mobile Optimized */}
+            {/* Additional Services - Fixed to 2x2 Grid */}
             <div>
               <h3 className="mobile-heading-responsive font-bold text-white mb-8 text-center">Additional Services</h3>
-              <div className="service-grid-mobile">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 {[
                   {
                     title: "Meta Marketing",
@@ -466,17 +474,17 @@ export default function Homepage() {
               Every day without automation is money left on the table. Let's change that.
             </p>
             
-            {/* Repeat both CTA buttons in footer */}
+            {/* Repeat both CTA buttons in footer with functionality */}
             <div className="cta-container-mobile">
               <button 
-                onClick={() => trackCTA('footer_primary_ask_anything')}
+                onClick={() => handleAskAnything('footer')}
                 className="cta-mobile bg-green-600 hover:bg-green-700 text-white transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
               >
                 Ask us Anything
                 <ArrowRight className="w-5 h-5" />
               </button>
               <button 
-                onClick={() => trackCTA('footer_secondary_demo')}
+                onClick={() => handleTryDemo('footer')}
                 className="cta-mobile bg-green-600 hover:bg-green-700 text-white transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
               >
                 Try a Demo
@@ -486,6 +494,12 @@ export default function Homepage() {
           </div>
         </section>
       </div>
+
+      {/* AI Chatbot */}
+      <AIChatbot 
+        isOpen={isChatbotOpen} 
+        onClose={() => setIsChatbotOpen(false)} 
+      />
     </div>
   )
 }
