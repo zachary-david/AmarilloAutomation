@@ -53,7 +53,7 @@ export default function Homepage() {
                 scaleMobile: 1.00,
                 color: 0x10b981,
                 backgroundColor: 0x0a1224,
-                points: 3.00,
+                points: 6.00,
                 maxDistance: 15.00,
                 spacing: 18.00,
               }
