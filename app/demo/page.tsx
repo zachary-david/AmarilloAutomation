@@ -82,16 +82,16 @@ export default function DemoPage() {
             
             <div className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg p-4 mb-8">
               <p className="text-yellow-400 font-bold text-lg mb-2">
-                🔥 LIMITED TIME: $25 Automation Starter Package
+                🔥 LIMITED TIME: $25 Automation Starter
               </p>
               <p className="text-gray-300 text-sm">
-                Complete the demo request and get our $200 automation package for just $25 
-                <span className="text-yellow-400"> (Save $175!)</span>
+                Choose 1 automation from our library of 10 proven templates + setup guide 
+                <span className="text-yellow-400"> (Normally $75)</span>
               </p>
             </div>
             
             <p className="hero-subtitle-mobile text-gray-300 mb-12">
-              Request your personalized demo and receive an exclusive automation starter offer sent directly to your inbox within 5 minutes
+              Request your personalized demo and choose 1 automation from our library of 10 proven templates - delivered to your inbox within 5 minutes
             </p>
 
             {/* Demo Features */}
@@ -108,10 +108,10 @@ export default function DemoPage() {
               <div className="value-card-mobile">
                 <DollarSign className="w-8 h-8 text-yellow-400 mx-auto mb-4" />
                 <h3 className="mobile-subheading-responsive font-bold text-white mb-3">
-                  $25 Starter Package
+                  Choose Your Automation
                 </h3>
                 <p className="mobile-text-responsive text-gray-300">
-                  Exclusive offer (normally $200) includes setup + 30-day support
+                  Pick 1 from 10 proven templates + setup guide + 15-min call
                 </p>
               </div>
               <div className="value-card-mobile">
@@ -129,11 +129,11 @@ export default function DemoPage() {
             <div className="max-w-md mx-auto">
               <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-8 backdrop-blur-sm">
                 <h3 className="mobile-subheading-responsive font-bold text-white mb-4 text-center">
-                  Get Your Demo + $25 Offer
+                  Get Your Demo + Choose Your $25 Automation
                 </h3>
                 
                 <p className="text-sm text-gray-400 mb-6 text-center">
-                  Enter your email below to receive instant demo access and your exclusive starter package offer
+                  Enter your email below to see 10 automation options and choose the one that fits your business
                 </p>
                 
                 {/* Replace the entire form with Google Form iframe */}
@@ -153,7 +153,7 @@ export default function DemoPage() {
                 </div>
 
                 <p className="mobile-text-responsive text-gray-400 text-center mt-4">
-                  🚀 Demo + offer sent to your inbox in under 5 minutes
+                  🚀 See 10 automation options + claim your $25 starter in under 5 minutes
                 </p>
               </div>
             </div>
@@ -164,9 +164,9 @@ export default function DemoPage() {
         <section className="section-padding bg-gray-900/50 backdrop-blur-sm">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="mobile-heading-responsive font-bold text-white mb-4">
-              What You Get for $25
+              Choose 1 Automation for $25
             </h2>
-            <p className="text-gray-300 mb-12">Normally $200 • Limited Time Offer</p>
+            <p className="text-gray-300 mb-12">Pick from 10 proven templates • Normally $75 each</p>
             
             <div className="case-study-mobile text-left">
               <div className="service-card-mobile bg-green-900/20 border border-green-500/30">
@@ -175,11 +175,11 @@ export default function DemoPage() {
                     <span className="text-white font-bold text-sm">1</span>
                   </div>
                   <h3 className="mobile-subheading-responsive font-bold text-white">
-                    Lead Capture Setup
+                    Your Choice of Automation
                   </h3>
                 </div>
                 <p className="mobile-text-responsive text-gray-300">
-                  Automated lead collection and instant follow-up system for your website
+                  Pick 1 from: Contact alerts, lead tracking, follow-ups, review requests, appointment reminders, and 5 more proven templates
                 </p>
               </div>
               
@@ -189,11 +189,11 @@ export default function DemoPage() {
                     <span className="text-white font-bold text-sm">2</span>
                   </div>
                   <h3 className="mobile-subheading-responsive font-bold text-white">
-                    Email Automation
+                    Complete Setup Guide
                   </h3>
                 </div>
                 <p className="mobile-text-responsive text-gray-300">
-                  5-email nurture sequence that converts prospects into paying customers
+                  Step-by-step instructions to get your chosen automation working in your business
                 </p>
               </div>
               
@@ -203,11 +203,11 @@ export default function DemoPage() {
                     <span className="text-white font-bold text-sm">3</span>
                   </div>
                   <h3 className="mobile-subheading-responsive font-bold text-white">
-                    30-Day Support
+                    15-Minute Setup Call
                   </h3>
                 </div>
                 <p className="mobile-text-responsive text-gray-300">
-                  Full setup assistance plus one month of support to ensure everything works perfectly
+                  Quick call to help you get your automation running if you need assistance
                 </p>
               </div>
             </div>
@@ -215,7 +215,7 @@ export default function DemoPage() {
             <div className="mt-8 p-6 bg-yellow-400/10 border border-yellow-400/30 rounded-xl">
               <p className="text-yellow-400 font-bold mb-2">⏰ This Offer Expires in 48 Hours</p>
               <p className="text-gray-300 text-sm">
-                Complete the demo request above to lock in your $25 starter package before the price returns to $200
+                Complete the demo request above to see all 10 automation options and lock in your $25 starter before the price returns to $75
               </p>
             </div>
           </div>
@@ -235,8 +235,8 @@ export default function DemoPage() {
             </div>
             
             <p className="mobile-subheading-responsive text-gray-300 mb-8">
-              "Started with the $25 package and within 30 days we were saving 15 hours per week 
-              and closing 40% more deals. Best investment we've made."
+              "Started with the $25 automation and within 2 weeks we were saving 5 hours per week 
+              and never missing important leads. Perfect starter solution."
             </p>
             
             <p className="mobile-text-responsive text-gray-400">
