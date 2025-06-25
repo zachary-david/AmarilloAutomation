@@ -226,10 +226,6 @@ export default function DemoPage() {
               "The demo showed me exactly what I was missing. Now I respond to leads faster than anyone in town. 
               My conversion rate went from 8% to 23% in two months."
             </p>
-            
-            <p className="mobile-text-responsive text-gray-400 mb-8">
-              - Mike R., Elite HVAC Services
-            </p>
 
             <div className="bg-gray-800/30 border border-gray-700 rounded-lg p-6">
               <h3 className="text-lg font-bold text-white mb-4">
