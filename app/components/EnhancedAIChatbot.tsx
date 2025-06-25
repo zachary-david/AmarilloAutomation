@@ -173,7 +173,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
       handleTopicSelection(option)  
     } else if (currentFlow === 'scheduling') {  
       handleMeetingTypeSelection(option)  
-    } else if (option.includes('schedule') || option.includes('Yeah')) {  
+    } else if (option === "Yeah, let's schedule something" || option.includes('Schedule a Consultation')) {  
       handleScheduleConsultation()  
     } else if (option.includes('info') || option.includes('think about it')) {  
       const userMessage: Message = {  
