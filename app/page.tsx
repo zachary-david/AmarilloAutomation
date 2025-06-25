@@ -1,205 +1,56 @@
-// app/page.tsx (Combined Home + Solutions + Contact with Scroll-Based Vanta Colors)
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import Navigation from './components/Navigation'
-import AnimatedText from './components/AnimatedText'
-import Link from 'next/link'
-import Footer from './components/Footer'
+import { useEffect, useRef } from 'react'
+import { ChevronRight, Star, CheckCircle, ArrowRight } from 'lucide-react'
 
-
-// GTM Event Tracking Functions
-declare global {
-  interface Window {
-    dataLayer: any[]
-  }
-}
-
-interface ContactFormData {
-  name: string
-  email: string
-  company: string
-  serviceType: string
-  companySize: string
-  message: string
-}
-
-export default function Home() {
+export default function Homepage() {
   const vantaRef = useRef<HTMLDivElement>(null)
   const vantaEffect = useRef<any>(null)
-  const [formStarted, setFormStarted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  
-  const [formData, setFormData] = useState<ContactFormData>({
-    name: '',
-    email: '',
-    company: '',
-    serviceType: '',
-    companySize: '',
-    message: ''
-  })
 
-  // Color interpolation function
-  const interpolateColor = (color1: number, color2: number, factor: number) => {
-    const r1 = (color1 >> 16) & 255
-    const g1 = (color1 >> 8) & 255  
-    const b1 = color1 & 255
-    
-    const r2 = (color2 >> 16) & 255
-    const g2 = (color2 >> 8) & 255
-    const b2 = color2 & 255
-    
-    const r = Math.round(r1 + (r2 - r1) * factor)
-    const g = Math.round(g1 + (g2 - g1) * factor)
-    const b = Math.round(b1 + (b2 - b1) * factor)
-    
-    return (r << 16) | (g << 8) | b
-  }
-
-  // Vanta.js with scroll-based color changes
+  // Load Vanta.js effect
   useEffect(() => {
-    if (!vantaEffect.current && (window as any).VANTA && vantaRef.current) {
-      // Check if mobile/tablet (768px and below)
-      const isMobile = window.innerWidth <= 768
-      
-      const vantaConfig = isMobile ? {
-        // Mobile Configuration - More subtle
-        el: vantaRef.current,
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0x60a5fa, // Start with blue
-        backgroundColor: 0x0a1224,
-        points: 4.00,
-        maxDistance: 25.00,
-        spacing: 20.00,
-      } : {
-        // Desktop Configuration - More dynamic
-        el: vantaRef.current,
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0x60a5fa, // Start with blue
-        backgroundColor: 0x0a1224,
-        points: 10.00,
-        maxDistance: 20.00,
-        spacing: 15.00,
-      }
-      
-      vantaEffect.current = (window as any).VANTA.NET(vantaConfig)
-      
-      // Scroll-based color changes - FIXED VERSION
-      const handleScroll = () => {
-        if (!vantaEffect.current) return
-        
-        const scrollTop = window.scrollY
-        const windowHeight = window.innerHeight
-        const docHeight = document.documentElement.scrollHeight
-        
-        // Calculate scroll progress (0 to 1)
-        const scrollPercent = scrollTop / (docHeight - windowHeight)
-        
-        let newColor
-        
-        if (scrollPercent <= 0.33) {
-          // First third: Stay blue
-          newColor = 0x60a5fa
-        } else if (scrollPercent <= 0.66) {
-          // Second third: Blue to Green transition
-          const localProgress = (scrollPercent - 0.33) / 0.33
-          newColor = interpolateColor(0x60a5fa, 0x10b981, localProgress)
-        } else {
-          // Final third: Green to Amber transition
-          const localProgress = (scrollPercent - 0.66) / 0.34
-          newColor = interpolateColor(0x10b981, 0xf59e0b, localProgress)
-        }
-        
-        // Force update the Vanta color
+    const loadVanta = async () => {
+      if (typeof window !== 'undefined' && !window.VANTA) {
         try {
-          vantaEffect.current.setOptions({ color: newColor })
+          // Load Three.js first
+          const threeScript = document.createElement('script')
+          threeScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js'
+          document.head.appendChild(threeScript)
+          
+          await new Promise(resolve => { threeScript.onload = resolve })
+          
+          // Then load Vanta.js
+          const vantaScript = document.createElement('script')
+          vantaScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.net.min.js'
+          document.head.appendChild(vantaScript)
+          
+          await new Promise(resolve => { vantaScript.onload = resolve })
+          
+          // Initialize Vanta effect
+          if (vantaRef.current && window.VANTA) {
+            vantaEffect.current = window.VANTA.NET({
+              el: vantaRef.current,
+              mouseControls: true,
+              touchControls: true,
+              gyroControls: false,
+              minHeight: 200.00,
+              minWidth: 200.00,
+              scale: 1.00,
+              scaleMobile: 1.00,
+              color: 0x10b981,
+              backgroundColor: 0x0a1224,
+              points: 8.00,
+              maxDistance: 18.00,
+              spacing: 16.00,
+            })
+          }
         } catch (error) {
-          console.log('Vanta color update error:', error)
+          console.log('Vanta.js loading failed:', error)
         }
-      }
-      
-      // Add scroll listener with throttling for performance
-      let ticking = false
-      const throttledScroll = () => {
-        if (!ticking) {
-          requestAnimationFrame(() => {
-            handleScroll()
-            ticking = false
-          })
-          ticking = true
-        }
-      }
-      
-      // Handle window resize to update Vanta config
-      const handleResize = () => {
-        const newIsMobile = window.innerWidth <= 768
-        if ((isMobile && !newIsMobile) || (!isMobile && newIsMobile)) {
-          // Screen size category changed, reinitialize Vanta
-          if (vantaEffect.current) {
-            vantaEffect.current.destroy()
-            vantaEffect.current = null
-          }
-          
-          const newConfig = newIsMobile ? {
-            el: vantaRef.current,
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00,
-            color: 0x60a5fa,
-            backgroundColor: 0x0a1224,
-            points: 2.00,
-            maxDistance: 15.00,
-            spacing: 14.00,
-          } : {
-            el: vantaRef.current,
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00,
-            color: 0x60a5fa,
-            backgroundColor: 0x0a1224,
-            points: 10.00,
-            maxDistance: 20.00,
-            spacing: 15.00,
-          }
-          
-          if (vantaRef.current) {
-            vantaEffect.current = (window as any).VANTA.NET(newConfig)
-          }
-        }
-      }
-      
-      window.addEventListener('scroll', throttledScroll, { passive: true })
-      window.addEventListener('resize', handleResize)
-      
-      // Initial color set
-      handleScroll()
-      
-      return () => {
-        window.removeEventListener('scroll', throttledScroll)
-        window.removeEventListener('resize', handleResize)
       }
     }
+    
+    loadVanta()
     
     return () => {
       if (vantaEffect.current) {
@@ -209,469 +60,370 @@ export default function Home() {
     }
   }, [])
 
-  // Track page view
-  useEffect(() => {
-    window.dataLayer?.push({
-      event: 'page_view_enhanced',
-      page_title: 'Home - Amarillo Automation',
-      page_section: 'combined_home',
-      business_vertical: 'automation_consulting'
-    })
-  }, [])
-
-  // UPDATED SOLUTIONS ARRAY - Workflow Automation Focus
-  const solutions = [
-    {
-      title: "Workflow Automations",
-      description: "Done for you automations -- built for busy business owners. We'll use the tools you already use. No software headaches, just simple solutions.",
-      features: [
-        "Zapier Advanced Workflows", 
-        "AirTable", 
-        "n8n Custom Deployments", 
-        "Microsoft Power Automate",
-        "Custom API Integrations"
-      ]
-    },
-
-    {
-      title: "Lead Generation Automation",
-      description: "We build lead engines that run on autopilot — fueled by automated outreach, optimized funnels, and follow-up sequences that convert prospects to customers.",
-      features: [
-        "Automated Lead Capture", 
-        "Advanced Analytics",
-        "Email Sequence Automation", 
-        "CRM Workflow Setup", 
-        "Multi-Channel Follow-up"
-      ]
-    },
-    {
-      title: "Smart Assistant & Chatbot Development",
-      description: "Branded AI assistants trained on your business data to handle customer inquiries, qualify leads, schedule appointments, and provide 24/7 support.",
-      features: [
-        "Custom GPT Training", 
-        "Voice Agent Integration", 
-        "Knowledge Base Automation", 
-        "Multi-Platform Deployment"
-      ]
-    }
-  ]
-
-  // Form handling functions
-  const handleFormStart = () => {
-    if (!formStarted) {
-      setFormStarted(true)
-      window.dataLayer?.push({
-        event: 'form_start',
-        form_name: 'combined_contact_form',
-        form_location: 'home_page',
-        lead_intent: 'service_inquiry'
+  const trackCTA = (action: string) => {
+    if (typeof window !== 'undefined' && 'gtag' in window) {
+      (window as any).gtag('event', 'cta_click', {
+        event_category: 'conversion',
+        event_label: action,
+        value: 1
       })
     }
-  }
-
-  const calculateLeadScore = (data: ContactFormData): number => {
-    let score = 50
-    const serviceScores: Record<string, number> = {
-      'introductory-offer': 35,
-      'general-consultation': 20,
-      'automations': 30,
-      'digital-marketing': 25,
-      'ai-integration': 30
-    }
-    score += serviceScores[data.serviceType] || 10
-
-    const sizeScores: Record<string, number> = {
-      'just-me': 15,
-      'small-team': 25,
-      'large-team': 30
-    }
-    score += sizeScores[data.companySize] || 10
-
-    return Math.min(score, 100)
-  }
-
-  const calculateFormProgress = () => {
-    const requiredFields = ['name', 'email', 'company', 'serviceType', 'companySize']
-    const optionalFields = ['message']
-    const allFields = [...requiredFields, ...optionalFields]
-    
-    const completedFields = allFields.filter(field => 
-      formData[field as keyof ContactFormData]?.length > 0
-    )
-    return Math.round((completedFields.length / allFields.length) * 100)
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    
-    if (!formData.name || !formData.email || !formData.company || !formData.serviceType || !formData.companySize) {
-      alert('Please fill in all required fields.')
-      setIsSubmitting(false)
-      return
-    }
-
-    const leadScore = calculateLeadScore(formData)
-    
-    try {
-      const response = await fetch('https://formspree.io/f/xqabllkq', { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          leadScore: leadScore,
-          leadQuality: leadScore > 70 ? 'High' : leadScore > 40 ? 'Medium' : 'Low',
-          submissionDate: new Date().toISOString(),
-          formSource: 'Combined Home Page',
-          _subject: `New Lead: ${formData.name} from ${formData.company} - Score: ${leadScore}`,
-          _replyto: formData.email
-        }),
-      })
-      
-      if (response.ok) {
-        setSubmitted(true)
-        window.dataLayer?.push({
-          event: 'contact_submission',
-          form_name: 'combined_contact_form',
-          service_interest: formData.serviceType,
-          lead_score: leadScore
-        })
-      } else {
-        throw new Error('Submission failed')
-      }
-    } catch (error) {
-      alert('Error sending message. Please try again.')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    handleFormStart()
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
+      {/* Vanta Background */}
       <div ref={vantaRef} className="fixed inset-0 z-0" />
+      
+      {/* Content */}
       <div className="relative z-10">
-        <Navigation />
-        <main>
-          {/* Section 1: Hero */}
-          <section id="home" className="flex-1 flex items-center justify-center px-4 py-20 min-h-screen">
-            <div className="max-w-4xl mx-auto text-center">
-              <AnimatedText 
-                text="Tomorrow's tools, today."
-                className="text-4xl md:text-6xl font-bold text-white mb-6"
-              />
-              <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
-                Intelligent integrations and smart solutions to simplify your business.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="#solutions"
-                  className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
-                >
-                  Explore Solutions
-                </a>
-                <a
-                  href="#contact"
-                  className="px-8 py-4 border border-gray-600 text-gray-300 hover:text-white hover:border-gray-500 font-bold rounded-lg transition-all duration-300 active:scale-95"
-                >
-                  Get in Touch
-                </a>
+        
+        {/* Section 1: Hero */}
+        <section className="min-h-screen flex items-center justify-center px-4 pt-8">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* 1.01 Company Name */}
+            <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight">
+              AMARILLO AUTOMATION
+            </h1>
+            
+            {/* 1.02 Subheader */}
+            <h2 className="text-2xl md:text-3xl text-gray-300 mb-12 font-light">
+              Workflow automation experts for local home services
+            </h2>
+            
+            {/* 1.03 Value Proposition - No containers, no emojis */}
+            <div className="grid md:grid-cols-3 gap-8 mb-16">
+              <div>
+                <h3 className="text-xl font-bold text-white mb-3">Save Time</h3>
+                <p className="text-gray-300 leading-relaxed">Automate repetitive tasks and eliminate manual data entry. Focus on what matters - growing your business.</p>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white mb-3">Make Money</h3>
+                <p className="text-gray-300 leading-relaxed">Faster lead response times and better follow-up systems mean more customers and higher conversion rates.</p>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white mb-3">Simplify Operations</h3>
+                <p className="text-gray-300 leading-relaxed">Streamline your workload and lead management with systems that work while you sleep.</p>
               </div>
             </div>
-          </section>
 
-          {/* Section 2: Solutions - ENHANCED WITH WORKFLOW AUTOMATION */}
-          <section id="solutions" className="py-20 px-4">
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-16">
-                <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                  We're automation platform experts who connect your business tools, eliminate manual work, 
-                  and create intelligent workflows that save time and increase revenue.
-                </p>
+            {/* Call to Action - Moved up */}
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
+                Ready to Automate Your Business?
+              </h2>
+              <p className="text-xl text-gray-300 mb-12">
+                Join 40+ West Texas contractors who've streamlined their operations with our proven systems.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                <button 
+                  onClick={() => trackCTA('primary_consultation')}
+                  className="px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
+                >
+                  Schedule Free Consultation
+                  <ArrowRight className="w-5 h-5 ml-2 inline" />
+                </button>
+                <button 
+                  onClick={() => trackCTA('secondary_demo')}
+                  className="px-8 py-4 border border-gray-600 text-white hover:bg-gray-800 font-bold rounded-lg transition-all duration-300 active:scale-95"
+                >
+                  See Demo
+                  <ChevronRight className="w-5 h-5 ml-2 inline" />
+                </button>
               </div>
+            </div>
+          </div>
+        </section>
 
-              <div className="grid md:grid-cols-2 gap-8">
-                {solutions.map((solution, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-900/80 border border-gray-800 rounded-xl p-8 hover:border-green-500/30 transition-all duration-300 hover:shadow-xl"
-                  >
-                    <h3 className="text-2xl font-bold text-white mb-4">{solution.title}</h3>
-                    <p className="text-gray-300 mb-6 leading-relaxed">{solution.description}</p>
-                    
-                    <div className="space-y-2">
-                      <h4 className="text-lg font-semibold text-white mb-3">Key Features:</h4>
-                      <ul className="space-y-2">
-                        {solution.features.map((feature, featureIndex) => (
-                          <li key={featureIndex} className="flex items-center text-gray-300">
-                            <svg className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
+        {/* Section 3: Why Us */}
+        <section className="py-20 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Why Choose Amarillo Automation</h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                We're not just another tech company. We're local automation experts who understand the unique challenges of West Texas home service businesses.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-6">Industry Expertise That Delivers Results</h3>
+                <div className="space-y-4">
+                  <div className="flex items-start">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
+                    <p className="text-gray-300">5+ years automating workflows for contractors, roofers, HVAC, and plumbing companies</p>
+                  </div>
+                  <div className="flex items-start">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
+                    <p className="text-gray-300">Deep understanding of home service business operations and pain points</p>
+                  </div>
+                  <div className="flex items-start">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
+                    <p className="text-gray-300">Proven track record with 40+ local businesses and $2M+ in additional revenue generated</p>
+                  </div>
+                  <div className="flex items-start">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
+                    <p className="text-gray-300">Local support you can trust - we're your neighbors, not a distant corporation</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-lg p-8">
+                <h4 className="text-xl font-bold text-white mb-4">What Sets Us Apart</h4>
+                <ul className="space-y-3 text-gray-300">
+                  <li>• Same-day response to all inquiries</li>
+                  <li>• Custom solutions, not cookie-cutter templates</li>
+                  <li>• Ongoing support and optimization included</li>
+                  <li>• ROI-focused approach - every automation pays for itself</li>
+                  <li>• No long-term contracts or hidden fees</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 4: Reviews/Case Studies */}
+        <section className="py-20 px-4 bg-gray-900/50 backdrop-blur-sm">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Real Results from Real Businesses</h2>
+              <p className="text-xl text-gray-300">
+                See how we've helped local contractors save time, increase revenue, and grow their businesses.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  company: "Amarillo Roofing Company",
+                  problem: "Leads were falling through the cracks, taking hours to respond to new inquiries",
+                  solution: "Automated lead routing and instant response system",
+                  result: "Response time went from 4+ hours to under 2 minutes. Closed 40% more deals last quarter.",
+                  rating: 5
+                },
+                {
+                  company: "Amarillo HVAC Company",
+                  problem: "Spending 2+ hours daily on manual scheduling and customer follow-ups",
+                  solution: "Complete workflow automation for scheduling and customer communications",
+                  result: "Saved 15 hours per week on admin work. Customer satisfaction scores up 35%.",
+                  rating: 5
+                },
+                {
+                  company: "Amarillo Plumbing Company",
+                  problem: "Lost track of estimates and follow-ups, missing potential revenue",
+                  solution: "Automated estimate tracking and follow-up sequences", 
+                  result: "Estimate-to-sale conversion increased by 60%. Haven't lost a lead since.",
+                  rating: 5
+                }
+              ].map((review, index) => (
+                <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+                  <div className="flex items-center mb-4">
+                    {[...Array(review.rating)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
+                    ))}
+                  </div>
+                  
+                  <h4 className="text-lg font-bold text-white mb-4">{review.company}</h4>
+                  
+                  <div className="space-y-3 text-sm">
+                    <div>
+                      <span className="text-red-400 font-semibold">Problem: </span>
+                      <span className="text-gray-300">{review.problem}</span>
                     </div>
+                    <div>
+                      <span className="text-blue-400 font-semibold">Solution: </span>
+                      <span className="text-gray-300">{review.solution}</span>
+                    </div>
+                    <div>
+                      <span className="text-green-400 font-semibold">Result: </span>
+                      <span className="text-gray-300">{review.result}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Section 5: Services and Solutions */}
+        <section className="py-20 px-4">
+          <div className="max-w-6xl mx-auto">
+            {/* 5.1 Sales Hook */}
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                You Don't Need High Dollar Software to Use Premium Features
+              </h2>
+              <p className="text-xl text-gray-300 max-w-4xl mx-auto">
+                We connect your existing tools and create powerful automations using platforms you already trust. No expensive enterprise software required.
+              </p>
+            </div>
+
+            {/* 5.2 Workflow Automations Examples */}
+            <div className="mb-16">
+              {/* Real Automation Examples - Mobile-First Grid */}
+              <div className="max-w-5xl mx-auto mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {[
+                    {
+                      title: 'New Lead Received',
+                      effect: 'Log and organize into your existing database',
+                      description: 'Follow up with leads instantly'
+                    },
+                    {
+                      title: 'Missed Call',
+                      effect: 'Automatic Text Back',
+                      description: 'Never miss a potential customer again'
+                    },
+                    {
+                      title: 'Upcoming Appointment',
+                      effect: 'Send Reminder Texts',
+                      description: 'Remind customers about appointments'
+                    },
+                    {
+                      title: 'Job Completed',
+                      effect: 'Generate and Send Invoice',
+                      description: 'Send quotes automatically'
+                    },
+                    {
+                      title: 'Payment Received',
+                      effect: 'Request Google Review',
+                      description: 'Request reviews when work is done'
+                    },
+                    {
+                      title: 'Your Custom Trigger',
+                      effect: 'Your Biggest Lead Solution',
+                      description: 'Track jobs in Google Sheets or your CRM',
+                      isCustom: true
+                    }
+                  ].map((automation, index) => (
+                    <div 
+                      key={index}
+                      className={`bg-gray-900/50 border rounded-xl p-6 transition-all duration-300 hover:shadow-xl backdrop-blur-sm ${
+                        automation.isCustom 
+                          ? 'border-green-500/50 bg-gradient-to-br from-green-900/20 to-blue-900/20' 
+                          : 'border-gray-700 hover:border-green-500/30'
+                      }`}
+                    >
+                      <div className="text-center">
+                        {/* Description */}
+                        <div className="mb-4">
+                          <p className="text-sm text-gray-300 text-center">
+                            {automation.description}
+                          </p>
+                        </div>
+
+                        {/* Title (Trigger) */}
+                        <h3 className="text-lg font-semibold text-white mb-3">
+                          {automation.title}
+                        </h3>
+
+                        {/* Arrow */}
+                        <div className="flex justify-center mb-3">
+                          <svg className="w-8 h-8 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+
+                        {/* Effect */}
+                        <h4 className="text-base font-medium text-green-400">
+                          {automation.effect}
+                        </h4>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Custom automation callout */}
+                <div className="mt-12 text-center">
+                  <div className="bg-green-900/20 border border-green-600/30 rounded-xl p-6 backdrop-blur-sm">
+                    <p className="text-green-200 text-lg font-semibold">
+                      Everything's customized to your business. No extra software. No forced migration. No stress.
+                    </p>
+                    <p className="text-green-400 text-xl font-semibold mt-2">
+                      You get results — not software headaches.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Tools We Use */}
+            <div className="mb-16">
+              <h3 className="text-2xl font-bold text-white mb-8 text-center">Tools We Use</h3>
+              <p className="text-xl text-gray-300 text-center mb-8 max-w-3xl mx-auto">
+                We integrate with the platforms you already know and trust. No learning curve, no forced migrations.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                {[
+                  'Zapier', 'Make.com', 'GoHighLevel', 'Airtable', 
+                  'Google Workspace', 'Facebook', 'Instagram', 'YouTube',
+                  'QuickBooks', 'Calendly', 'Mailchimp', 'HubSpot',
+                  'Salesforce', 'Slack', 'Twilio', 'Gmail',
+                  'Google Sheets', 'Notion'
+                ].map((tool, index) => (
+                  <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 text-center hover:border-green-500/30 transition-all">
+                    <span className="text-gray-300 font-medium text-sm">{tool}</span>
                   </div>
                 ))}
               </div>
-              {/* Existing CTA Section */}
-              <div className="text-center mt-16">
-                <div className="bg-gradient-to-r from-blue-600/20 to-green-600/20 border border-gray-700 rounded-xl p-8">
-                  <h3 className="text-2xl font-bold text-white mb-4">Ready to Get Started?</h3>
-                  <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-                    Contact our team to discuss your specific requirements and learn how our solutions can transform your operations.
-                  </p>
-                  <a
-                    href="#contact"
-                    className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg"
-                  >
-                    Get in Touch Below
-                  </a>
-                </div>
+              
+              <div className="text-center mt-8">
+                <p className="text-gray-400">And many more! If you use it, we can probably integrate with it.</p>
               </div>
             </div>
-          </section>
 
-          {/* Section 3: Contact */}
-          <section id="contact" className="py-20 px-4">
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-16">
-                <AnimatedText 
-                  text="Get In Touch"
-                  className="text-4xl md:text-5xl font-bold text-white mb-6"
-                />
-                <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                  Ready to automate your workflows? We'd love to hear from you. 
-                  Send us a message and we'll respond within 24 hours.
-                </p>
+            {/* 5.3 Other Services */}
+            <div>
+              <h3 className="text-2xl font-bold text-white mb-8 text-center">Additional Services</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                {[
+                  {
+                    title: "Meta Marketing",
+                    description: "Facebook and Instagram advertising campaigns that target your ideal customers and track real ROI"
+                  },
+                  {
+                    title: "Advanced Analytics", 
+                    description: "Custom dashboards and reporting systems that show exactly what's driving your business growth"
+                  },
+                  {
+                    title: "Artificial Intelligence",
+                    description: "AI-powered chatbots and smart tools that qualify leads and handle customer inquiries 24/7"
+                  },
+                  {
+                    title: "General Consultation",
+                    description: "Strategic business guidance to identify your biggest growth opportunities and operational improvements"
+                  }
+                ].map((service, index) => (
+                  <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+                    <h4 className="text-lg font-bold text-white mb-3">{service.title}</h4>
+                    <p className="text-gray-300">{service.description}</p>
+                  </div>
+                ))}
               </div>
-
-              {submitted ? (
-                <div className="max-w-2xl mx-auto text-center">
-                  <div className="bg-green-800/20 border border-green-600 rounded-xl p-8">
-                    <div className="text-4xl mb-4">✅</div>
-                    <h2 className="text-3xl font-bold text-white mb-4">Thank You!</h2>
-                    <p className="text-gray-300 mb-6">
-                      We've received your inquiry and will respond within 24 hours.
-                    </p>
-                    <button 
-                      onClick={() => {
-                        setSubmitted(false)
-                        setFormData({ name: '', email: '', company: '', serviceType: '', companySize: '', message: '' })
-                        setFormStarted(false)
-                      }}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all"
-                    >
-                      Send Another Message
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-                  {/* Contact Form - Same styling as solution cards */}
-                  <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-6 md:p-8">
-                    <h3 className="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6">Tell us about your project</h3>
-                    
-                    <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                        <div>
-                          <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                            Full Name *
-                          </label>
-                          <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            required
-                            value={formData.name}
-                            onChange={handleChange}
-                            className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors text-sm md:text-base"
-                            placeholder="Your full name"
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                            Email Address *
-                          </label>
-                          <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            required
-                            value={formData.email}
-                            onChange={handleChange}
-                            className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors text-sm md:text-base"
-                            placeholder="your.email@company.com"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">
-                          Company Name *
-                        </label>
-                        <input
-                          type="text"
-                          id="company"
-                          name="company"
-                          required
-                          value={formData.company}
-                          onChange={handleChange}
-                          className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors text-sm md:text-base"
-                          placeholder="Your company name"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                        <div>
-                          <label htmlFor="serviceType" className="block text-sm font-medium text-gray-300 mb-2">
-                            Service Interest *
-                          </label>
-                          <select
-                            id="serviceType"
-                            name="serviceType"
-                            required
-                            value={formData.serviceType}
-                            onChange={handleChange}
-                            className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors text-sm md:text-base"
-                          >
-                            <option value="">Select a service</option>
-                            <option value="introductory-offer">Introductory Offer</option>
-                            <option value="general-consultation">General Consultation</option>
-                            <option value="automations">Automations</option>
-                            <option value="digital-marketing">Digital Marketing</option>
-                            <option value="ai-integration">AI Integration</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label htmlFor="companySize" className="block text-sm font-medium text-gray-300 mb-2">
-                            Company Size *
-                          </label>
-                          <select
-                            id="companySize"
-                            name="companySize"
-                            required
-                            value={formData.companySize}
-                            onChange={handleChange}
-                            className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors text-sm md:text-base"
-                          >
-                            <option value="">Select company size</option>
-                            <option value="just-me">Just Me</option>
-                            <option value="small-team">Small Team</option>
-                            <option value="large-team">Large Team (50+ employees)</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                          Project Details
-                        </label>
-                        <textarea
-                          id="message"
-                          name="message"
-                          value={formData.message}
-                          onChange={handleChange}
-                          rows={3}
-                          className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors resize-none text-sm md:text-base"
-                          placeholder="Tell us about your automation needs..."
-                        ></textarea>
-                      </div>
-
-                      {formStarted && (
-                        <div className="bg-gray-800/50 rounded-lg p-3 md:p-4">
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="text-gray-300 text-xs md:text-sm">Form Progress</span>
-                            <span className="text-amber-400 text-xs md:text-sm font-medium">{calculateFormProgress()}%</span>
-                          </div>
-                          <div className="w-full bg-gray-700 rounded-full h-2">
-                            <div 
-                              className="bg-amber-500 h-2 rounded-full transition-all duration-300"
-                              style={{ width: `${calculateFormProgress()}%` }}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className={`w-full py-3 md:py-4 font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg text-sm md:text-base ${
-                          isSubmitting
-                            ? 'bg-gray-600 cursor-not-allowed text-gray-400'
-                            : 'bg-amber-600 hover:bg-amber-700 text-white'
-                        }`}
-                      >
-                        {isSubmitting ? 'Sending Message...' : 'Send Message'}
-                      </button>
-                    </form>
-                  </div>
-
-                  {/* Contact Info Column - Same styling as solution cards */}
-                  <div className="space-y-6 md:space-y-8">
-                    {/* Direct Contact */}
-                    <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-6 md:p-8">
-                      <h3 className="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6">Direct Contact</h3>
-                      <div className="space-y-3 md:space-y-4">
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 md:w-12 md:h-12 bg-amber-600 rounded-lg flex items-center justify-center mr-3 md:mr-4">
-                            <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="text-gray-300 text-xs md:text-sm">Email</p>
-                            <a href="mailto:admin@amarilloautomation.com" className="text-white font-semibold hover:text-amber-400 transition-colors text-sm md:text-base">
-                              admin@amarilloautomation.com
-                            </a>
-                          </div>
-                        </div>
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 md:w-12 md:h-12 bg-amber-600 rounded-lg flex items-center justify-center mr-3 md:mr-4">
-                            <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="text-gray-300 text-xs md:text-sm">Response Time</p>
-                            <p className="text-white font-semibold text-sm md:text-base">Within 24 hours</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Business Hours */}
-                    <div className="bg-gray-900/80 border border-gray-800 rounded-xl p-6 md:p-8">
-                      <h3 className="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6">Business Hours</h3>
-                      <div className="space-y-2 text-gray-300 text-sm md:text-base">
-                        <div className="flex justify-between">
-                          <span>Monday - Friday</span>
-                          <span>8:00 AM - 5:00 PM CST</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Saturday</span>
-                          <span>10:00 AM - 4:00 PM CST</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Sunday</span>
-                          <span>Emergency Support Only</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
-          </section>
-        </main>
+          </div>
+        </section>
+
+        {/* Final CTA */}
+        <section className="py-20 px-4 bg-gray-900/80 backdrop-blur-sm">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              Stop Losing Leads. Start Growing Your Business.
+            </h2>
+            <p className="text-xl text-gray-300 mb-8">
+              Every day without automation is money left on the table. Let's change that.
+            </p>
+            <button 
+              onClick={() => trackCTA('final_cta')}
+              className="px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl text-lg"
+            >
+              Get Started Today
+              <ArrowRight className="w-5 h-5 ml-2 inline" />
+            </button>
+          </div>
+        </section>
       </div>
-      <Footer />
     </div>
   )
 }
