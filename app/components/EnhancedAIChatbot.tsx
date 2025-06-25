@@ -8,13 +8,15 @@ interface Message {
   role: 'user' | 'assistant'  
   content: string  
   timestamp: Date  
-  type?: 'text' | 'selection' | 'booking' | 'followup'  
+  type?: 'text' | 'selection'  
   options?: string[]  
-  timeSlot?: {  
-    date: string  
-    time: string  
-    type: 'video' | 'phone'  
-  }  
+}
+
+interface BookingDetails {  
+  name?: string  
+  company?: string  
+  email?: string  
+  meetingType?: 'video' | 'phone'  
 }
 
 interface Props {  
@@ -22,33 +24,22 @@ interface Props {
   onClose: () => void  
 }
 
-// SIMPLIFIED: Just get basic responses working first
-const getServiceResponse = (service: string): string => {
-  const responses: Record<string, string> = {
-    'Automation': "Automation is basically bread and butter here in West Texas. We help local businesses automate the repetitive tasks - lead entry, paperwork, scheduling, service reminders, etc. Most of our customers save at least 15+ hours a week.",
-    'Digital Marketing': "We do Facebook and Instagram ads for local home service businesses. These are paid ads that focus on getting you actual customers, not just likes. We track key metrics that focus on getting paying customers, not just post engagement.",
-    'Web Development': "We build websites that actually work for your business - not just pretty pictures. Think automated lead capture, built-in booking systems, and everything connects to your workflow. No more leads sitting in random contact forms.",
-    'Advanced Analytics': "We set up custom dashboards that show you exactly what's driving your business growth. Like, which marketing channels actually bring in money, not just traffic. Most business owners are flying blind - this gives you the real numbers."
-  }
-  
-  return responses[service] || "That's a great question! I'd love to learn more about your specific situation."
-}
-
-function EnhancedAIChatbot({ isOpen, onClose }: Props) {  
+function DirectBookingChatbot({ isOpen, onClose }: Props) {  
   const [messages, setMessages] = useState<Message[]>([  
     {  
       id: '1',  
       role: 'assistant',  
-      content: "Hey thanks for visiting the website. Is there anything you'd like to know more about?",  
+      content: "Hi! I can help you schedule a consultation with our team. How would you prefer to connect?",  
       timestamp: new Date(),  
       type: 'selection',  
-      options: ['Automation', 'Digital Marketing', 'Web Development', 'Advanced Analytics', 'Schedule a Consultation']  
+      options: ['Video call', 'Phone call', 'Send me an email instead']  
     }  
   ])  
     
   const [inputValue, setInputValue] = useState('')  
   const [isLoading, setIsLoading] = useState(false)  
-  const [currentFlow, setCurrentFlow] = useState<'general' | 'scheduling' | 'booking' | 'name' | 'company' | 'email'>('general')  
+  const [currentFlow, setCurrentFlow] = useState<'general' | 'name' | 'company' | 'email' | 'complete'>('general')  
+  const [bookingDetails, setBookingDetails] = useState<BookingDetails>({})
     
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -60,75 +51,8 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     scrollToBottom()  
   }, [messages])
 
-  // Handle Schedule Free Consultation button click  
-  const handleScheduleConsultation = () => {  
-    const newMessage: Message = {  
-      id: Date.now().toString(),  
-      role: 'assistant',  
-      content: "Do you prefer video conference or phone call?",  
-      timestamp: new Date(),  
-      type: 'selection',  
-      options: ['Video call works', 'Just call me', 'Actually, let me email you instead']  
-    }  
-      
-    setMessages(prev => [...prev, newMessage])  
-    setCurrentFlow('scheduling')  
-  }
-
-  // SIMPLIFIED: Basic service selection handler
-  const handleTopicSelection = (topic: string) => {  
-    console.log('Topic selected:', topic) // Debug log
-    
-    // Add user message
-    const userMessage: Message = {  
-      id: Date.now().toString(),  
-      role: 'user',  
-      content: topic,  
-      timestamp: new Date()  
-    }  
-    setMessages(prev => [...prev, userMessage])
-
-    if (topic === 'Schedule a Consultation') {  
-      handleScheduleConsultation()  
-      return  
-    }
-
-    // Get service response
-    const response = getServiceResponse(topic)
-    console.log('Service response:', response) // Debug log
-    
-    // Add response with delay
-    setTimeout(() => {
-      const assistantMessage: Message = {  
-        id: (Date.now() + 1).toString(),  
-        role: 'assistant',  
-        content: response,  
-        timestamp: new Date()  
-      }
-      
-      console.log('Adding assistant message:', assistantMessage) // Debug log
-      setMessages(prev => [...prev, assistantMessage])
-      
-      // Add consultation offer after response
-      setTimeout(() => {
-        const consultationMessage: Message = {
-          id: (Date.now() + 2).toString(),
-          role: 'assistant',
-          content: "Want to schedule a free consultation to discuss your specific needs?",
-          timestamp: new Date(),
-          type: 'selection',
-          options: ['Yeah, let\'s schedule something', 'Let me think about it', 'Send me some info instead']
-        }
-        setMessages(prev => [...prev, consultationMessage])
-      }, 2000)
-      
-    }, 1500)
-  }
-
-  // Handle meeting type selection
+  // Handle initial meeting type selection
   const handleMeetingTypeSelection = (selection: string) => {
-    console.log('Meeting type selected:', selection) // Debug log
-    
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
@@ -137,110 +61,72 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     }
     setMessages(prev => [...prev, userMessage])
 
-    if (selection === 'Actually, let me email you instead') {
+    if (selection === 'Send me an email instead') {
       setTimeout(() => {
         const emailMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: "Shoot us an email at admin@amarilloautomation.com and mention what you're most interested in. We'll send you some case studies and examples specific to your industry. Usually get back to people within a couple hours!",
+          content: "No problem! Send us an email at admin@amarilloautomation.com and mention what you're interested in discussing. We'll get back to you within a few hours.",
           timestamp: new Date()
         }
         setMessages(prev => [...prev, emailMessage])
-      }, 1500)
+        setCurrentFlow('complete')
+      }, 1000)
       return
     }
 
-    // Show time slot selection
+    // Set meeting type
+    const meetingType = selection === 'Video call' ? 'video' : 'phone'
+    setBookingDetails(prev => ({ ...prev, meetingType }))
+
+    // Ask for time preference
     setTimeout(() => {
-      const timeSlotMessage: Message = {
+      const timeMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: "How is Friday, January 3rd at 2:00 PM CST?",
+        content: "Great! What time works best for you?",
         timestamp: new Date(),
         type: 'selection',
-        options: ['Sounds great!', 'Different time please', 'Actually, let me just email you']
+        options: ['This week', 'Next week', 'Flexible - you choose']
       }
-      setMessages(prev => [...prev, timeSlotMessage])
-      setCurrentFlow('booking')
-    }, 1500)
+      setMessages(prev => [...prev, timeMessage])
+    }, 1000)
+  }
+
+  // Handle time selection
+  const handleTimeSelection = (selection: string) => {
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: selection,
+      timestamp: new Date()
+    }
+    setMessages(prev => [...prev, userMessage])
+
+    setTimeout(() => {
+      const nameMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: "Perfect! What's your name?",
+        timestamp: new Date()
+      }
+      setMessages(prev => [...prev, nameMessage])
+      setCurrentFlow('name')
+    }, 1000)
   }
 
   // Handle option selections
-  const handleOptionSelect = (option: string, message: Message) => {  
-    console.log('Option selected:', option, 'Current flow:', currentFlow) // Debug log
-    
-    if (currentFlow === 'general' && message.options?.includes(option)) {  
-      handleTopicSelection(option)  
-    } else if (currentFlow === 'scheduling') {  
-      handleMeetingTypeSelection(option)  
-    } else if (option === "Yeah, let's schedule something" || option.includes('Schedule a Consultation')) {  
-      handleScheduleConsultation()  
-    } else if (option === "Let me think about it" || option.includes('info')) {  
-      const userMessage: Message = {  
-        id: Date.now().toString(),  
-        role: 'user',  
-        content: option,  
-        timestamp: new Date()  
-      }  
-      setMessages(prev => [...prev, userMessage])  
-        
-      setTimeout(() => {  
-        const infoMessage: Message = {  
-          id: (Date.now() + 1).toString(),  
-          role: 'assistant',  
-          content: "No problem! Feel free to reach out at admin@amarilloautomation.com when you're ready. Is there anything else I can help you with?",  
-          timestamp: new Date(),
-          type: 'selection',
-          options: ['Automation', 'Digital Marketing', 'Web Development', 'Advanced Analytics', 'Schedule a Consultation']
-        }  
-        setMessages(prev => [...prev, infoMessage])
-        setCurrentFlow('general')
-      }, 1500)  
-    } else if (option === "Send me some info instead") {
-      const userMessage: Message = {  
-        id: Date.now().toString(),  
-        role: 'user',  
-        content: option,  
-        timestamp: new Date()  
-      }  
-      setMessages(prev => [...prev, userMessage])  
-        
-      setTimeout(() => {  
-        const infoMessage: Message = {  
-          id: (Date.now() + 1).toString(),  
-          role: 'assistant',  
-          content: "Shoot us an email at admin@amarilloautomation.com and mention what you're most interested in. We'll send you some case studies and examples specific to your industry. Usually get back to people within a couple hours!",  
-          timestamp: new Date(),
-          type: 'selection',
-          options: ['Automation', 'Digital Marketing', 'Web Development', 'Advanced Analytics', 'Schedule a Consultation']
-        }  
-        setMessages(prev => [...prev, infoMessage])
-        setCurrentFlow('general')
-      }, 1500)  
-    } else if (option.includes('Sounds great')) {
-      // Handle booking confirmation
-      const userMessage: Message = {
-        id: Date.now().toString(),
-        role: 'user',
-        content: option,
-        timestamp: new Date()
+  const handleOptionSelect = (option: string) => {
+    if (currentFlow === 'general') {
+      if (['Video call', 'Phone call', 'Send me an email instead'].includes(option)) {
+        handleMeetingTypeSelection(option)
+      } else if (['This week', 'Next week', 'Flexible - you choose'].includes(option)) {
+        handleTimeSelection(option)
       }
-      setMessages(prev => [...prev, userMessage])
-      
-      setTimeout(() => {
-        const nameMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          role: 'assistant',
-          content: "What's your name?",
-          timestamp: new Date()
-        }
-        setMessages(prev => [...prev, nameMessage])
-        setCurrentFlow('name')
-      }, 1500)
     }
   }
 
-  // Basic message sending
+  // Handle text input for booking details
   const sendMessage = async () => {  
     if (!inputValue.trim()) return
 
@@ -256,8 +142,10 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     setInputValue('')  
     setIsLoading(true)
 
-    // Simple flow handling
+    // Handle name collection
     if (currentFlow === 'name') {
+      setBookingDetails(prev => ({ ...prev, name: currentInput.trim() }))
+      
       setTimeout(() => {
         const companyMessage: Message = {
           id: (Date.now() + 1).toString(),
@@ -268,51 +156,111 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
         setMessages(prev => [...prev, companyMessage])
         setCurrentFlow('company')
         setIsLoading(false)
-      }, 1500)
+      }, 1000)
       return
     }
 
+    // Handle company collection
     if (currentFlow === 'company') {
+      setBookingDetails(prev => ({ ...prev, company: currentInput.trim() }))
+      
       setTimeout(() => {
         const emailMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: "And what's your email so I can send you the meeting details?",
+          content: "And what's your email address?",
           timestamp: new Date()
         }
         setMessages(prev => [...prev, emailMessage])
         setCurrentFlow('email')
         setIsLoading(false)
+      }, 1000)
+      return
+    }
+
+    // Handle email collection and booking completion
+    if (currentFlow === 'email') {
+      const email = currentInput.trim()
+      
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(email)) {
+        setTimeout(() => {
+          const errorMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: "That doesn't look like a valid email address. Could you try again?",
+            timestamp: new Date()
+          }
+          setMessages(prev => [...prev, errorMessage])
+          setIsLoading(false)
+        }, 1000)
+        return
+      }
+
+      setBookingDetails(prev => ({ ...prev, email }))
+      
+      // Process the booking
+      setTimeout(async () => {
+        try {
+          const bookingData = {
+            name: bookingDetails.name,
+            company: bookingDetails.company,
+            email: email,
+            meetingType: bookingDetails.meetingType,
+            timestamp: new Date().toISOString(),
+            source: 'website_chatbot_direct_booking'
+          }
+          
+          // Send to your booking webhook
+          const response = await fetch('https://hooks.zapier.com/hooks/catch/22949842/ub41u30/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(bookingData)
+          })
+
+          if (!response.ok) {
+            throw new Error('Booking submission failed')
+          }
+
+          const successMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: "Perfect! I've got your details and someone from our team will reach out within 24 hours to schedule your consultation. Thanks for your interest!",
+            timestamp: new Date()
+          }
+          setMessages(prev => [...prev, successMessage])
+          setCurrentFlow('complete')
+
+        } catch (error) {
+          console.error('Booking error:', error)
+          const errorMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: "Sorry, there was an issue submitting your request. Please email us directly at admin@amarilloautomation.com and we'll get back to you quickly.",
+            timestamp: new Date()
+          }
+          setMessages(prev => [...prev, errorMessage])
+        }
+        
+        setIsLoading(false)
       }, 1500)
       return
     }
 
-    if (currentFlow === 'email') {
-      setTimeout(() => {
-        const confirmMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          role: 'assistant',
-          content: "Perfect! I'm setting this up for you right now. You should get a confirmation email in just a minute. Anything else I can help you with?",
-          timestamp: new Date()
-        }
-        setMessages(prev => [...prev, confirmMessage])
-        setCurrentFlow('general')
-        setIsLoading(false)
-      }, 2000)
-      return
-    }
-
-    // Default response for general conversation
+    // Default response for any other input
     setTimeout(() => {
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: "That's a great question! For specific details about our services, you can reach us at admin@amarilloautomation.com or schedule a free consultation to discuss your needs.",
+        content: "Thanks for reaching out! For specific questions, feel free to email us at admin@amarilloautomation.com",
         timestamp: new Date()
       }
       setMessages(prev => [...prev, assistantMessage])
       setIsLoading(false)
-    }, 1500)
+    }, 1000)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {  
@@ -339,8 +287,8 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           <div className="flex items-center gap-3">  
             <Bot className="w-6 h-6 text-white" />  
             <div>  
-              <h3 className="font-semibold text-white">Amarillo Automation AI</h3>  
-              <p className="text-xs text-green-100">Ask me anything about our services</p>  
+              <h3 className="font-semibold text-white">Schedule Consultation</h3>  
+              <p className="text-xs text-green-100">Book a free consultation with our team</p>  
             </div>  
           </div>  
           <button  
@@ -348,17 +296,6 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
             className="text-white hover:text-gray-300 transition-colors p-1"  
           >  
             <X className="w-5 h-5" />  
-          </button>  
-        </div>
-
-        {/* Schedule Free Consultation Button */}  
-        <div className="p-4 border-b border-gray-700 bg-gray-800">  
-          <button  
-            onClick={handleScheduleConsultation}  
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"  
-          >  
-            <Calendar className="w-4 h-4" />  
-            Schedule Free Consultation  
           </button>  
         </div>
 
@@ -392,17 +329,14 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
                     {message.options.map((option, index) => (  
                       <button  
                         key={index}  
-                        onClick={() => {
-                          console.log('Button clicked:', option) // Debug log
-                          handleOptionSelect(option, message)
-                        }}
+                        onClick={() => handleOptionSelect(option)}
                         className="w-full text-left px-3 py-2 rounded-lg border border-green-500 bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors"  
                       >  
                         <div className="flex items-center gap-2">  
                           {option.includes('Video') && <Video className="w-4 h-4" />}  
                           {option.includes('Phone') && <Phone className="w-4 h-4" />}  
-                          {option.includes('Email') && <Mail className="w-4 h-4" />}  
-                          {option.includes('Sounds great') && <Calendar className="w-4 h-4" />}  
+                          {option.includes('email') && <Mail className="w-4 h-4" />}  
+                          {option.includes('week') && <Calendar className="w-4 h-4" />}  
                           {option}  
                         </div>  
                       </button>  
@@ -444,14 +378,15 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
                 currentFlow === 'name' ? "Your name..." :  
                 currentFlow === 'company' ? "Company name..." :  
                 currentFlow === 'email' ? "Your email address..." :
+                currentFlow === 'complete' ? "Consultation scheduled!" :
                 "Type your message..."  
               }  
               className="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 placeholder-gray-400 focus:outline-none focus:border-green-500"  
-              disabled={isLoading}  
+              disabled={isLoading || currentFlow === 'complete'}  
             />  
             <button  
               onClick={sendMessage}  
-              disabled={isLoading || !inputValue.trim()}  
+              disabled={isLoading || !inputValue.trim() || currentFlow === 'complete'}  
               className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white p-2 rounded-lg transition-colors"  
             >  
               <Send className="w-4 h-4" />  
@@ -463,4 +398,4 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
   )  
 }
 
-export default EnhancedAIChatbot
+export default DirectBookingChatbot
