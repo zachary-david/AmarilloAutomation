@@ -1,4 +1,4 @@
-// app/api/contact/route.ts - Fixed date format and N8N URL issues
+// app/api/contact/route.ts - Updated with demo detection
 import { NextRequest, NextResponse } from 'next/server'
 
 async function sendToAirtable(formData: any): Promise<{success: boolean, error?: string}> {
@@ -10,50 +10,81 @@ async function sendToAirtable(formData: any): Promise<{success: boolean, error?:
       return { success: false, error: 'Airtable credentials not configured' }
     }
 
-    // Calculate lead score
-    let score = 50
-    const serviceScores: Record<string, number> = {
-      'Workflow Automation': 30,
-      'AI Services': 25,
-      'Digital Marketing': 25,
-      'General Consultation': 20
+    // Check if this is a demo request (simplified data)
+    const isDemoRequest = formData.formType === 'demo_request' || 
+                         formData.serviceType === 'Demo Request' ||
+                         formData.company === 'Demo Request'
+    
+    let airtableData
+    
+    if (isDemoRequest) {
+      // SIMPLIFIED payload for demo requests
+      console.log('📝 Processing demo request - using simplified payload')
+      airtableData = {
+        fields: {
+          'Name': formData.name || formData.email?.split('@')[0] || 'Demo User',
+          'Email': formData.email,
+          'Company': 'Demo Request',
+          'Source': 'Demo Page'
+        }
+      }
+    } else {
+      // FULL payload for regular contact form submissions
+      console.log('📝 Processing full contact form - calculating lead score')
+      
+      // Calculate lead score
+      let score = 50
+      const serviceScores: Record<string, number> = {
+        'Workflow Automation': 30,
+        'AI Services': 25,
+        'Digital Marketing': 25,
+        'General Consultation': 20
+      }
+      score += serviceScores[formData.serviceType] || 10
+
+      const urgencyScores: Record<string, number> = {
+        'urgent': 25,
+        'soon': 20,
+        'planning': 15,
+        'exploring': 10
+      }
+      score += urgencyScores[formData.projectUrgency] || 5
+
+      const sizeScores: Record<string, number> = {
+        'enterprise': 25,
+        'large': 20,
+        'medium': 20,
+        'small': 15,
+        'startup': 10
+      }
+      score += sizeScores[formData.companySize] || 10
+
+      const leadScore = Math.min(score, 100)
+      const priority = leadScore >= 80 ? 'Hot Lead' : leadScore >= 65 ? 'Warm Lead' : leadScore >= 50 ? 'Qualified Lead' : 'Cold Lead'
+
+      // Fix date format - Airtable expects YYYY-MM-DD format for date fields
+      const submissionDate = new Date().toISOString().split('T')[0] // Gets YYYY-MM-DD
+
+      airtableData = {
+        fields: {
+          'Name': formData.name,
+          'Email': formData.email,
+          'Company': formData.company || '',
+          'Service Type': formData.serviceType || '',
+          'Company Size': formData.companySize || '',
+          'Project Urgency': formData.projectUrgency || '',
+          'Message': formData.message,
+          'Lead Score': leadScore,
+          'Lead Priority': priority,
+          'Submission Date': submissionDate,
+          'Source': 'Website Contact Form',
+          'Status': 'New'
+        }
+      }
     }
-    score += serviceScores[formData.serviceType] || 10
 
-    const urgencyScores: Record<string, number> = {
-      'urgent': 25,
-      'soon': 20,
-      'planning': 15,
-      'exploring': 10
-    }
-    score += urgencyScores[formData.projectUrgency] || 5
-
-    const sizeScores: Record<string, number> = {
-      'enterprise': 25,
-      'large': 20,
-      'medium': 20,
-      'small': 15,
-      'startup': 10
-    }
-    score += sizeScores[formData.companySize] || 10
-
-    const leadScore = Math.min(score, 100)
-    const priority = leadScore >= 80 ? 'Hot Lead' : leadScore >= 65 ? 'Warm Lead' : leadScore >= 50 ? 'Qualified Lead' : 'Cold Lead'
-
-    // Fix date format - Airtable expects YYYY-MM-DD format for date fields
-    const submissionDate = new Date().toISOString().split('T')[0] // Gets YYYY-MM-DD
-
-    const airtableData = {
-  fields: {
-    'Name': formData.name || 'Demo User',
-    'Email': formData.email,
-    'Company': formData.company || 'Demo Request',
-    'Source': 'Website Contact Form'
-  }
-}
-
-    console.log('🔧 Airtable payload with fixed date:')
-    console.log('  - Submission Date:', submissionDate)
+    console.log('🔧 Airtable payload:')
+    console.log('  - Is Demo Request:', isDemoRequest)
     console.log('  - Full payload:', JSON.stringify(airtableData, null, 2))
 
     const airtableUrl = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Leads`
@@ -88,6 +119,16 @@ async function sendToAirtable(formData: any): Promise<{success: boolean, error?:
 async function sendFollowUpEmail(formData: any): Promise<{success: boolean, error?: string}> {
   try {
     console.log('🔧 Starting email automation...')
+    
+    // Skip email automation for demo requests (let nurture sequence handle it)
+    const isDemoRequest = formData.formType === 'demo_request' || 
+                         formData.serviceType === 'Demo Request' ||
+                         formData.company === 'Demo Request'
+    
+    if (isDemoRequest) {
+      console.log('📧 Skipping immediate email for demo request - nurture sequence will handle')
+      return { success: true }
+    }
     
     const serviceMap: Record<string, string> = {
       'Workflow Automation': 'Workflow Automation',
@@ -210,15 +251,34 @@ export async function POST(request: NextRequest) {
       email: body.email,
       serviceType: body.serviceType,
       companySize: body.companySize,
-      projectUrgency: body.projectUrgency
+      projectUrgency: body.projectUrgency,
+      formType: body.formType,
+      company: body.company
     })
     
-    if (!body.name || !body.email || !body.message) {
-      console.error('❌ Missing required fields')
-      return NextResponse.json(
-        { error: 'Missing required fields: name, email, message' },
-        { status: 400 }
-      )
+    // Relaxed validation for demo requests
+    const isDemoRequest = body.formType === 'demo_request' || 
+                         body.serviceType === 'Demo Request' ||
+                         body.company === 'Demo Request'
+    
+    if (isDemoRequest) {
+      // Demo requests only need email
+      if (!body.email) {
+        console.error('❌ Missing email for demo request')
+        return NextResponse.json(
+          { error: 'Email is required for demo requests' },
+          { status: 400 }
+        )
+      }
+    } else {
+      // Full contact forms need all fields
+      if (!body.name || !body.email || !body.message) {
+        console.error('❌ Missing required fields for contact form')
+        return NextResponse.json(
+          { error: 'Missing required fields: name, email, message' },
+          { status: 400 }
+        )
+      }
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -236,13 +296,13 @@ export async function POST(request: NextRequest) {
     const airtableResult = await sendToAirtable(body)
     console.log('📊 Airtable final result:', airtableResult)
     
-    // Process email automation
+    // Process email automation (skipped for demo requests)
     const emailResult = await sendFollowUpEmail(body)
     console.log('📧 Email final result:', emailResult)
 
-    // Formspree backup
+    // Formspree backup (skip for demo requests)
     let formspreeResult = { success: false }
-    if (process.env.FORMSPREE_ENDPOINT) {
+    if (!isDemoRequest && process.env.FORMSPREE_ENDPOINT) {
       try {
         const formspreeResponse = await fetch(process.env.FORMSPREE_ENDPOINT, {
           method: 'POST',
@@ -267,7 +327,7 @@ export async function POST(request: NextRequest) {
 
     const response = {
       success: true,
-      message: 'Contact form submitted successfully',
+      message: isDemoRequest ? 'Demo request submitted successfully' : 'Contact form submitted successfully',
       integrations: {
         airtable: airtableResult.success ? 'saved' : 'failed',
         email: emailResult.success ? 'sent' : 'failed',
@@ -275,7 +335,8 @@ export async function POST(request: NextRequest) {
       },
       details: {
         airtableError: airtableResult.error,
-        emailError: emailResult.error
+        emailError: emailResult.error,
+        isDemoRequest: isDemoRequest
       }
     }
 
