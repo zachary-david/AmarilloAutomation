@@ -1,13 +1,13 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { ChevronRight, Star, CheckCircle, ArrowRight } from 'lucide-react'
+import { ChevronRight, Star, CheckCircle, ArrowRight, Play } from 'lucide-react'
 
 export default function Homepage() {
   const vantaRef = useRef<HTMLDivElement>(null)
   const vantaEffect = useRef<any>(null)
 
-  // Load Vanta.js effect
+  // Enhanced Vanta.js effect with mobile optimization
   useEffect(() => {
     const loadVanta = async () => {
       if (typeof window !== 'undefined' && !window.VANTA) {
@@ -26,23 +26,67 @@ export default function Homepage() {
           
           await new Promise(resolve => { vantaScript.onload = resolve })
           
-          // Initialize Vanta effect
+          // Initialize Vanta effect with mobile optimization
           if (vantaRef.current && window.VANTA) {
-            vantaEffect.current = window.VANTA.NET({
-              el: vantaRef.current,
-              mouseControls: true,
-              touchControls: true,
-              gyroControls: false,
-              minHeight: 200.00,
-              minWidth: 200.00,
-              scale: 1.00,
-              scaleMobile: 1.00,
-              color: 0x10b981,
-              backgroundColor: 0x0a1224,
-              points: 8.00,
-              maxDistance: 18.00,
-              spacing: 16.00,
-            })
+            const isMobile = window.innerWidth <= 768
+            const isTablet = window.innerWidth <= 1024 && window.innerWidth > 768
+            
+            let vantaConfig
+            
+            if (isMobile) {
+              // Mobile Configuration - Minimal for performance
+              vantaConfig = {
+                el: vantaRef.current,
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00,
+                color: 0x10b981,
+                backgroundColor: 0x0a1224,
+                points: 3.00,
+                maxDistance: 15.00,
+                spacing: 18.00,
+              }
+            } else if (isTablet) {
+              // Tablet Configuration - Moderate
+              vantaConfig = {
+                el: vantaRef.current,
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00,
+                color: 0x10b981,
+                backgroundColor: 0x0a1224,
+                points: 6.00,
+                maxDistance: 16.00,
+                spacing: 16.00,
+              }
+            } else {
+              // Desktop Configuration - Full effect
+              vantaConfig = {
+                el: vantaRef.current,
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00,
+                color: 0x10b981,
+                backgroundColor: 0x0a1224,
+                points: 8.00,
+                maxDistance: 18.00,
+                spacing: 16.00,
+              }
+            }
+            
+            vantaEffect.current = window.VANTA.NET(vantaConfig)
           }
         } catch (error) {
           console.log('Vanta.js loading failed:', error)
@@ -78,99 +122,107 @@ export default function Homepage() {
       {/* Content */}
       <div className="relative z-10">
         
-        {/* Section 1: Hero */}
-        <section className="min-h-screen flex items-center justify-center px-4 pt-8">
-          <div className="max-w-4xl mx-auto text-center">
-            {/* 1.01 Company Name */}
-            <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight">
+        {/* Section 1: Hero - Enhanced Mobile */}
+        <section className="hero-mobile flex items-center justify-center mobile-container">
+          <div className="max-w-4xl mx-auto text-center content-spacing-mobile">
+            {/* Company Name with mobile responsive sizing */}
+            <h1 className="hero-title-mobile font-bold text-white mb-6 tracking-tight">
               AMARILLO AUTOMATION
             </h1>
             
-            {/* 1.02 Subheader */}
-            <h2 className="text-2xl md:text-3xl text-gray-300 mb-12 font-light">
+            {/* Subheader with responsive sizing */}
+            <h2 className="hero-subtitle-mobile text-gray-300 mb-12 font-light">
               Workflow automation experts for local home services
             </h2>
             
-            {/* 1.03 Value Proposition - No containers, no emojis */}
-            <div className="grid md:grid-cols-3 gap-8 mb-16">
-              <div>
-                <h3 className="text-xl font-bold text-white mb-3">Save Time</h3>
-                <p className="text-gray-300 leading-relaxed">Automate repetitive tasks and eliminate manual data entry. Focus on what matters - growing your business.</p>
+            {/* Value Proposition with mobile-first layout */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+              <div className="value-card-mobile">
+                <h3 className="mobile-subheading-responsive font-bold text-white mb-3">Save Time</h3>
+                <p className="mobile-text-responsive text-gray-300 leading-relaxed">
+                  Automate repetitive tasks and eliminate manual data entry. Focus on what matters - growing your business.
+                </p>
               </div>
-              <div>
-                <h3 className="text-xl font-bold text-white mb-3">Make Money</h3>
-                <p className="text-gray-300 leading-relaxed">Faster lead response times and better follow-up systems mean more customers and higher conversion rates.</p>
+              <div className="value-card-mobile">
+                <h3 className="mobile-subheading-responsive font-bold text-white mb-3">Make Money</h3>
+                <p className="mobile-text-responsive text-gray-300 leading-relaxed">
+                  Faster lead response times and better follow-up systems mean more customers and higher conversion rates.
+                </p>
               </div>
-              <div>
-                <h3 className="text-xl font-bold text-white mb-3">Simplify Operations</h3>
-                <p className="text-gray-300 leading-relaxed">Streamline your workload and lead management with systems that work while you sleep.</p>
+              <div className="value-card-mobile">
+                <h3 className="mobile-subheading-responsive font-bold text-white mb-3">Simplify Operations</h3>
+                <p className="mobile-text-responsive text-gray-300 leading-relaxed">
+                  Streamline your workload and lead management with systems that work while you sleep.
+                </p>
               </div>
             </div>
 
-            {/* Call to Action - Moved up */}
+            {/* Enhanced CTA Section with new buttons */}
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
+              <h2 className="mobile-heading-responsive font-bold text-white mb-8">
                 Ready to Automate Your Business?
               </h2>
-              <p className="text-xl text-gray-300 mb-12">
+              <p className="mobile-subheading-responsive text-gray-300 mb-12">
                 Join 40+ West Texas contractors who've streamlined their operations with our proven systems.
               </p>
-              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              
+              {/* Updated CTA buttons - both green with consistent styling */}
+              <div className="cta-container-mobile">
                 <button 
-                  onClick={() => trackCTA('primary_consultation')}
-                  className="px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
+                  onClick={() => trackCTA('hero_primary_ask_anything')}
+                  className="cta-mobile bg-green-600 hover:bg-green-700 text-white transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
                 >
-                  Schedule Free Consultation
-                  <ArrowRight className="w-5 h-5 ml-2 inline" />
+                  Ask us Anything
+                  <ArrowRight className="w-5 h-5" />
                 </button>
                 <button 
-                  onClick={() => trackCTA('secondary_demo')}
-                  className="px-8 py-4 border border-gray-600 text-white hover:bg-gray-800 font-bold rounded-lg transition-all duration-300 active:scale-95"
+                  onClick={() => trackCTA('hero_secondary_demo')}
+                  className="cta-mobile bg-green-600 hover:bg-green-700 text-white transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
                 >
-                  See Demo
-                  <ChevronRight className="w-5 h-5 ml-2 inline" />
+                  Try a Demo
+                  <Play className="w-4 h-4" />
                 </button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Section 3: Why Us */}
-        <section className="py-20 px-4">
-          <div className="max-w-6xl mx-auto">
+        {/* Section 3: Why Us - Enhanced Mobile */}
+        <section className="section-padding">
+          <div className="max-w-6xl mx-auto content-spacing-mobile">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Why Choose Amarillo Automation</h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              <h2 className="mobile-heading-responsive font-bold text-white mb-6">Why Choose Amarillo Automation</h2>
+              <p className="mobile-subheading-responsive text-gray-300 max-w-3xl mx-auto">
                 We're not just another tech company. We're local automation experts who understand the unique challenges of West Texas home service businesses.
               </p>
             </div>
             
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-6">Industry Expertise That Delivers Results</h3>
+            <div className="service-grid-mobile items-center">
+              <div className="md:col-span-1">
+                <h3 className="mobile-subheading-responsive font-bold text-white mb-6">Industry Expertise That Delivers Results</h3>
                 <div className="space-y-4">
                   <div className="flex items-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="text-gray-300">5+ years automating workflows for contractors, roofers, HVAC, and plumbing companies</p>
+                    <p className="mobile-text-responsive text-gray-300">5+ years automating workflows for contractors, roofers, HVAC, and plumbing companies</p>
                   </div>
                   <div className="flex items-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="text-gray-300">Deep understanding of home service business operations and pain points</p>
+                    <p className="mobile-text-responsive text-gray-300">Deep understanding of home service business operations and pain points</p>
                   </div>
                   <div className="flex items-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="text-gray-300">Proven track record with 40+ local businesses and $2M+ in additional revenue generated</p>
+                    <p className="mobile-text-responsive text-gray-300">Proven track record with 40+ local businesses and $2M+ in additional revenue generated</p>
                   </div>
                   <div className="flex items-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="text-gray-300">Local support you can trust - we're your neighbors, not a distant corporation</p>
+                    <p className="mobile-text-responsive text-gray-300">Local support you can trust - we're your neighbors, not a distant corporation</p>
                   </div>
                 </div>
               </div>
               
-              <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-lg p-8">
-                <h4 className="text-xl font-bold text-white mb-4">What Sets Us Apart</h4>
-                <ul className="space-y-3 text-gray-300">
+              <div className="service-card-mobile">
+                <h4 className="mobile-subheading-responsive font-bold text-white mb-4">What Sets Us Apart</h4>
+                <ul className="space-y-3 mobile-text-responsive text-gray-300">
                   <li>• Same-day response to all inquiries</li>
                   <li>• Custom solutions, not cookie-cutter templates</li>
                   <li>• Ongoing support and optimization included</li>
@@ -182,17 +234,17 @@ export default function Homepage() {
           </div>
         </section>
 
-        {/* Section 4: Reviews/Case Studies */}
-        <section className="py-20 px-4 bg-gray-900/50 backdrop-blur-sm">
-          <div className="max-w-6xl mx-auto">
+        {/* Section 4: Reviews/Case Studies - Enhanced Mobile */}
+        <section className="section-padding bg-gray-900/50 backdrop-blur-sm">
+          <div className="max-w-6xl mx-auto content-spacing-mobile">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Real Results from Real Businesses</h2>
-              <p className="text-xl text-gray-300">
+              <h2 className="mobile-heading-responsive font-bold text-white mb-6">Real Results from Real Businesses</h2>
+              <p className="mobile-subheading-responsive text-gray-300">
                 See how we've helped local contractors save time, increase revenue, and grow their businesses.
               </p>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="case-study-mobile">
               {[
                 {
                   company: "Amarillo Roofing Company",
@@ -216,16 +268,16 @@ export default function Homepage() {
                   rating: 5
                 }
               ].map((review, index) => (
-                <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+                <div key={index} className="service-card-mobile">
                   <div className="flex items-center mb-4">
                     {[...Array(review.rating)].map((_, i) => (
                       <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
                     ))}
                   </div>
                   
-                  <h4 className="text-lg font-bold text-white mb-4">{review.company}</h4>
+                  <h4 className="mobile-subheading-responsive font-bold text-white mb-4">{review.company}</h4>
                   
-                  <div className="space-y-3 text-sm">
+                  <div className="space-y-3 mobile-text-responsive">
                     <div>
                       <span className="text-red-400 font-semibold">Problem: </span>
                       <span className="text-gray-300">{review.problem}</span>
@@ -245,24 +297,23 @@ export default function Homepage() {
           </div>
         </section>
 
-        {/* Section 5: Services and Solutions */}
-        <section className="py-20 px-4">
-          <div className="max-w-6xl mx-auto">
-            {/* 5.1 Sales Hook */}
+        {/* Section 5: Services and Solutions - Enhanced Mobile */}
+        <section className="section-padding">
+          <div className="max-w-6xl mx-auto content-spacing-mobile">
+            {/* Sales Hook */}
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              <h2 className="mobile-heading-responsive font-bold text-white mb-6">
                 You Don't Need High Dollar Software to Use Premium Features
               </h2>
-              <p className="text-xl text-gray-300 max-w-4xl mx-auto">
+              <p className="mobile-subheading-responsive text-gray-300 max-w-4xl mx-auto">
                 We connect your existing tools and create powerful automations using platforms you already trust. No expensive enterprise software required.
               </p>
             </div>
 
-            {/* 5.2 Workflow Automations Examples */}
+            {/* Workflow Automations Examples - Mobile Optimized */}
             <div className="mb-16">
-              {/* Real Automation Examples - Mobile-First Grid */}
               <div className="max-w-5xl mx-auto mb-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="case-study-mobile">
                   {[
                     {
                       title: 'New Lead Received',
@@ -298,22 +349,22 @@ export default function Homepage() {
                   ].map((automation, index) => (
                     <div 
                       key={index}
-                      className={`bg-gray-900/50 border rounded-xl p-6 transition-all duration-300 hover:shadow-xl backdrop-blur-sm ${
+                      className={`service-card-mobile transition-all duration-300 hover:shadow-xl backdrop-blur-sm ${
                         automation.isCustom 
                           ? 'border-green-500/50 bg-gradient-to-br from-green-900/20 to-blue-900/20' 
-                          : 'border-gray-700 hover:border-green-500/30'
+                          : 'hover:border-green-500/30'
                       }`}
                     >
                       <div className="text-center">
                         {/* Description */}
                         <div className="mb-4">
-                          <p className="text-sm text-gray-300 text-center">
+                          <p className="mobile-text-responsive text-gray-300 text-center">
                             {automation.description}
                           </p>
                         </div>
 
                         {/* Title (Trigger) */}
-                        <h3 className="text-lg font-semibold text-white mb-3">
+                        <h3 className="mobile-subheading-responsive font-semibold text-white mb-3">
                           {automation.title}
                         </h3>
 
@@ -325,7 +376,7 @@ export default function Homepage() {
                         </div>
 
                         {/* Effect */}
-                        <h4 className="text-base font-medium text-green-400">
+                        <h4 className="mobile-text-responsive font-medium text-green-400">
                           {automation.effect}
                         </h4>
                       </div>
@@ -336,10 +387,10 @@ export default function Homepage() {
                 {/* Custom automation callout */}
                 <div className="mt-12 text-center">
                   <div className="bg-green-900/20 border border-green-600/30 rounded-xl p-6 backdrop-blur-sm">
-                    <p className="text-green-200 text-lg font-semibold">
+                    <p className="mobile-subheading-responsive text-green-200 font-semibold">
                       Everything's customized to your business. No extra software. No forced migration. No stress.
                     </p>
-                    <p className="text-green-400 text-xl font-semibold mt-2">
+                    <p className="mobile-subheading-responsive text-green-400 font-semibold mt-2">
                       You get results — not software headaches.
                     </p>
                   </div>
@@ -347,14 +398,14 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* Tools We Use */}
+            {/* Tools We Use - Mobile Optimized */}
             <div className="mb-16">
-              <h3 className="text-2xl font-bold text-white mb-8 text-center">Tools We Use</h3>
-              <p className="text-xl text-gray-300 text-center mb-8 max-w-3xl mx-auto">
+              <h3 className="mobile-heading-responsive font-bold text-white mb-8 text-center">Tools We Use</h3>
+              <p className="mobile-subheading-responsive text-gray-300 text-center mb-8 max-w-3xl mx-auto">
                 We integrate with the platforms you already know and trust. No learning curve, no forced migrations.
               </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6">
+              <div className="tools-grid-mobile">
                 {[
                   'Zapier', 'Make.com', 'GoHighLevel', 'Airtable', 
                   'Google Workspace', 'Facebook', 'Instagram', 'YouTube',
@@ -362,21 +413,21 @@ export default function Homepage() {
                   'Salesforce', 'Slack', 'Twilio', 'Gmail',
                   'Google Sheets', 'Notion'
                 ].map((tool, index) => (
-                  <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 text-center hover:border-green-500/30 transition-all">
+                  <div key={index} className="tool-card-mobile hover:border-green-500/30 transition-all">
                     <span className="text-gray-300 font-medium text-sm">{tool}</span>
                   </div>
                 ))}
               </div>
               
               <div className="text-center mt-8">
-                <p className="text-gray-400">And many more! If you use it, we can probably integrate with it.</p>
+                <p className="mobile-text-responsive text-gray-400">And many more! If you use it, we can probably integrate with it.</p>
               </div>
             </div>
 
-            {/* 5.3 Other Services */}
+            {/* Additional Services - Mobile Optimized */}
             <div>
-              <h3 className="text-2xl font-bold text-white mb-8 text-center">Additional Services</h3>
-              <div className="grid md:grid-cols-2 gap-6">
+              <h3 className="mobile-heading-responsive font-bold text-white mb-8 text-center">Additional Services</h3>
+              <div className="service-grid-mobile">
                 {[
                   {
                     title: "Meta Marketing",
@@ -395,9 +446,9 @@ export default function Homepage() {
                     description: "Strategic business guidance to identify your biggest growth opportunities and operational improvements"
                   }
                 ].map((service, index) => (
-                  <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-                    <h4 className="text-lg font-bold text-white mb-3">{service.title}</h4>
-                    <p className="text-gray-300">{service.description}</p>
+                  <div key={index} className="service-card-mobile">
+                    <h4 className="mobile-subheading-responsive font-bold text-white mb-3">{service.title}</h4>
+                    <p className="mobile-text-responsive text-gray-300">{service.description}</p>
                   </div>
                 ))}
               </div>
@@ -405,22 +456,33 @@ export default function Homepage() {
           </div>
         </section>
 
-        {/* Final CTA */}
-        <section className="py-20 px-4 bg-gray-900/80 backdrop-blur-sm">
+        {/* Final CTA - Enhanced with both buttons */}
+        <section className="section-padding bg-gray-900/80 backdrop-blur-sm">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            <h2 className="mobile-heading-responsive font-bold text-white mb-6">
               Stop Losing Leads. Start Growing Your Business.
             </h2>
-            <p className="text-xl text-gray-300 mb-8">
+            <p className="mobile-subheading-responsive text-gray-300 mb-8">
               Every day without automation is money left on the table. Let's change that.
             </p>
-            <button 
-              onClick={() => trackCTA('final_cta')}
-              className="px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl text-lg"
-            >
-              Get Started Today
-              <ArrowRight className="w-5 h-5 ml-2 inline" />
-            </button>
+            
+            {/* Repeat both CTA buttons in footer */}
+            <div className="cta-container-mobile">
+              <button 
+                onClick={() => trackCTA('footer_primary_ask_anything')}
+                className="cta-mobile bg-green-600 hover:bg-green-700 text-white transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
+              >
+                Ask us Anything
+                <ArrowRight className="w-5 h-5" />
+              </button>
+              <button 
+                onClick={() => trackCTA('footer_secondary_demo')}
+                className="cta-mobile bg-green-600 hover:bg-green-700 text-white transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
+              >
+                Try a Demo
+                <Play className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </section>
       </div>

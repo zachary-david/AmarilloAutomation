@@ -584,3 +584,89 @@ body {
 .mobile-nav-item:hover {
   background-color: rgba(55, 65, 81, 0.5);
 }
+
+/* Enhanced CTA Button Styling - Add to your globals.css */
+/* These enhance the existing .cta-mobile class for better consistency */
+
+.cta-mobile {
+  /* Base styles already defined above, these add enhancements */
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0); /* Hardware acceleration */
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
+}
+
+.cta-mobile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+}
+
+.cta-mobile:active {
+  transform: translateY(0px) scale(0.98);
+  transition-duration: 0.1s;
+}
+
+/* Mobile tap feedback */
+@media (hover: none) and (pointer: coarse) {
+  .cta-mobile:active {
+    background-color: rgb(21, 128, 61); /* Darker green for mobile tap */
+    transform: scale(0.96);
+  }
+}
+
+/* Ripple effect for better touch feedback */
+.cta-mobile::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.cta-mobile:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Ensure consistent button heights and spacing */
+.cta-container-mobile .cta-mobile {
+  min-height: 56px;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+
+/* Icon spacing consistency */
+.cta-mobile svg {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.cta-mobile:hover svg {
+  transform: translateX(2px);
+}
+
+/* Focus state for keyboard accessibility */
+.cta-mobile:focus-visible {
+  outline: 3px solid rgba(34, 197, 94, 0.5);
+  outline-offset: 2px;
+}
+
+/* Loading state (optional - for future form submissions) */
+.cta-mobile.loading {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.cta-mobile.loading svg {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
