@@ -85,7 +85,7 @@ export default function DemoPage() {
             
             <div className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg p-4 mb-8">
               <p className="text-yellow-400 font-bold text-lg mb-2">
-                🚨 LIVE DEMO: See 4-Second Lead Response
+                LIVE DEMO: See 4-Second Lead Response
               </p>
               <p className="text-gray-300 text-sm">
                 Watch what happens when a lead comes in while your competition is still checking email
@@ -108,9 +108,7 @@ export default function DemoPage() {
                 </p>
               </div>
               <div className="value-card-mobile">
-                <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <div className="w-5 h-5 rounded-full border-2 border-gray-900 bg-green-400"></div>
-                </div>
+                <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-4" />
                 <h3 className="mobile-subheading-responsive font-bold text-white mb-3">
                   4-Second Response Time
                 </h3>
@@ -147,7 +145,7 @@ export default function DemoPage() {
             <div className="case-study-mobile text-left">
               <div className="service-card-mobile bg-green-900/20 border border-green-500/30">
                 <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
+                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                     <span className="text-white font-bold text-sm">1</span>
                   </div>
                   <h3 className="mobile-subheading-responsive font-bold text-white">
@@ -161,7 +159,7 @@ export default function DemoPage() {
               
               <div className="service-card-mobile bg-green-900/20 border border-green-500/30">
                 <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
+                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                     <span className="text-white font-bold text-sm">2</span>
                   </div>
                   <h3 className="mobile-subheading-responsive font-bold text-white">
@@ -175,7 +173,7 @@ export default function DemoPage() {
               
               <div className="service-card-mobile bg-green-900/20 border border-green-500/30">
                 <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
+                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                     <span className="text-white font-bold text-sm">3</span>
                   </div>
                   <h3 className="mobile-subheading-responsive font-bold text-white">
@@ -187,19 +185,6 @@ export default function DemoPage() {
                 </p>
               </div>
             </div>
-
-            <div className="mt-12 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-6">
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div>
-                  <div className="text-2xl font-bold text-white">580%</div>
-                  <div className="text-sm text-gray-300">ROI Increase</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-white">2 min</div>
-                  <div className="text-sm text-gray-300">Avg Response Time</div>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -207,8 +192,20 @@ export default function DemoPage() {
         <section className="section-padding">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="mobile-heading-responsive font-bold text-white mb-8">
-              Join 12+ Amarillo Contractors Already Using This System
+              Join Amarillo Contractors Already Using This System
             </h2>
+            
+            <div className="flex justify-center mb-6">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-6 h-6 text-yellow-500 fill-current" />
+              ))}
+            </div>
+            
+            <p className="mobile-subheading-responsive text-gray-300 mb-8">
+              "The demo showed me exactly what I was missing. Now I respond to leads faster than anyone in town. 
+              My conversion rate went from 8% to 23% in two months."
+            </p>
+          
             <div className="bg-gray-800/30 border border-gray-700 rounded-lg p-6">
               <h3 className="text-lg font-bold text-white mb-4">
                 Ready to Stop Losing Leads to Faster Competitors?
@@ -219,7 +216,7 @@ export default function DemoPage() {
                 rel="noopener noreferrer"
                 className="inline-block bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-lg font-bold text-lg hover:from-green-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105"
               >
-                Get This System For My Business
+                🚀 Get This System For My Business
               </a>
               <p className="text-gray-400 text-sm mt-4">
                 Free strategy call • No commitment • See if automation is right for you

@@ -52,6 +52,20 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     scrollToBottom()  
   }, [messages])
 
+  // Prevent body scroll when chatbot is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('chatbot-no-scroll')
+    } else {
+      document.body.classList.remove('chatbot-no-scroll')
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.classList.remove('chatbot-no-scroll')
+    }
+  }, [isOpen])
+
   // Handle OpenAI GPT-4 conversation
   const handleLLMConversation = async (userInput: string) => {
     try {
@@ -72,7 +86,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
 
       const data = await response.json()
 
-      // Update cost tracking
+      // Update cost tracking (for backend monitoring)
       if (data.usage && data.usage.cost) {
         setConversationCost(prev => prev + data.usage.cost)
       }
@@ -118,11 +132,6 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
       setMessages(prev => [...prev, errorMessage])
     }
   }
-
-  // Remove the mock LLM function since we're using real Claude now
-  // const simulateLLMResponse = async (userInput: string, messageHistory: Message[]) => {
-  //   ... (removed)
-  // }
 
   // Handle booking flow
   const handleBookingFlow = async (userInput: string) => {
@@ -319,152 +328,149 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
 
   if (!isOpen) return null
 
-  return (  
-    <div className="fixed inset-0 z-50 flex items-end justify-end p-4 pointer-events-none">  
-      {/* Backdrop */}  
-      <div   
-        className="absolute inset-0 bg-black bg-opacity-50 pointer-events-auto"  
-        onClick={onClose}  
-      />  
+  return (
+    <div className="chatbot-backdrop-mobile">
+      <div className="chatbot-mobile bg-gray-900 text-white rounded-xl shadow-2xl flex flex-col">
         
-      {/* Chatbot Window */}  
-      <div className="relative bg-gray-900 border border-gray-700 rounded-lg shadow-2xl w-full max-w-md h-96 sm:h-[500px] pointer-events-auto flex flex-col">  
-        {/* Header */}  
-        <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-green-600 rounded-t-lg">  
-          <div className="flex items-center gap-3">  
-            <Bot className="w-6 h-6 text-white" />  
-            <div>  
-              <h3 className="font-semibold text-white">Amarillo Automation AI</h3>  
-              <p className="text-xs text-green-100">Powered by GPT-4 • Cost: ${conversationCost.toFixed(4)}</p>  
-            </div>  
-          </div>  
-          <button  
-            onClick={onClose}  
-            className="text-white hover:text-gray-300 transition-colors p-1"  
-          >  
-            <X className="w-5 h-5" />  
-          </button>  
+        {/* Header with enhanced mobile close button */}
+        <div className="chatbot-header-mobile bg-green-600 rounded-t-xl border-b border-gray-700">
+          <div className="flex items-center gap-3">
+            <Bot className="w-6 h-6 text-white flex-shrink-0" />
+            <div className="flex-1">
+              <h3 className="chatbot-title-mobile">
+                {isInBookingFlow ? 'Schedule Your Consultation' : 'Amarillo Automation AI'}
+              </h3>
+            </div>
+          </div>
+          <button 
+            onClick={onClose}
+            className="chatbot-close-mobile"
+            aria-label="Close chat"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* Schedule Free Consultation Button */}  
-        <div className="p-4 border-b border-gray-700 bg-gray-800">  
-          <button  
-            onClick={() => {
-              const consultationMessage: Message = {
-                id: Date.now().toString(),
-                role: 'assistant',
-                content: "Great! I can help you schedule a consultation with our team. How would you prefer to connect?",
-                timestamp: new Date(),
-                type: 'selection',
-                options: ['Video call', 'Phone call', 'Send me an email instead']
-              }
-              setMessages(prev => [...prev, consultationMessage])
-              setIsInBookingFlow(true)
-              setBookingStep('preference')
-            }}
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"  
-          >  
-            <Calendar className="w-4 h-4" />  
-            Schedule Free Consultation  
-          </button>  
-        </div>
+        {/* Consultation CTA - Mobile Optimized */}
+        {!isInBookingFlow && (
+          <div className="p-4 bg-gradient-to-r from-green-900/30 to-blue-900/30 border-b border-gray-700">
+            <button 
+              onClick={() => {
+                const consultationMessage: Message = {
+                  id: Date.now().toString(),
+                  role: 'assistant',
+                  content: "Great! I can help you schedule a consultation with our team. How would you prefer to connect?",
+                  timestamp: new Date(),
+                  type: 'selection',
+                  options: ['Video call', 'Phone call', 'Send me an email instead']
+                }
+                setMessages(prev => [...prev, consultationMessage])
+                setIsInBookingFlow(true)
+                setBookingStep('preference')
+              }}
+              className="chatbot-consultation-mobile flex items-center justify-center gap-2"
+            >
+              <Calendar className="w-5 h-5" />
+              Schedule Free Consultation
+            </button>
+          </div>
+        )}
 
-        {/* Messages */}  
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">  
-          {messages.map((message) => (  
-            <div  
-              key={message.id}  
-              className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}  
-            >  
-              {message.role === 'assistant' && (  
-                <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">  
-                  <Bot className="w-4 h-4 text-white" />  
-                </div>  
-              )}  
+        {/* Messages Area - Mobile Optimized */}
+        <div className="chatbot-messages-mobile">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              {message.role === 'assistant' && (
+                <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Bot className="w-4 h-4 text-white" />
+                </div>
+              )}
+              
+              <div className="chatbot-message-mobile flex flex-col">
+                <div
+                  className={`px-4 py-2 rounded-lg ${
+                    message.role === 'user'
+                      ? 'bg-green-600 text-white ml-auto'
+                      : 'bg-gray-700 text-gray-100'
+                  }`}
+                >
+                  {message.content}
+                </div>
                 
-              <div className={`flex flex-col max-w-xs lg:max-w-md`}>  
-                <div  
-                  className={`px-4 py-2 rounded-lg ${  
-                    message.role === 'user'  
-                      ? 'bg-green-600 text-white ml-auto'  
-                      : 'bg-gray-700 text-gray-100'  
-                  }`}  
-                >  
-                  {message.content}  
-                </div>  
-                  
-                {/* Selection Options */}  
-                {message.type === 'selection' && message.options && (  
-                  <div className="mt-2 space-y-2">  
-                    {message.options.map((option, index) => (  
-                      <button  
-                        key={index}  
+                {/* Selection Options - Mobile Optimized */}
+                {message.type === 'selection' && message.options && (
+                  <div className="mt-2 space-y-2">
+                    {message.options.map((option, index) => (
+                      <button
+                        key={index}
                         onClick={() => handleOptionSelect(option)}
-                        className="w-full text-left px-3 py-2 rounded-lg border border-green-500 bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors"  
-                      >  
-                        <div className="flex items-center gap-2">  
-                          {option.includes('Video') && <Video className="w-4 h-4" />}  
-                          {option.includes('Phone') && <Phone className="w-4 h-4" />}  
-                          {option.includes('email') && <Mail className="w-4 h-4" />}  
-                          {option.includes('week') && <Calendar className="w-4 h-4" />}  
-                          {option}  
-                        </div>  
-                      </button>  
-                    ))}  
-                  </div>  
-                )}  
-              </div>  
-            </div>  
-          ))}  
-            
-          {/* Loading indicator */}  
-          {isLoading && (  
-            <div className="flex gap-3 justify-start">  
-              <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">  
-                <Clock className="w-4 h-4 text-white animate-spin" />  
-              </div>  
-              <div className="bg-gray-700 text-gray-100 px-4 py-2 rounded-lg">  
-                <div className="flex space-x-1">  
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>  
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>  
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>  
-                </div>  
-              </div>  
-            </div>  
-          )}  
-            
-          <div ref={messagesEndRef} />  
+                        className="chatbot-option-mobile text-left flex items-center gap-2"
+                      >
+                        {option.includes('Video') && <Video className="w-4 h-4 flex-shrink-0" />}
+                        {option.includes('Phone') && <Phone className="w-4 h-4 flex-shrink-0" />}
+                        {option.includes('email') && <Mail className="w-4 h-4 flex-shrink-0" />}
+                        {option.includes('week') && <Calendar className="w-4 h-4 flex-shrink-0" />}
+                        <span className="flex-1">{option}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+          
+          {/* Loading indicator - Mobile Optimized */}
+          {isLoading && (
+            <div className="chatbot-loading-mobile">
+              <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <Clock className="w-4 h-4 text-white animate-spin" />
+              </div>
+              <div className="bg-gray-700 text-gray-100 px-4 py-2 rounded-lg">
+                <div className="flex space-x-1">
+                  <div className="chatbot-loading-dots-mobile animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="chatbot-loading-dots-mobile animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="chatbot-loading-dots-mobile animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}  
-        <div className="border-t border-gray-700 p-4">  
-          <div className="flex gap-2">  
-            <input  
-              type="text"  
-              value={inputValue}  
-              onChange={(e) => setInputValue(e.target.value)}  
-              onKeyPress={handleKeyPress}  
-              placeholder={  
-                bookingStep === 'name' ? "Your name..." :  
-                bookingStep === 'company' ? "Company name..." :  
+        {/* Input Area - Mobile Optimized */}
+        <div className="chatbot-input-mobile">
+          <div className="flex gap-3">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder={
+                bookingStep === 'name' ? "Your name..." :
+                bookingStep === 'company' ? "Company name..." :
                 bookingStep === 'email' ? "Your email address..." :
                 bookingStep === 'complete' ? "Consultation scheduled!" :
-                "Ask me about automation, marketing, web dev, or analytics..."  
-              }  
-              className="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 placeholder-gray-400 focus:outline-none focus:border-green-500"  
-              disabled={isLoading || bookingStep === 'complete'}  
-            />  
-            <button  
-              onClick={sendMessage}  
-              disabled={isLoading || !inputValue.trim() || bookingStep === 'complete'}  
-              className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white p-2 rounded-lg transition-colors"  
-            >  
-              <Send className="w-4 h-4" />  
-            </button>  
-          </div>  
-        </div>  
-      </div>  
-    </div>  
+                "Ask me about automation, marketing, web dev, or analytics..."
+              }
+              className="chatbot-input-field-mobile flex-1 placeholder-gray-400"
+              disabled={isLoading || bookingStep === 'complete'}
+            />
+            <button
+              onClick={sendMessage}
+              disabled={isLoading || !inputValue.trim() || bookingStep === 'complete'}
+              className="chatbot-send-mobile"
+              aria-label="Send message"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   )  
 }
 
