@@ -120,9 +120,6 @@ const InteractiveLeadDemo = () => {
     return (
       <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-8 backdrop-blur-sm">
         <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Play className="w-8 h-8 text-white ml-1" />
-          </div>
           <h3 className="text-xl font-bold text-white mb-2">
             See Your Business Automation in Action
           </h3>
@@ -281,12 +278,12 @@ const InteractiveLeadDemo = () => {
               Run Demo Again
             </button>
             <a 
-              href="https://calendly.com/amarilloautomation/strategy-call"
+              href="https://cal.com/amarilloautomation/consultation"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-yellow-500 text-black px-6 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors text-sm"
             >
-              🔥 Get This System For Your Business
+              Get This System For Your Business
             </a>
           </div>
         </div>
