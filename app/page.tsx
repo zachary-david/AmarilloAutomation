@@ -1,10 +1,13 @@
-// app/page.tsx - Corrected formatting
+// app/page.tsx - Corrected implementation with Enhanced Chatbot
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import { ChevronRight, Star, CheckCircle, ArrowRight, Play } from 'lucide-react'
-import AIChatbot from './components/AIChatbot'
 import { useRouter } from 'next/navigation'
+import EnhancedAIChatbot from './components/EnhancedAIChatbot'
+// Add this temporarily at the top of your page.tsx after imports
+console.log('EnhancedAIChatbot type:', typeof EnhancedAIChatbot)
+console.log('EnhancedAIChatbot value:', EnhancedAIChatbot)
 
 export default function Homepage() {
   const vantaRef = useRef<HTMLDivElement>(null)
@@ -116,7 +119,7 @@ export default function Homepage() {
     }
   }
 
-  // CTA Button Handlers
+  // CTA Button Handlers - Updated to use Enhanced Chatbot
   const handleAskAnything = (source: string) => {
     trackCTA(`${source}_ask_anything`)
     setIsChatbotOpen(true)
@@ -126,6 +129,9 @@ export default function Homepage() {
     trackCTA(`${source}_demo`)
     router.push('/demo')
   }
+
+  const openChatbot = () => setIsChatbotOpen(true)
+  const closeChatbot = () => setIsChatbotOpen(false)
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
@@ -495,11 +501,24 @@ export default function Homepage() {
         </section>
       </div>
 
-      {/* AI Chatbot */}
-      <AIChatbot 
+      {/* Enhanced AI Chatbot with Scheduling Functionality */}
+      <EnhancedAIChatbot 
         isOpen={isChatbotOpen} 
-        onClose={() => setIsChatbotOpen(false)} 
+        onClose={closeChatbot} 
       />
+
+      {/* Floating Chat Button (when chatbot is closed) */}
+      {!isChatbotOpen && (
+        <button
+          onClick={openChatbot}
+          className="fixed bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white p-4 rounded-full shadow-lg transition-colors z-40"
+          aria-label="Open chat"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-1.946-.274A8.955 8.955 0 0112 20.5c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8c0 1.508.417 2.927 1.146 4.146A8.955 8.955 0 0112 20.5c.34 0 .678-.027 1.01-.08L21 21c.552 0 1-.448 1-1v-8z" />
+          </svg>
+        </button>
+      )}
     </div>
   )
 }
