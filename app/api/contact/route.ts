@@ -44,21 +44,13 @@ async function sendToAirtable(formData: any): Promise<{success: boolean, error?:
     const submissionDate = new Date().toISOString().split('T')[0] // Gets YYYY-MM-DD
 
     const airtableData = {
-      fields: {
-        'Name': formData.name,
-        'Email': formData.email,
-        'Company': formData.company || '',
-        'Service Type': formData.serviceType || '',
-        'Company Size': formData.companySize || '',
-        'Project Urgency': formData.projectUrgency || '',
-        'Message': formData.message,
-        'Lead Score': leadScore,
-        'Lead Priority': priority,
-        'Submission Date': submissionDate, // Fixed: Date format YYYY-MM-DD instead of ISO string
-        'Source': 'Website Contact Form',
-        'Status': 'New'
-      }
-    }
+  fields: {
+    'Name': formData.name || 'Demo User',
+    'Email': formData.email,
+    'Company': formData.company || 'Demo Request',
+    'Source': 'Website Contact Form'
+  }
+}
 
     console.log('🔧 Airtable payload with fixed date:')
     console.log('  - Submission Date:', submissionDate)
