@@ -331,38 +331,113 @@ const analyzeResponse = (response: string, questionContext: string): {
   return analysis  
 }
 
-// AUTOMATION responses by industry (keeping existing responses)  
-const getAutomationResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'): string => {  
-  const responses: Record<'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general', string[]> = {  
+// NEW: Multi-Message Function Implementation
+const sendMultiPartMessage = (messages: string[], messageId: string, role: 'assistant', setMessages: any) => {
+  messages.forEach((message, index) => {
+    setTimeout(() => {
+      const newMessage: Message = {
+        id: `${messageId}-${index}`,
+        role: role,
+        content: message,
+        timestamp: new Date()
+      }
+      setMessages((prev: Message[]) => [...prev, newMessage])
+    }, index * 3500) // 3.5 second delays between messages
+  })
+}
+
+// AUTOMATION responses by industry - CONVERTED TO MULTI-MESSAGE FORMAT  
+const getAutomationResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'): string[] => {  
+  const responses: Record<'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general', string[][]> = {  
     hvac: [  
-      "Nice! HVAC automation is where we really shine. We help companies like yours automate seasonal reminders (think spring tune-ups, fall maintenance), emergency dispatch routing, and follow-up sequences that turn one-time emergency calls into annual maintenance contracts. Our HVAC clients typically see 40% better customer retention and save 12+ hours weekly on admin work.",  
-      "Sweet! So HVAC automation is basically our bread and butter here in West Texas. We set up systems that automatically send maintenance reminders before peak summer heat, route emergency calls to the right techs based on location and expertise, and follow up with customers about preventative services. One local HVAC company went from 30% callback rate to 85% just by automating their seasonal outreach.",  
-      "Awesome! HVAC businesses love our automation because it handles the stuff that drives you crazy - like remembering to follow up on estimates, sending seasonal maintenance reminders, and routing emergency calls efficiently. We've helped local companies increase their maintenance contract sales by 60% through automated follow-up sequences.",  
-      "Perfect! HVAC automation is huge out here. We automate everything from initial lead response (under 2 minutes!), to seasonal campaign management, to emergency dispatch workflows that get the right tech to the right job faster. Our clients typically see 50% improvement in converting estimates to jobs and save about 15 hours per week on admin tasks."  
+      [
+        "HVAC automation is basically bread and butter here in West Texas. We help local businesses automate the repetitive tasks - lead entry, paperwork, scheduling, service reminders, etc. You name it.",
+        "We try and save our customers at least 15+ hours a week. And for Lead Aggregators like ANGI, the automatic responses tend to help on closing rates - or at least customer engagement."
+      ],
+      [
+        "So HVAC automation is where we really shine. We set up systems that automatically send maintenance reminders before peak summer heat, route emergency calls to the right techs based on location and expertise.",
+        "One local HVAC company went from 30% callback rate to 85% just by automating their seasonal outreach. Most see 40% better customer retention and save 12+ hours weekly on admin work."
+      ],
+      [
+        "HVAC businesses love our automation because it handles the stuff that drives you crazy - like remembering to follow up on estimates, sending seasonal maintenance reminders, and routing emergency calls efficiently.",
+        "We've helped local companies increase their maintenance contract sales by 60% through automated follow-up sequences. The seasonal timing is everything in this business."
+      ],
+      [
+        "HVAC automation is huge out here. We automate everything from initial lead response - under 2 minutes! - to seasonal campaign management, to emergency dispatch workflows that get the right tech to the right job faster.",
+        "Our clients typically see 50% improvement in converting estimates to jobs and save about 15 hours per week on admin tasks. The emergency response automation alone pays for itself."
+      ]
     ],  
     plumbing: [  
-      "Nice! Plumbing automation is perfect because y'all deal with so many emergencies mixed with routine work. We automate emergency dispatch (gets the right plumber to urgent calls faster), follow-up sequences for maintenance services, and review requests that help you get found online. Our plumbing clients see 45% better emergency response times and convert 35% more emergency calls into ongoing customers.",  
-      "Sweet! Plumbing businesses have some of the best automation opportunities. We set up systems that instantly route emergency calls, automatically follow up on estimates (plumbing has notoriously low estimate conversion), and send maintenance reminders for things like water heater flushes and drain cleaning. One local plumber increased their repeat customer rate from 20% to 60% just through automated follow-up.",  
-      "Awesome! Plumbing automation helps with both the emergency side and the planned maintenance side. We automate emergency dispatch workflows, estimate follow-up sequences (since plumbing estimates often get delayed), and customer education campaigns about preventative maintenance. Our plumbing clients typically see 40% improvement in estimate-to-job conversion and save 10+ hours weekly on admin work.",  
-      "Perfect! Plumbing automation is huge because you're dealing with both urgent emergencies and planned work. We automate emergency call routing, follow-up sequences for estimates and maintenance, and educational campaigns that turn emergency customers into maintenance customers. Local plumbers using our system see 50% better conversion on estimates and 30% increase in maintenance contracts."  
+      [
+        "Plumbing automation is perfect because y'all deal with so many emergencies mixed with routine work. We automate emergency dispatch, follow-up sequences for maintenance services, and review requests that help you get found online.",
+        "Our plumbing clients see 45% better emergency response times and convert 35% more emergency calls into ongoing customers. That's where the real money is."
+      ],
+      [
+        "Plumbing businesses have some of the best automation opportunities. We set up systems that instantly route emergency calls, automatically follow up on estimates, and send maintenance reminders for things like water heater flushes.",
+        "One local plumber increased their repeat customer rate from 20% to 60% just through automated follow-up. Plumbing has notoriously low estimate conversion, but automation fixes that."
+      ],
+      [
+        "Plumbing automation helps with both the emergency side and the planned maintenance side. We automate emergency dispatch workflows, estimate follow-up sequences, and customer education campaigns about preventative maintenance.",
+        "Our plumbing clients typically see 40% improvement in estimate-to-job conversion and save 10+ hours weekly on admin work. Plus better customer relationships through consistent follow-up."
+      ],
+      [
+        "Plumbing automation is huge because you're dealing with both urgent emergencies and planned work. We automate emergency call routing, follow-up sequences for estimates and maintenance, and educational campaigns.",
+        "Local plumbers using our system see 50% better conversion on estimates and 30% increase in maintenance contracts. That turns emergency customers into maintenance customers."
+      ]
     ],  
     roofing: [  
-      "Nice! Roofing automation is especially powerful because of how seasonal and weather-dependent your business is. We automate storm damage follow-up sequences, insurance claim support workflows, and maintenance reminder campaigns that keep customers engaged between major jobs. Our roofing clients see 65% better conversion on storm leads and 40% increase in maintenance work during slow seasons.",  
-      "Sweet! Roofing is perfect for automation because there's so much follow-up involved - insurance claims, inspection schedules, maintenance reminders. We set up systems that automatically nurture storm leads, manage inspection workflows, and send seasonal maintenance reminders (gutter cleaning, inspection after storms). One local roofer went from converting 25% of storm leads to 70% just through automated follow-up sequences.",  
-      "Awesome! Roofing automation helps with the long sales cycles and seasonal nature of your business. We automate insurance claim workflows, multi-touch follow-up for big jobs, and maintenance campaigns that generate revenue during slow periods. Our roofing clients typically see 50% improvement in storm lead conversion and 35% increase in maintenance/repair work.",  
-      "Perfect! Roofing has some unique automation opportunities because of insurance work and seasonal patterns. We automate storm response workflows, insurance documentation processes, and maintenance reminder sequences that keep you busy year-round. Local roofers using our system see 60% better conversion on insurance jobs and consistent revenue through automated maintenance programs."  
+      [
+        "Roofing automation is especially powerful because of how seasonal and weather-dependent your business is. We automate storm damage follow-up sequences, insurance claim support workflows, and maintenance reminder campaigns.",
+        "Our roofing clients see 65% better conversion on storm leads and 40% increase in maintenance work during slow seasons. Weather creates opportunities, automation captures them."
+      ],
+      [
+        "Roofing is perfect for automation because there's so much follow-up involved - insurance claims, inspection schedules, maintenance reminders. We set up systems that automatically nurture storm leads and manage inspection workflows.",
+        "One local roofer went from converting 25% of storm leads to 70% just through automated follow-up sequences. The insurance claim support automation saves weeks of paperwork."
+      ],
+      [
+        "Roofing automation helps with the long sales cycles and seasonal nature of your business. We automate insurance claim workflows, multi-touch follow-up for big jobs, and maintenance campaigns that generate revenue during slow periods.",
+        "Our roofing clients typically see 50% improvement in storm lead conversion and 35% increase in maintenance/repair work. Keeps you busy year-round."
+      ],
+      [
+        "Roofing has some unique automation opportunities because of insurance work and seasonal patterns. We automate storm response workflows, insurance documentation processes, and maintenance reminder sequences.",
+        "Local roofers using our system see 60% better conversion on insurance jobs and consistent revenue through automated maintenance programs. No more feast or famine cycles."
+      ]
     ],  
     contractor: [  
-      "Nice! General contractor automation is powerful because you're juggling so many different types of projects and customers. We automate estimate follow-up (contractors lose tons of money here), project milestone communications, and referral request sequences. Our contractor clients see 45% better estimate conversion and 40% increase in referral business.",  
-      "Sweet! Contractor automation helps with the complexity of managing multiple projects and maintaining relationships. We set up systems that automatically follow up on estimates, send project updates to customers, and request reviews/referrals at completion. One local contractor increased their estimate-to-job conversion from 30% to 60% through automated follow-up sequences.",  
-      "Awesome! General contractors have great automation opportunities because of all the touchpoints - estimates, project updates, completion follow-up, referral requests. We automate estimate nurturing, project communication workflows, and post-completion sequences that generate repeat business and referrals. Our contractor clients typically save 12+ hours weekly on admin work and see 50% improvement in customer satisfaction scores.",  
-      "Perfect! Contractor automation handles the relationship management that's so crucial for your business. We automate estimate follow-up sequences, project milestone communications, and post-completion workflows that generate reviews and referrals. Local contractors using our system see 40% better estimate conversion and 55% increase in referral business."  
+      [
+        "General contractor automation is powerful because you're juggling so many different types of projects and customers. We automate estimate follow-up, project milestone communications, and referral request sequences.",
+        "Our contractor clients see 45% better estimate conversion and 40% increase in referral business. Contractors lose tons of money on poor follow-up - automation fixes that."
+      ],
+      [
+        "Contractor automation helps with the complexity of managing multiple projects and maintaining relationships. We set up systems that automatically follow up on estimates, send project updates to customers, and request reviews at completion.",
+        "One local contractor increased their estimate-to-job conversion from 30% to 60% through automated follow-up sequences. Project communication automation keeps customers happy too."
+      ],
+      [
+        "General contractors have great automation opportunities because of all the touchpoints - estimates, project updates, completion follow-up, referral requests. We automate estimate nurturing and project communication workflows.",
+        "Our contractor clients typically save 12+ hours weekly on admin work and see 50% improvement in customer satisfaction scores. Better relationships mean more referrals."
+      ],
+      [
+        "Contractor automation handles the relationship management that's so crucial for your business. We automate estimate follow-up sequences, project milestone communications, and post-completion workflows that generate reviews and referrals.",
+        "Local contractors using our system see 40% better estimate conversion and 55% increase in referral business. Referrals are the lifeblood of contracting."
+      ]
     ],  
     general: [  
-      "Nice! So automation is basically our bread and butter. We help local businesses like HVAC companies, contractors, and plumbers automate all the boring stuff - like follow-ups, scheduling, invoice generation, you name it. Most of our clients save like 15+ hours a week and see way better lead conversion.",  
-      "Sweet! Automation is where we really help West Texas businesses shine. We connect your existing tools to automate tasks like lead follow-up, appointment scheduling, and customer communications. Our clients typically see 40-60% improvement in lead conversion and save 15+ hours weekly on admin work.",  
-      "Awesome! We specialize in automating workflows for home service businesses throughout West Texas. Things like instant lead responses, appointment reminders, follow-up sequences, and review requests. Most clients see ROI within 30 days through better lead conversion and time savings.",  
-      "Perfect! Automation helps local businesses compete with the big guys by making sure nothing falls through the cracks. We automate lead responses, customer follow-up, scheduling, and all the administrative stuff that eats up your day. Our clients typically save 10-20 hours weekly and see significant improvements in customer retention."  
+      [
+        "So automation is basically bread and butter. We help local businesses automate the repetitive tasks - lead entry, paperwork, scheduling, service reminders, etc. You name it.",
+        "We try and save our customers at least 15+ hours a week. And for Lead Aggregators like ANGI, the automatic responses tend to help on closing rates - or at least customer engagement."
+      ],
+      [
+        "Automation is where we really help West Texas businesses shine. We connect your existing tools to automate tasks like lead follow-up, appointment scheduling, and customer communications.",
+        "Our clients typically see 40-60% improvement in lead conversion and save 15+ hours weekly on admin work. Most see ROI within 30 days."
+      ],
+      [
+        "We specialize in automating workflows for home service businesses throughout West Texas. Things like instant lead responses, appointment reminders, follow-up sequences, and review requests.",
+        "Most clients see ROI within 30 days through better lead conversion and time savings. No more leads falling through the cracks."
+      ],
+      [
+        "Automation helps local businesses compete with the big guys by making sure nothing falls through the cracks. We automate lead responses, customer follow-up, scheduling, and all the administrative stuff that eats up your day.",
+        "Our clients typically save 10-20 hours weekly and see significant improvements in customer retention. Time is money, especially in home services."
+      ]
     ]  
   }  
     
@@ -370,46 +445,91 @@ const getAutomationResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'cont
   return industryResponses[Math.floor(Math.random() * industryResponses.length)]  
 }
 
-// DIGITAL MARKETING responses by industry (abbreviated for space - use your existing responses)  
-const getDigitalMarketingResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'): string => {  
+// DIGITAL MARKETING responses by industry - CONVERTED TO MULTI-MESSAGE FORMAT  
+const getDigitalMarketingResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'): string[] => {  
   const responses: Record<'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general', string[]> = {  
-    hvac: ["Sweet! HVAC digital marketing is all about seasonal timing and emergency response. We run Facebook and Instagram ads for pre-season maintenance (huge ROI before summer hits), emergency service campaigns, and educational content that builds trust. Our HVAC clients typically see $4-6 return for every $1 spent on ads, plus we track actual service calls, not just clicks."],  
-    plumbing: ["Sweet! Plumbing digital marketing is amazing because when people need a plumber, they need one NOW. We run emergency response campaigns, maintenance service ads, and educational content about preventing problems. Our plumbing clients see $5-8 return per ad dollar and get higher-quality customers who become long-term clients."],  
-    roofing: ["Sweet! Roofing digital marketing is incredibly powerful because of the high transaction values and seasonal patterns. We run storm response campaigns, seasonal maintenance ads, and educational content about roof care. Our roofing clients see $8-12 return per ad dollar (higher margins help!) and better-qualified leads."],  
-    contractor: ["Sweet! General contractor marketing is all about showcasing your work quality and building trust before people choose you for big projects. We run campaigns for different service areas, before/after showcases, and educational content about home improvements. Our contractor clients see $6-10 return per ad dollar and attract higher-value projects."],  
-    general: ["Sweet! Yeah, we do Facebook and Instagram ads for local home service businesses. The cool thing is we actually track real ROI - not just 'engagement' or whatever. We focus on getting you actual customers, not just likes. Plus we tie it all into your automation so leads don't fall through the cracks."]  
+    hvac: [
+      "HVAC digital marketing is all about seasonal timing and emergency response. We run Facebook and Instagram ads for pre-season maintenance - huge ROI before summer hits - emergency service campaigns, and educational content that builds trust.",
+      "Our HVAC clients typically see $4-6 return for every $1 spent on ads, plus we track actual service calls, not just clicks. The seasonal timing makes all the difference."
+    ],
+    plumbing: [
+      "Plumbing digital marketing is amazing because when people need a plumber, they need one NOW. We run emergency response campaigns, maintenance service ads, and educational content about preventing problems.",
+      "Our plumbing clients see $5-8 return per ad dollar and get higher-quality customers who become long-term clients. Emergency marketing converts incredibly well."
+    ],
+    roofing: [
+      "Roofing digital marketing is incredibly powerful because of the high transaction values and seasonal patterns. We run storm response campaigns, seasonal maintenance ads, and educational content about roof care.",
+      "Our roofing clients see $8-12 return per ad dollar - higher margins help! - and better-qualified leads. Storm season marketing can make your whole year."
+    ],
+    contractor: [
+      "General contractor marketing is all about showcasing your work quality and building trust before people choose you for big projects. We run campaigns for different service areas, before/after showcases, and educational content.",
+      "Our contractor clients see $6-10 return per ad dollar and attract higher-value projects. Trust-building content is everything in contracting."
+    ],
+    general: [
+      "Yes, we do Facebook and Instagram ads for local home service business. These are paid ads that focus on getting you actual customers, not just likes.",
+      "We'll track key metrics that focus on getting paying customers, not just post engagement. Plus we tie it all into your automation so leads don't fall through the cracks."
+    ]
   }  
     
   const industryResponses = responses[industry as keyof typeof responses] || responses.general  
-  return industryResponses[Math.floor(Math.random() * industryResponses.length)]  
+  return industryResponses  
 }
 
-// WEB DEVELOPMENT responses by industry (abbreviated for space - use your existing responses)  
-const getWebDevelopmentResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'): string => {  
+// WEB DEVELOPMENT responses by industry - CONVERTED TO MULTI-MESSAGE FORMAT  
+const getWebDevelopmentResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'): string[] => {  
   const responses: Record<'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general', string[]> = {  
-    hvac: ["Awesome! HVAC websites need to work for both emergency situations and planned services. We build sites with instant service request forms, seasonal service booking, emergency contact features that actually work on mobile, and integration with your dispatch system. Our HVAC clients see 50% more online bookings and way better lead quality."],  
-    plumbing: ["Awesome! Plumbing websites need to handle both emergency calls and planned services effectively. We build sites with emergency service forms, maintenance booking systems, educational content about plumbing care, and mobile-optimized design for people in crisis. Our plumbing clients see 60% more online bookings and higher-value service calls."],  
-    roofing: ["Awesome! Roofing websites need to handle both emergency storm work and planned replacement projects. We build sites with storm damage assessment forms, insurance claim support resources, project galleries, and mobile-optimized design for homeowners dealing with roof issues. Our roofing clients see 70% more qualified leads and higher-value projects."],  
-    contractor: ["Awesome! Contractor websites need to showcase your work quality and make it easy for people to understand your services. We build sites with project portfolios, service area pages, estimate request systems, and trust-building content that converts visitors into customers. Our contractor clients see 50% more qualified leads and higher-value projects."],  
-    general: ["Awesome! We build websites that actually work for your business - not just pretty pictures. Think automated lead capture, built-in booking systems, and everything connects to your workflow. No more leads sitting in some random contact form."]  
+    hvac: [
+      "So for HVAC companies we build sites with instant service request forms, seasonal service booking, emergency contact features that actually work on mobile, and integration with your dispatch system.",
+      "Our HVAC clients see 50% more online bookings and way better lead quality. Emergency booking on mobile is crucial for HVAC."
+    ],
+    plumbing: [
+      "So for plumbing companies we build sites with emergency service forms, maintenance booking systems, educational content about plumbing care, and mobile-optimized design for people in crisis.",
+      "Our plumbing clients see 60% more online bookings and higher-value service calls. When people have plumbing emergencies, your site needs to work perfectly on mobile."
+    ],
+    roofing: [
+      "So for roofing companies we build sites with storm damage assessment forms, insurance claim support resources, project galleries, and mobile-optimized design for homeowners dealing with roof issues.",
+      "Our roofing clients see 70% more qualified leads and higher-value projects. Insurance claim support resources really set you apart from competitors."
+    ],
+    contractor: [
+      "So for contractors we build sites with project portfolios, service area pages, estimate request systems, and trust-building content that converts visitors into customers.",
+      "We do not use Artificial Intelligence to create content designed to represent your work... so these sites definitely work better if you already have content that can be used on the website."
+    ],
+    general: [
+      "We build websites that actually work for your business - not just pretty pictures. Think automated lead capture, built-in booking systems, and everything connects to your workflow.",
+      "No more leads sitting in some random contact form. Everything flows directly into your automation system."
+    ]
   }  
     
   const industryResponses = responses[industry as keyof typeof responses] || responses.general  
-  return industryResponses[Math.floor(Math.random() * industryResponses.length)]  
+  return industryResponses  
 }
 
-// ADVANCED ANALYTICS responses by industry (abbreviated for space - use your existing responses)  
-const getAdvancedAnalyticsResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'): string => {  
+// ADVANCED ANALYTICS responses by industry - CONVERTED TO MULTI-MESSAGE FORMAT  
+const getAdvancedAnalyticsResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'): string[] => {  
   const responses: Record<'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general', string[]> = {  
-    hvac: ["Oh this is cool stuff! For HVAC businesses, we track metrics that actually matter - like seasonal conversion rates, emergency vs maintenance revenue, customer lifetime value, and which marketing channels bring in the highest-value customers. Most HVAC owners don't know that emergency customers convert to maintenance contracts at different rates depending on how you follow up."],  
-    plumbing: ["Oh this is cool stuff! Plumbing analytics help you understand the difference between profitable customers and unprofitable ones. We track metrics like emergency vs planned service ratios, customer lifetime value, conversion rates from emergency to maintenance, and which marketing brings the best customers. Most plumbers don't realize that some customers are worth 10x others."],  
-    roofing: ["Oh this is cool stuff! Roofing analytics are powerful because of the high transaction values and long sales cycles. We track lead source profitability, conversion rates from estimate to job, project profitability by type, and customer lifetime value (repeat customers and referrals are gold!). Most roofers don't know which marketing channels bring customers who actually close versus just tire-kickers."],  
-    contractor: ["Oh this is cool stuff! Contractor analytics help you understand which projects, customers, and marketing channels actually drive profitable growth. We track project margins by type, customer lifetime value, referral patterns, and conversion rates from estimate to job. Most contractors don't know that some project types are 3x more profitable than others when you factor in time, complexity, and follow-on work."],  
-    general: ["Oh this is cool stuff! We set up custom dashboards that show you exactly what's driving your business growth. Like, which marketing channels actually bring in money, not just traffic. Most business owners are flying blind - this gives you the real numbers."]  
+    hvac: [
+      "For HVAC businesses, we track metrics that actually matter - like seasonal conversion rates, emergency vs maintenance revenue, customer lifetime value, and which marketing channels bring in the highest-value customers.",
+      "Most HVAC owners don't know that emergency customers convert to maintenance contracts at different rates depending on how you follow up. The data shows exactly what works."
+    ],
+    plumbing: [
+      "Plumbing analytics help you understand the difference between profitable customers and unprofitable ones. We track metrics like emergency vs planned service ratios, customer lifetime value, conversion rates from emergency to maintenance.",
+      "Most plumbers don't realize that some customers are worth 10x others. The analytics show you which marketing brings the best customers, not just the most calls."
+    ],
+    roofing: [
+      "Roofing analytics are powerful because of the high transaction values and long sales cycles. We track lead source profitability, conversion rates from estimate to job, project profitability by type, and customer lifetime value.",
+      "Most roofers don't know which marketing channels bring customers who actually close versus just tire-kickers. Repeat customers and referrals are gold in roofing."
+    ],
+    contractor: [
+      "Contractor analytics help you understand which projects, customers, and marketing channels actually drive profitable growth. We track project margins by type, customer lifetime value, referral patterns, and conversion rates.",
+      "Most contractors don't know that some project types are 3x more profitable than others when you factor in time, complexity, and follow-on work. The data reveals the hidden patterns."
+    ],
+    general: [
+      "We set up custom dashboards that show you exactly what's driving your business growth. Like, which marketing channels actually bring in money, not just traffic.",
+      "Most business owners are flying blind - this gives you the real numbers. You'll know what's working and what's just keeping you busy."
+    ]
   }  
     
   const industryResponses = responses[industry as keyof typeof responses] || responses.general  
-  return industryResponses[Math.floor(Math.random() * industryResponses.length)]  
+  return industryResponses  
 }
 
 function EnhancedAIChatbot({ isOpen, onClose }: Props) {  
@@ -477,7 +597,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     const newMessage: Message = {  
       id: Date.now().toString(),  
       role: 'assistant',  
-      content: "Sweet! So do you want to hop on a video call or would you prefer I just give you a ring?",  
+      content: "So do you want to hop on a video call or would you prefer I just give you a ring?",  
       timestamp: new Date(),  
       type: 'selection',  
       options: ['Video call works', 'Just call me', 'Actually, let me email you instead']  
@@ -593,7 +713,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
         const emailMessage: Message = {  
           id: (Date.now() + 1).toString(),  
           role: 'assistant',  
-          content: "No worries! Just shoot us an email at admin@amarilloautomation.com. Toss in your name and company name and we'll get back to you super quick - usually within a few hours.",  
+          content: "Okay send us an email at admin@amarilloautomation.com. Toss in your name and company name and we'll get back to you super quick - usually within a few hours.",  
           timestamp: new Date()  
         }  
         setMessages(prev => [...prev, emailMessage])  
@@ -606,7 +726,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
       const detailsMessage: Message = {  
         id: (Date.now() + 1).toString(),  
         role: 'assistant',  
-        content: "Awesome! What's your name?",  
+        content: "What's your name?",  
         timestamp: new Date()  
       }  
       setMessages(prev => [...prev, detailsMessage])  
@@ -703,8 +823,8 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           } else {  
             // Transition to consultation offer  
             response = responseAnalysis.urgency === 'high' ?   
-              "Sounds like you've got some real opportunities to improve things! Want to hop on a quick call to see how we can help? I can get you set up with a free consultation." :  
-              "That's helpful context! Based on what you're telling me, I think we could definitely help streamline some of those processes. Want to schedule a free consultation to dive deeper into your specific situation?"  
+              "Sounds like you've got some real opportunities to improve things. Want to hop on a quick call to see how we can help? I can get you set up with a free consultation." :  
+              "That's helpful context. Based on what you're telling me, I think we could definitely help streamline some of those processes. Want to schedule a free consultation to dive deeper into your specific situation?"  
               
             const consultationMessage: Message = {  
               id: (Date.now() + 1).toString(),  
@@ -733,7 +853,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           const companyMessage: Message = {  
             id: (Date.now() + 1).toString(),  
             role: 'assistant',  
-            content: "Cool! And what company are you with?",  
+            content: "What company are you with?",  
             timestamp: new Date()  
           }  
           setMessages(prev => [...prev, companyMessage])  
@@ -751,7 +871,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           const emailMessage: Message = {  
             id: (Date.now() + 1).toString(),  
             role: 'assistant',  
-            content: "Perfect! And what's your email so I can send you the meeting details?",  
+            content: "And what's your email so I can send you the meeting details?",  
             timestamp: new Date()  
           }  
           setMessages(prev => [...prev, emailMessage])  
@@ -769,7 +889,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           const bookingMessage: Message = {  
             id: (Date.now() + 1).toString(),  
             role: 'assistant',  
-            content: "Sweet! I'm getting this set up for you right now. You should get a confirmation email in just a minute.",  
+            content: "I'm getting this set up for you right now. You should get a confirmation email in just a minute.",  
             timestamp: new Date()  
           }  
           setMessages(prev => [...prev, bookingMessage])  
@@ -982,15 +1102,15 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
         const infoMessage: Message = {  
           id: (Date.now() + 1).toString(),  
           role: 'assistant',  
-          content: "Perfect! Just shoot us an email at admin@amarilloautomation.com and mention what you're most interested in. We'll send you some case studies and examples specific to your industry. Usually get back to people within a couple hours!",  
+          content: "Shoot us an email at admin@amarilloautomation.com and mention what you're most interested in. We'll send you some case studies and examples specific to your industry. Usually get back to people within a couple hours!",  
           timestamp: new Date()  
         }  
         setMessages(prev => [...prev, infoMessage])  
-      }, 1500)  
+      }, 3500)  
     }  
   }
 
-  // Enhanced topic selection with follow-up questions  
+  // Enhanced topic selection with follow-up questions - UPDATED FOR MULTI-MESSAGE  
   const handleTopicSelection = (topic: string) => {  
     const userMessage: Message = {  
       id: Date.now().toString(),  
@@ -1034,43 +1154,39 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
       messageCount: messages.length  
     })
 
-    // Generate industry-specific response with human-like delay  
+    // Generate industry-specific response with multi-message - UPDATED  
     setTimeout(() => {  
-      let response = ""  
+      let responseMessages: string[] = []  
         
       switch (topic) {  
         case 'Automation':  
-          response = getAutomationResponse(detectedIndustry)  
+          responseMessages = getAutomationResponse(detectedIndustry)  
           break  
         case 'Digital Marketing':  
-          response = getDigitalMarketingResponse(detectedIndustry)  
+          responseMessages = getDigitalMarketingResponse(detectedIndustry)  
           break  
         case 'Web Development':  
-          response = getWebDevelopmentResponse(detectedIndustry)  
+          responseMessages = getWebDevelopmentResponse(detectedIndustry)  
           break  
         case 'Advanced Analytics':  
-          response = getAdvancedAnalyticsResponse(detectedIndustry)  
+          responseMessages = getAdvancedAnalyticsResponse(detectedIndustry)  
           break  
         default:  
-          response = "That's a great question! I'd love to learn more about your specific situation."  
+          responseMessages = ["That's a great question! I'd love to learn more about your specific situation."]  
       }
 
-      const assistantMessage: Message = {  
-        id: (Date.now() + 1).toString(),  
-        role: 'assistant',  
-        content: response,  
-        timestamp: new Date()  
-      }  
-      setMessages(prev => [...prev, assistantMessage])  
+      // Send multi-part message using new function  
+      sendMultiPartMessage(responseMessages, (Date.now() + 1).toString(), 'assistant', setMessages)  
         
-      // Add follow-up question after a short delay  
+      // Add follow-up question after a delay (accounting for multi-message timing)  
+      const followUpDelay = responseMessages.length * 3500 + 2000 // Wait for all messages + 2 seconds  
       setTimeout(() => {  
         const followUps = getFollowUpQuestions(topic, detectedIndustry, 0)  
         if (followUps.length > 0) {  
           const selectedFollowUp = followUps[Math.floor(Math.random() * followUps.length)]  
             
           const followUpMessage: Message = {  
-            id: (Date.now() + 2).toString(),  
+            id: (Date.now() + 100).toString(),  
             role: 'assistant',  
             content: selectedFollowUp.question,  
             timestamp: new Date(),  
@@ -1095,9 +1211,9 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
             context: selectedFollowUp.context  
           })  
         }  
-      }, 2000) // 2 second delay for follow-up  
+      }, followUpDelay)  
         
-    }, 1500) // 1.5 second delay for natural feel  
+    }, 3000) // 3 second initial delay  
   }
 
   if (!isOpen) return null
