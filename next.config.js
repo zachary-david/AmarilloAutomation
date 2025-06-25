@@ -11,6 +11,8 @@ const nextConfig = {
   trailingSlash: false,
 
   // Add redirects for legal pages
+ 
+ 
   async redirects() {
     return [
       {
