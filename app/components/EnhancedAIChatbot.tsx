@@ -65,7 +65,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     const newMessage: Message = {  
       id: Date.now().toString(),  
       role: 'assistant',  
-      content: "So do you want to hop on a video call or would you prefer I just give you a ring?",  
+      content: "Do you prefer video conference or phone call?",  
       timestamp: new Date(),  
       type: 'selection',  
       options: ['Video call works', 'Just call me', 'Actually, let me email you instead']  
