@@ -4,6 +4,8 @@
 import { useState, useRef, useEffect } from 'react'
 import Navigation from '../components/Navigation'
 import { ArrowRight, CheckCircle, Play, Star, DollarSign } from 'lucide-react'
+import ExitIntentDemo from '../components/ExitIntentDemo'
+import InteractiveLeadDemo from '../components/InteractiveLeadDemo'
 
 export default function DemoPage() {
   const vantaRef = useRef<HTMLDivElement>(null)
@@ -83,16 +85,15 @@ export default function DemoPage() {
             
             <div className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg p-4 mb-8">
               <p className="text-yellow-400 font-bold text-lg mb-2">
-                🔥 LIMITED TIME: $25 Automation Starter
+                🚨 LIVE DEMO: See 4-Second Lead Response
               </p>
               <p className="text-gray-300 text-sm">
-                Choose 1 automation from our library of 10 proven templates + setup guide 
-                <span className="text-yellow-400"> (Normally $75)</span>
+                Watch what happens when a lead comes in while your competition is still checking email
               </p>
             </div>
             
             <p className="hero-subtitle-mobile text-gray-300 mb-12">
-              Request your personalized demo and choose 1 automation from our library of 10 proven templates - delivered to your inbox within 5 minutes
+              Enter your info below and experience the automation that's helping West Texas contractors respond to leads in seconds, not hours
             </p>
 
             {/* Demo Features */}
@@ -100,10 +101,10 @@ export default function DemoPage() {
               <div className="value-card-mobile">
                 <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-4" />
                 <h3 className="mobile-subheading-responsive font-bold text-white mb-3">
-                  Instant Demo Access
+                  Interactive Demo
                 </h3>
                 <p className="mobile-text-responsive text-gray-300">
-                  See real automation workflows built for businesses like yours
+                  See real automation working with your actual contact info
                 </p>
               </div>
               <div className="value-card-mobile">
@@ -111,68 +112,37 @@ export default function DemoPage() {
                   <div className="w-5 h-5 rounded-full border-2 border-gray-900 bg-green-400"></div>
                 </div>
                 <h3 className="mobile-subheading-responsive font-bold text-white mb-3">
-                  Choose Your Automation
+                  4-Second Response Time
                 </h3>
                 <p className="mobile-text-responsive text-gray-300">
-                  Pick 1 from 10 proven templates + setup guide + 15-min call
+                  Watch leads get processed faster than competitors can read emails
                 </p>
               </div>
               <div className="value-card-mobile">
                 <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-4" />
                 <h3 className="mobile-subheading-responsive font-bold text-white mb-3">
-                  No Risk Trial
+                  Immediate Results
                 </h3>
                 <p className="mobile-text-responsive text-gray-300">
-                  See the demo first, then decide if automation is right for you
+                  See exactly how this automation would work for your business
                 </p>
               </div>
             </div>
 
-            {/* Google Form */}
-            <div className="max-w-md mx-auto">
-              <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-8 backdrop-blur-sm">
-                <h3 className="mobile-subheading-responsive font-bold text-white mb-4 text-center">
-                  Get Your Demo + Choose Your $25 Automation
-                </h3>
-                
-                <p className="text-sm text-gray-400 mb-6 text-center">
-                  Confirm your email below and submit to get automation offers that fit your business.
-                </p>
-                
-                {/* Replace the entire form with Google Form iframe */}
-                <div className="w-full">
-                  <iframe 
-                    src="https://docs.google.com/forms/d/e/1FAIpQLSdgo6c6REVyfndd0pKrQ6S0raHRk107l2R6X8ttJGjtDDBcMA/viewform?embedded=true&usp=pp_url" 
-                    width="100%" 
-                    height="520" 
-                    frameBorder="0" 
-                    marginHeight={0} 
-                    marginWidth={0}
-                    className="rounded-lg"
-                    style={{ 
-                      background: 'transparent',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    Loading…
-                  </iframe>
-                </div>
-
-                <p className="mobile-text-responsive text-gray-400 text-center mt-4">
-                  See 10 automation options + claim your $25 starter in under 5 minutes
-                </p>
-              </div>
+            {/* Interactive Demo Component */}
+            <div className="max-w-md mx-auto" id="demo-form">
+              <InteractiveLeadDemo />
             </div>
           </div>
         </section>
 
-        {/* What You Get Section */}
+        {/* How It Works Section */}
         <section className="section-padding bg-gray-900/50 backdrop-blur-sm">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="mobile-heading-responsive font-bold text-white mb-4">
-              Choose 1 Automation for $25
+              How Our Automation Wins Leads
             </h2>
-            <p className="text-gray-300 mb-12">Pick from 10 proven templates • Normally $75 each</p>
+            <p className="text-gray-300 mb-12">The system that's helping contractors close more deals</p>
             
             <div className="case-study-mobile text-left">
               <div className="service-card-mobile bg-green-900/20 border border-green-500/30">
@@ -181,11 +151,11 @@ export default function DemoPage() {
                     <span className="text-white font-bold text-sm">1</span>
                   </div>
                   <h3 className="mobile-subheading-responsive font-bold text-white">
-                    Your Choice of Automation
+                    Instant Lead Detection
                   </h3>
                 </div>
                 <p className="mobile-text-responsive text-gray-300">
-                  Pick 1 from: Contact alerts, lead tracking, follow-ups, review requests, appointment reminders, and 5 more proven templates
+                  System monitors ANGI, Google, and website forms 24/7. New leads trigger immediate action.
                 </p>
               </div>
               
@@ -195,11 +165,11 @@ export default function DemoPage() {
                     <span className="text-white font-bold text-sm">2</span>
                   </div>
                   <h3 className="mobile-subheading-responsive font-bold text-white">
-                    Complete Setup Guide
+                    Smart Response Generation
                   </h3>
                 </div>
                 <p className="mobile-text-responsive text-gray-300">
-                  Step-by-step instructions to get your chosen automation working in your business
+                  AI analyzes the lead and creates personalized responses. Emergency jobs get priority handling.
                 </p>
               </div>
               
@@ -209,13 +179,32 @@ export default function DemoPage() {
                     <span className="text-white font-bold text-sm">3</span>
                   </div>
                   <h3 className="mobile-subheading-responsive font-bold text-white">
-                    15-Minute Setup Call
+                    Automatic Follow-up System
                   </h3>
                 </div>
                 <p className="mobile-text-responsive text-gray-300">
-                  Quick call to help you get your automation running if you need assistance
+                  Multi-channel follow-up ensures no lead falls through cracks. You win more jobs.
                 </p>
               </div>
+            </div>
+
+            <div className="mt-12 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-6">
+              <h3 className="text-xl font-bold text-yellow-400 mb-4">
+                Real Results: Panhandle Roofing
+              </h3>
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-white">580%</div>
+                  <div className="text-sm text-gray-300">ROI Increase</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white">2 min</div>
+                  <div className="text-sm text-gray-300">Avg Response Time</div>
+                </div>
+              </div>
+              <p className="text-gray-300 text-sm mt-4 italic">
+                "We went from losing leads to competitors to being the first responder every time."
+              </p>
             </div>
           </div>
         </section>
@@ -224,7 +213,7 @@ export default function DemoPage() {
         <section className="section-padding">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="mobile-heading-responsive font-bold text-white mb-8">
-              Join 40+ West Texas Businesses
+              Join 12+ Amarillo Contractors Already Using This System
             </h2>
             
             <div className="flex justify-center mb-6">
@@ -234,13 +223,30 @@ export default function DemoPage() {
             </div>
             
             <p className="mobile-subheading-responsive text-gray-300 mb-8">
-              "Started with the $25 automation and within 2 weeks we were saving 5 hours per week 
-              and never missing important leads. Perfect starter solution."
+              "The demo showed me exactly what I was missing. Now I respond to leads faster than anyone in town. 
+              My conversion rate went from 8% to 23% in two months."
             </p>
             
-            <p className="mobile-text-responsive text-gray-400">
-              - Local Amarillo Contractor
+            <p className="mobile-text-responsive text-gray-400 mb-8">
+              - Mike R., Elite HVAC Services
             </p>
+
+            <div className="bg-gray-800/30 border border-gray-700 rounded-lg p-6">
+              <h3 className="text-lg font-bold text-white mb-4">
+                Ready to Stop Losing Leads to Faster Competitors?
+              </h3>
+              <a 
+                href="https://calendly.com/amarilloautomation/strategy-call"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-lg font-bold text-lg hover:from-green-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105"
+              >
+                🚀 Get This System For My Business
+              </a>
+              <p className="text-gray-400 text-sm mt-4">
+                Free strategy call • No commitment • See if automation is right for you
+              </p>
+            </div>
 
             <div className="mt-8 text-center">
               <p className="text-gray-400 text-sm">

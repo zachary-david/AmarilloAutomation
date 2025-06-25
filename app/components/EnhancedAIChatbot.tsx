@@ -52,14 +52,37 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     scrollToBottom()  
   }, [messages])
 
-  // Handle LLM conversation
+  // Handle OpenAI GPT-4 conversation
   const handleLLMConversation = async (userInput: string) => {
     try {
-      // For now, we'll use a mock response until you set up the actual LLM API
-      // Replace this with actual Claude or OpenAI API call
-      const mockResponse = await simulateLLMResponse(userInput, messages)
-      
-      if (mockResponse.triggerBooking) {
+      const response = await fetch('/api/openai-chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: userInput,
+          conversationHistory: messages.slice(-10) // Last 10 messages for context
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('OpenAI API failed')
+      }
+
+      const data = await response.json()
+
+      // Update cost tracking
+      if (data.usage && data.usage.cost) {
+        setConversationCost(prev => prev + data.usage.cost)
+      }
+
+      // Show if using fallback (when OpenAI API fails)
+      if (data.fallback) {
+        console.log('Using fallback response - OpenAI API unavailable')
+      }
+
+      if (data.triggerBooking) {
         // Transition to booking flow
         setIsInBookingFlow(true)
         setBookingStep('preference')
@@ -67,25 +90,25 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
         const bookingMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: mockResponse.response,
+          content: data.response,
           timestamp: new Date(),
           type: 'selection',
           options: ['Video call', 'Phone call', 'Send me an email instead']
         }
         setMessages(prev => [...prev, bookingMessage])
       } else {
-        // Regular LLM response
+        // Regular OpenAI response
         const assistantMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: mockResponse.response,
+          content: data.response,
           timestamp: new Date()
         }
         setMessages(prev => [...prev, assistantMessage])
       }
 
     } catch (error) {
-      console.error('LLM conversation error:', error)
+      console.error('OpenAI conversation error:', error)
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -96,64 +119,10 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     }
   }
 
-  // Mock LLM response function (replace with actual API call)
-  const simulateLLMResponse = async (userInput: string, messageHistory: Message[]) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500))
-
-    const input = userInput.toLowerCase()
-    
-    // Simple trigger logic for booking (replace with actual LLM logic)
-    const bookingTriggers = [
-      'schedule', 'consultation', 'call', 'meeting', 'talk', 'discuss', 
-      'price', 'cost', 'how much', 'interested', 'next steps', 'learn more'
-    ]
-    
-    const shouldTriggerBooking = bookingTriggers.some(trigger => input.includes(trigger)) && 
-                                messageHistory.length > 2 // After some conversation
-
-    if (shouldTriggerBooking) {
-      return {
-        response: "Great! I can help you schedule a consultation with our team. How would you prefer to connect?",
-        triggerBooking: true
-      }
-    }
-
-    // Mock responses based on keywords (replace with actual LLM)
-    if (input.includes('automation')) {
-      return {
-        response: "Automation is where we really help West Texas businesses shine. We typically save our clients 15+ hours per week by automating lead responses, follow-up sequences, and administrative tasks. What kind of repetitive work is eating up your time?",
-        triggerBooking: false
-      }
-    }
-    
-    if (input.includes('marketing') || input.includes('ads')) {
-      return {
-        response: "Our digital marketing focuses on getting you actual customers, not just likes and engagement. Our HVAC clients typically see $4-6 return for every $1 spent on ads. What's your main source of new customers right now?",
-        triggerBooking: false
-      }
-    }
-    
-    if (input.includes('website') || input.includes('web')) {
-      return {
-        response: "We build websites that actually work for your business - automated lead capture, booking systems, everything connects to your workflow. Are you currently getting leads through your website, or is it just an online brochure?",
-        triggerBooking: false
-      }
-    }
-    
-    if (input.includes('analytics') || input.includes('data')) {
-      return {
-        response: "Most business owners are flying blind on what actually drives growth. We set up dashboards that show which marketing channels bring in money, not just traffic. Do you currently track which lead sources are most profitable?",
-        triggerBooking: false
-      }
-    }
-
-    // Default response
-    return {
-      response: "That's a great question! Can you tell me more about your specific situation? What industry are you in, and what's your biggest challenge right now?",
-      triggerBooking: false
-    }
-  }
+  // Remove the mock LLM function since we're using real Claude now
+  // const simulateLLMResponse = async (userInput: string, messageHistory: Message[]) => {
+  //   ... (removed)
+  // }
 
   // Handle booking flow
   const handleBookingFlow = async (userInput: string) => {
@@ -366,7 +335,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
             <Bot className="w-6 h-6 text-white" />  
             <div>  
               <h3 className="font-semibold text-white">Amarillo Automation AI</h3>  
-              <p className="text-xs text-green-100">LLM-powered • Cost: ${conversationCost.toFixed(3)}</p>  
+              <p className="text-xs text-green-100">Powered by GPT-4 • Cost: ${conversationCost.toFixed(4)}</p>  
             </div>  
           </div>  
           <button  
