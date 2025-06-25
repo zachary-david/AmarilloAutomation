@@ -3,13 +3,9 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Navigation from '../components/Navigation'
-import { ArrowRight, CheckCircle, Play, Star } from 'lucide-react'
+import { ArrowRight, CheckCircle, Play, Star, DollarSign } from 'lucide-react'
 
 export default function DemoPage() {
-  const [email, setEmail] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [error, setError] = useState('')
   const vantaRef = useRef<HTMLDivElement>(null)
   const vantaEffect = useRef<any>(null)
 
@@ -63,111 +59,6 @@ export default function DemoPage() {
     }
   }, [])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!email || !email.includes('@')) {
-      setError('Please enter a valid email address')
-      return
-    }
-
-    setIsSubmitting(true)
-    setError('')
-
-    // Track demo request
-    if (typeof window !== 'undefined' && window.dataLayer) {
-      window.dataLayer.push({
-        event: 'demo_request_submitted',
-        email_provided: true,
-        conversion_value: 1
-      })
-    }
-
-    try {
-      // Submit to your API endpoint that handles AirTable integration
-      const response = await fetch('/api/demo-request', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          source: 'demo_page',
-          timestamp: new Date().toISOString(),
-          user_agent: navigator.userAgent
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to submit demo request')
-      }
-
-      const data = await response.json()
-      
-      if (data.success) {
-        setIsSubmitted(true)
-        
-        // Track successful submission
-        if (typeof window !== 'undefined' && window.dataLayer) {
-          window.dataLayer.push({
-            event: 'demo_request_success',
-            email_domain: email.split('@')[1],
-            conversion_value: 1
-          })
-        }
-      } else {
-        throw new Error(data.error || 'Submission failed')
-      }
-
-    } catch (error) {
-      console.error('Demo request error:', error)
-      setError('Something went wrong. Please try again or contact us directly.')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  if (isSubmitted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
-        <div ref={vantaRef} className="fixed inset-0 z-0" />
-        <div className="relative z-10">
-          <Navigation />
-          
-          <div className="hero-mobile flex items-center justify-center mobile-container">
-            <div className="max-w-2xl mx-auto text-center">
-              <div className="bg-green-900/20 border border-green-500/30 rounded-xl p-8 backdrop-blur-sm">
-                <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-6" />
-                <h1 className="mobile-heading-responsive font-bold text-green-400 mb-4">
-                  Demo Request Received!
-                </h1>
-                <p className="mobile-subheading-responsive text-gray-300 mb-6">
-                  We'll send you a personalized demo link within the next 24 hours. 
-                  Check your email (including spam folder) for our demo invitation.
-                </p>
-                <div className="space-y-4">
-                  <a 
-                    href="/"
-                    className="cta-mobile bg-green-600 hover:bg-green-700 text-white transition-all duration-300 inline-flex"
-                  >
-                    Return Home
-                    <ArrowRight className="w-5 h-5" />
-                  </a>
-                  <p className="mobile-text-responsive text-gray-400">
-                    Questions? Email us at{' '}
-                    <a href="mailto:info@amarilloautomation.com" className="text-green-400 hover:underline">
-                      info@amarilloautomation.com
-                    </a>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       <div ref={vantaRef} className="fixed inset-0 z-0" />
@@ -179,15 +70,28 @@ export default function DemoPage() {
         <section className="hero-mobile flex items-center justify-center mobile-container">
           <div className="max-w-4xl mx-auto text-center content-spacing-mobile">
             <div className="flex justify-center mb-6">
-              <Play className="w-16 h-16 text-green-400" />
+              <div className="relative">
+                <Play className="w-16 h-16 text-green-400" />
+                <DollarSign className="w-8 h-8 text-yellow-400 absolute -top-2 -right-2" />
+              </div>
             </div>
             
             <h1 className="hero-title-mobile font-bold text-white mb-6">
-              See Automation in Action
+              See Your Business Automation in Action
             </h1>
             
+            <div className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg p-4 mb-8">
+              <p className="text-yellow-400 font-bold text-lg mb-2">
+                🔥 LIMITED TIME: $25 Automation Starter Package
+              </p>
+              <p className="text-gray-300 text-sm">
+                Complete the demo request and get our $200 automation package for just $25 
+                <span className="text-yellow-400"> (Save $175!)</span>
+              </p>
+            </div>
+            
             <p className="hero-subtitle-mobile text-gray-300 mb-12">
-              Get instant access to a personalized demo showing exactly how we can automate your business workflows
+              Request your personalized demo and receive an exclusive automation starter offer sent directly to your inbox within 5 minutes
             </p>
 
             {/* Demo Features */}
@@ -195,129 +99,124 @@ export default function DemoPage() {
               <div className="value-card-mobile">
                 <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-4" />
                 <h3 className="mobile-subheading-responsive font-bold text-white mb-3">
-                  Real Examples
+                  Instant Demo Access
                 </h3>
                 <p className="mobile-text-responsive text-gray-300">
-                  See actual automation workflows built for contractors like you
+                  See real automation workflows built for businesses like yours
+                </p>
+              </div>
+              <div className="value-card-mobile">
+                <DollarSign className="w-8 h-8 text-yellow-400 mx-auto mb-4" />
+                <h3 className="mobile-subheading-responsive font-bold text-white mb-3">
+                  $25 Starter Package
+                </h3>
+                <p className="mobile-text-responsive text-gray-300">
+                  Exclusive offer (normally $200) includes setup + 30-day support
                 </p>
               </div>
               <div className="value-card-mobile">
                 <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-4" />
                 <h3 className="mobile-subheading-responsive font-bold text-white mb-3">
-                  Your Industry
+                  No Risk Trial
                 </h3>
                 <p className="mobile-text-responsive text-gray-300">
-                  Customized demo based on your specific business type and needs
-                </p>
-              </div>
-              <div className="value-card-mobile">
-                <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-4" />
-                <h3 className="mobile-subheading-responsive font-bold text-white mb-3">
-                  No Commitment
-                </h3>
-                <p className="mobile-text-responsive text-gray-300">
-                  Free demo with no obligation - see the value before you decide
+                  See the demo first, then decide if automation is right for you
                 </p>
               </div>
             </div>
 
-            {/* Email Form */}
+            {/* Google Form */}
             <div className="max-w-md mx-auto">
               <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-8 backdrop-blur-sm">
-                <h3 className="mobile-subheading-responsive font-bold text-white mb-6 text-center">
-                  Get Your Free Demo
+                <h3 className="mobile-subheading-responsive font-bold text-white mb-4 text-center">
+                  Get Your Demo + $25 Offer
                 </h3>
                 
-                <form onSubmit={handleSubmit} className="form-mobile">
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="form-input-mobile"
-                      placeholder="your@email.com"
-                      required
-                      disabled={isSubmitting}
-                    />
-                  </div>
-
-                  {error && (
-                    <div className="text-red-400 text-sm text-center">
-                      {error}
-                    </div>
-                  )}
-
-                  <button
-                    type="submit"
-                    disabled={isSubmitting || !email}
-                    className="cta-mobile bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white transition-all duration-300"
+                <p className="text-sm text-gray-400 mb-6 text-center">
+                  Enter your email below to receive instant demo access and your exclusive starter package offer
+                </p>
+                
+                {/* Replace the entire form with Google Form iframe */}
+                <div className="w-full">
+                  <iframe 
+                    src="https://docs.google.com/forms/d/e/1FAIpQLSdgo6c6REVyfndd0pKrQ6S0raHRk107l2R6X8ttJGjtDDBcMA/viewform?embedded=true" 
+                    width="100%" 
+                    height="300" 
+                    frameBorder="0" 
+                    marginHeight={0} 
+                    marginWidth={0}
+                    className="rounded-lg"
+                    style={{ background: 'transparent' }}
                   >
-                    {isSubmitting ? 'Sending...' : 'Send Me the Demo'}
-                    <ArrowRight className="w-5 h-5" />
-                  </button>
+                    Loading…
+                  </iframe>
+                </div>
 
-                  <p className="mobile-text-responsive text-gray-400 text-center mt-4">
-                    We'll send you a personalized demo link within 24 hours. No spam, promise.
-                  </p>
-                </form>
+                <p className="mobile-text-responsive text-gray-400 text-center mt-4">
+                  🚀 Demo + offer sent to your inbox in under 5 minutes
+                </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* What You'll See Section */}
+        {/* What You Get Section */}
         <section className="section-padding bg-gray-900/50 backdrop-blur-sm">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="mobile-heading-responsive font-bold text-white mb-12">
-              What You'll See in Your Demo
+            <h2 className="mobile-heading-responsive font-bold text-white mb-4">
+              What You Get for $25
             </h2>
+            <p className="text-gray-300 mb-12">Normally $200 • Limited Time Offer</p>
             
             <div className="case-study-mobile text-left">
-              <div className="service-card-mobile">
+              <div className="service-card-mobile bg-green-900/20 border border-green-500/30">
                 <div className="flex items-center mb-4">
                   <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
                     <span className="text-white font-bold text-sm">1</span>
                   </div>
                   <h3 className="mobile-subheading-responsive font-bold text-white">
-                    Lead Automation
+                    Lead Capture Setup
                   </h3>
                 </div>
                 <p className="mobile-text-responsive text-gray-300">
-                  Watch how a new lead automatically gets logged, categorized, and receives instant follow-up
+                  Automated lead collection and instant follow-up system for your website
                 </p>
               </div>
               
-              <div className="service-card-mobile">
+              <div className="service-card-mobile bg-green-900/20 border border-green-500/30">
                 <div className="flex items-center mb-4">
                   <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
                     <span className="text-white font-bold text-sm">2</span>
                   </div>
                   <h3 className="mobile-subheading-responsive font-bold text-white">
-                    Customer Journey
+                    Email Automation
                   </h3>
                 </div>
                 <p className="mobile-text-responsive text-gray-300">
-                  See the complete automated workflow from initial contact to job completion and review requests
+                  5-email nurture sequence that converts prospects into paying customers
                 </p>
               </div>
               
-              <div className="service-card-mobile">
+              <div className="service-card-mobile bg-green-900/20 border border-green-500/30">
                 <div className="flex items-center mb-4">
                   <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
                     <span className="text-white font-bold text-sm">3</span>
                   </div>
                   <h3 className="mobile-subheading-responsive font-bold text-white">
-                    ROI Calculator
+                    30-Day Support
                   </h3>
                 </div>
                 <p className="mobile-text-responsive text-gray-300">
-                  Get a personalized estimate of time saved and revenue gained with automation
+                  Full setup assistance plus one month of support to ensure everything works perfectly
                 </p>
               </div>
+            </div>
+
+            <div className="mt-8 p-6 bg-yellow-400/10 border border-yellow-400/30 rounded-xl">
+              <p className="text-yellow-400 font-bold mb-2">⏰ This Offer Expires in 48 Hours</p>
+              <p className="text-gray-300 text-sm">
+                Complete the demo request above to lock in your $25 starter package before the price returns to $200
+              </p>
             </div>
           </div>
         </section>
@@ -336,13 +235,22 @@ export default function DemoPage() {
             </div>
             
             <p className="mobile-subheading-responsive text-gray-300 mb-8">
-              "The demo showed us exactly what we needed. Within 30 days of implementation, 
-              we were saving 15 hours per week and closing 40% more deals."
+              "Started with the $25 package and within 30 days we were saving 15 hours per week 
+              and closing 40% more deals. Best investment we've made."
             </p>
             
             <p className="mobile-text-responsive text-gray-400">
               - Local Amarillo Contractor
             </p>
+
+            <div className="mt-8 text-center">
+              <p className="text-gray-400 text-sm">
+                Questions? Email us at{' '}
+                <a href="mailto:admin@amarilloautomation.com" className="text-green-400 hover:underline">
+                  admin@amarilloautomation.com
+                </a>
+              </p>
+            </div>
           </div>
         </section>
       </div>
