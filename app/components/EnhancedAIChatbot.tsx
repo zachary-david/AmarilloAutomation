@@ -8,12 +8,18 @@ interface Message {
   role: 'user' | 'assistant'
   content: string
   timestamp: Date
-  type?: 'text' | 'selection' | 'booking'
+  type?: 'text' | 'selection' | 'booking' | 'followup'
   options?: string[]
   timeSlot?: {
     date: string
     time: string
     type: 'video' | 'phone'
+  }
+  followupContext?: {
+    topic: string
+    industry: string
+    questionType: 'qualification' | 'engagement' | 'urgency'
+    context?: string
   }
 }
 
@@ -28,6 +34,42 @@ interface BookingDetails {
 interface Props {
   isOpen: boolean
   onClose: () => void
+}
+
+// Analytics tracking interface
+interface ConversationAnalytics {
+  sessionId: string
+  startTime: Date
+  topicSelections: Array<{
+    topic: string
+    timestamp: Date
+    industry: string
+  }>
+  followupResponses: Array<{
+    question: string
+    response: string
+    timestamp: Date
+    questionType: 'qualification' | 'engagement' | 'urgency'
+  }>
+  dropOffPoint?: string
+  leadQualification: {
+    businessSize?: string
+    currentChallenges?: string[]
+    urgency?: 'high' | 'medium' | 'low'
+    budget?: string
+    timeframe?: string
+  }
+  engagementScore: number
+}
+
+// Industry detection and conversation context
+interface ConversationContext {
+  detectedIndustry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'
+  confidence: number
+  mentionedServices: string[]
+  painPoints: string[]
+  currentTopic?: string
+  followupStage: number
 }
 
 // Simulated available time slots (replace with actual Cal.com integration)
@@ -64,6 +106,312 @@ const generateAvailableSlots = (): Array<{date: string, time: string}> => {
   return slots.slice(0, 10) // Return first 10 available slots
 }
 
+// Analytics helper functions
+const generateSessionId = (): string => {
+  return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+}
+
+const trackEvent = (analytics: ConversationAnalytics, eventType: string, data: any) => {
+  console.log(`[Analytics] ${eventType}:`, data)
+  // In production, send to your analytics service
+  // Example: amplitude.track(eventType, { sessionId: analytics.sessionId, ...data })
+}
+
+const calculateEngagementScore = (analytics: ConversationAnalytics): number => {
+  let score = 0
+  
+  // Topic selections (10 points each)
+  score += analytics.topicSelections.length * 10
+  
+  // Follow-up responses (15 points each)
+  score += analytics.followupResponses.length * 15
+  
+  // Qualification data (bonus points)
+  if (analytics.leadQualification.businessSize) score += 10
+  if (analytics.leadQualification.currentChallenges?.length) score += analytics.leadQualification.currentChallenges.length * 5
+  if (analytics.leadQualification.urgency) score += 20
+  
+  // Time spent (1 point per minute, max 30)
+  const minutesSpent = Math.min(30, (Date.now() - analytics.startTime.getTime()) / 60000)
+  score += Math.round(minutesSpent)
+  
+  return Math.min(100, score) // Cap at 100
+}
+
+// Industry detection helper function
+const detectIndustry = (conversationText: string): 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general' => {
+  const text = conversationText.toLowerCase()
+  
+  if (text.includes('hvac') || text.includes('air conditioning') || text.includes('heating') || 
+      text.includes('ac repair') || text.includes('furnace') || text.includes('thermostat')) {
+    return 'hvac'
+  }
+  if (text.includes('plumb') || text.includes('pipe') || text.includes('drain') || 
+      text.includes('water heater') || text.includes('leak') || text.includes('sewer')) {
+    return 'plumbing'
+  }
+  if (text.includes('roof') || text.includes('shingle') || text.includes('gutter') || 
+      text.includes('storm damage') || text.includes('hail') || text.includes('leak')) {
+    return 'roofing'
+  }
+  if (text.includes('contractor') || text.includes('construction') || text.includes('remodel') || 
+      text.includes('repair') || text.includes('handyman') || text.includes('maintenance')) {
+    return 'contractor'
+  }
+  return 'general'
+}
+
+// Enhanced follow-up question generation
+const getFollowUpQuestions = (topic: string, industry: string, stage: number): Array<{
+  question: string
+  type: 'qualification' | 'engagement' | 'urgency'
+  context: string
+}> => {
+  const followUps = {
+    Automation: {
+      hvac: [
+        { question: "What's eating up most of your time right now - customer follow-ups, scheduling, or something else?", type: 'qualification' as const, context: 'time_wasters' },
+        { question: "How many service calls are you handling per week right now?", type: 'qualification' as const, context: 'business_size' },
+        { question: "Are you losing leads because you can't respond fast enough, or is it more about follow-up?", type: 'urgency' as const, context: 'lead_issues' }
+      ],
+      plumbing: [
+        { question: "What percentage of your calls are emergencies versus planned maintenance?", type: 'qualification' as const, context: 'service_mix' },
+        { question: "How long does it typically take you to follow up on estimates right now?", type: 'engagement' as const, context: 'follow_up_time' },
+        { question: "Are you losing money on missed callbacks or is it more about new lead response?", type: 'urgency' as const, context: 'revenue_leaks' }
+      ],
+      roofing: [
+        { question: "What's your biggest challenge - managing storm leads or building consistent work between weather events?", type: 'qualification' as const, context: 'seasonal_challenges' },
+        { question: "How many estimates do you typically send out per month?", type: 'qualification' as const, context: 'business_volume' },
+        { question: "Are you struggling more with insurance paperwork or just staying organized with multiple projects?", type: 'engagement' as const, context: 'operational_pain' }
+      ],
+      contractor: [
+        { question: "What type of projects do you focus on - remodels, repairs, new construction, or a mix?", type: 'qualification' as const, context: 'project_types' },
+        { question: "How do you currently manage project updates and customer communication?", type: 'engagement' as const, context: 'communication_methods' },
+        { question: "Are you losing potential work because estimates take too long to follow up on?", type: 'urgency' as const, context: 'estimate_conversion' }
+      ],
+      general: [
+        { question: "What industry are you in, and what's the biggest time-waster in your daily operations?", type: 'qualification' as const, context: 'industry_pain' },
+        { question: "How many employees do you have, and are they spending too much time on administrative tasks?", type: 'qualification' as const, context: 'team_size' },
+        { question: "What's the one manual process that drives you crazy every week?", type: 'engagement' as const, context: 'manual_pain' }
+      ]
+    },
+    'Digital Marketing': {
+      hvac: [
+        { question: "What's your main source of new customers right now - referrals, Google, Facebook, or word of mouth?", type: 'qualification' as const, context: 'lead_sources' },
+        { question: "Do you have any idea what you're spending to get a new customer, or is that a mystery?", type: 'engagement' as const, context: 'customer_acquisition' },
+        { question: "Are you booked out, or do you need more consistent leads to keep busy?", type: 'urgency' as const, context: 'capacity_needs' }
+      ],
+      plumbing: [
+        { question: "How are people finding you when they have plumbing emergencies - Google search, your website, or referrals?", type: 'qualification' as const, context: 'emergency_discovery' },
+        { question: "What's your average job value, and are you attracting the right type of customers?", type: 'qualification' as const, context: 'customer_quality' },
+        { question: "Are you getting enough maintenance work, or is it mostly emergency calls?", type: 'engagement' as const, context: 'service_balance' }
+      ],
+      roofing: [
+        { question: "What's your average project value - are you doing mostly repairs or full replacements?", type: 'qualification' as const, context: 'project_value' },
+        { question: "How are you currently reaching homeowners who need roofing work?", type: 'engagement' as const, context: 'marketing_channels' },
+        { question: "Do you have enough qualified leads coming in, or are you spending too much time chasing low-quality prospects?", type: 'urgency' as const, context: 'lead_quality' }
+      ],
+      contractor: [
+        { question: "What's your average project size, and are you getting the type of work you want?", type: 'qualification' as const, context: 'project_preferences' },
+        { question: "How do most of your customers find you - referrals, online, or traditional advertising?", type: 'engagement' as const, context: 'discovery_methods' },
+        { question: "Are you booked out with work, or do you need more consistent leads?", type: 'urgency' as const, context: 'pipeline_health' }
+      ],
+      general: [
+        { question: "What's your main way of getting new customers right now, and is it working well enough?", type: 'qualification' as const, context: 'current_marketing' },
+        { question: "Do you know what it costs you to acquire a new customer, or is that unclear?", type: 'engagement' as const, context: 'marketing_metrics' },
+        { question: "Are you getting enough quality leads, or are you mostly competing on price?", type: 'urgency' as const, context: 'competitive_position' }
+      ]
+    },
+    'Web Development': {
+      hvac: [
+        { question: "How many service requests do you currently get through your website versus phone calls?", type: 'qualification' as const, context: 'web_conversion' },
+        { question: "When people have an AC emergency, can they easily request service through your website on mobile?", type: 'urgency' as const, context: 'emergency_booking' },
+        { question: "Are you happy with how your website represents your expertise, or does it need work?", type: 'engagement' as const, context: 'brand_representation' }
+      ],
+      plumbing: [
+        { question: "Do customers trust your website enough to call you for emergency plumbing, or are they going elsewhere?", type: 'urgency' as const, context: 'trust_factors' },
+        { question: "How well does your current website showcase why people should choose you over other plumbers?", type: 'engagement' as const, context: 'differentiation' },
+        { question: "Are you capturing leads effectively when people visit your site, or are they just browsing and leaving?", type: 'qualification' as const, context: 'lead_capture' }
+      ],
+      roofing: [
+        { question: "Does your website effectively showcase your work quality and help with insurance claims?", type: 'engagement' as const, context: 'portfolio_insurance' },
+        { question: "How many estimate requests do you get through your website per month?", type: 'qualification' as const, context: 'estimate_volume' },
+        { question: "Are you losing potential customers because your website doesn't build enough trust for high-value roofing projects?", type: 'urgency' as const, context: 'trust_conversion' }
+      ],
+      contractor: [
+        { question: "Does your website effectively show the quality of your work and help people understand your services?", type: 'engagement' as const, context: 'service_clarity' },
+        { question: "How many project inquiries do you typically get through your website?", type: 'qualification' as const, context: 'inquiry_volume' },
+        { question: "Are potential customers able to easily request estimates through your site, or is the process complicated?", type: 'urgency' as const, context: 'estimate_process' }
+      ],
+      general: [
+        { question: "Is your current website generating leads for your business, or is it just an online brochure?", type: 'qualification' as const, context: 'website_purpose' },
+        { question: "How important is online lead generation for your business growth?", type: 'engagement' as const, context: 'digital_priority' },
+        { question: "Are you losing potential customers because your website doesn't work well on mobile devices?", type: 'urgency' as const, context: 'mobile_issues' }
+      ]
+    },
+    'Advanced Analytics': {
+      hvac: [
+        { question: "Do you know which of your services are most profitable, or are you just tracking total revenue?", type: 'qualification' as const, context: 'profit_awareness' },
+        { question: "Can you tell which marketing efforts actually bring in your best customers?", type: 'engagement' as const, context: 'marketing_attribution' },
+        { question: "Are you making business decisions based on gut feel, or do you have solid data?", type: 'urgency' as const, context: 'decision_making' }
+      ],
+      plumbing: [
+        { question: "Do you know the lifetime value of your customers, or just what they pay per job?", type: 'qualification' as const, context: 'customer_value' },
+        { question: "Can you identify which types of jobs are most profitable when you factor in time and complexity?", type: 'engagement' as const, context: 'job_profitability' },
+        { question: "Are you flying blind on what actually drives your business growth?", type: 'urgency' as const, context: 'growth_insights' }
+      ],
+      roofing: [
+        { question: "Do you know which lead sources bring you customers who actually close versus just tire-kickers?", type: 'qualification' as const, context: 'lead_quality_sources' },
+        { question: "Can you track the profitability of different project types, or just overall revenue?", type: 'engagement' as const, context: 'project_profitability' },
+        { question: "Are you missing opportunities because you don't have visibility into your business patterns?", type: 'urgency' as const, context: 'pattern_visibility' }
+      ],
+      contractor: [
+        { question: "Do you know which types of projects generate the most referrals and repeat business?", type: 'qualification' as const, context: 'referral_drivers' },
+        { question: "Can you identify your most profitable customers and how to get more like them?", type: 'engagement' as const, context: 'customer_profiling' },
+        { question: "Are you leaving money on the table because you don't understand your business patterns?", type: 'urgency' as const, context: 'revenue_optimization' }
+      ],
+      general: [
+        { question: "What business metrics do you currently track, and are they actually helpful for making decisions?", type: 'qualification' as const, context: 'current_metrics' },
+        { question: "Do you know which aspects of your business are most profitable and which are just keeping you busy?", type: 'engagement' as const, context: 'profit_vs_busy' },
+        { question: "Are you confident in your business decisions, or do you wish you had better data?", type: 'urgency' as const, context: 'decision_confidence' }
+      ]
+    }
+  }
+  
+  const topicFollowUps = followUps[topic as keyof typeof followUps]
+  if (!topicFollowUps) return []
+  
+  const industryFollowUps = topicFollowUps[industry as keyof typeof topicFollowUps] || topicFollowUps.general
+  return industryFollowUps || []
+}
+
+// Response analysis for lead qualification
+const analyzeResponse = (response: string, questionContext: string): {
+  businessSize?: string
+  urgency?: 'high' | 'medium' | 'low'
+  challenges?: string[]
+  budget?: string
+  timeframe?: string
+} => {
+  const lowerResponse = response.toLowerCase()
+  const analysis: any = {}
+  
+  // Business size indicators
+  if (lowerResponse.includes('employee') || lowerResponse.includes('team') || lowerResponse.includes('staff')) {
+    if (lowerResponse.match(/\b(1|2|3|4|5|one|two|three|four|five)\b/)) {
+      analysis.businessSize = 'small'
+    } else if (lowerResponse.match(/\b(6|7|8|9|10|six|seven|eight|nine|ten)\b/)) {
+      analysis.businessSize = 'medium'
+    } else if (lowerResponse.match(/\b(15|20|25|30|fifteen|twenty|thirty)\b/)) {
+      analysis.businessSize = 'large'
+    }
+  }
+  
+  // Urgency indicators
+  if (lowerResponse.includes('asap') || lowerResponse.includes('urgent') || lowerResponse.includes('immediately') || 
+      lowerResponse.includes('losing money') || lowerResponse.includes('crisis') || lowerResponse.includes('desperate')) {
+    analysis.urgency = 'high'
+  } else if (lowerResponse.includes('soon') || lowerResponse.includes('next month') || lowerResponse.includes('planning') ||
+             lowerResponse.includes('considering') || lowerResponse.includes('looking into')) {
+    analysis.urgency = 'medium'
+  } else {
+    analysis.urgency = 'low'
+  }
+  
+  // Challenge extraction
+  const challenges = []
+  if (lowerResponse.includes('follow') && lowerResponse.includes('up')) challenges.push('follow-up')
+  if (lowerResponse.includes('scheduling') || lowerResponse.includes('calendar')) challenges.push('scheduling')
+  if (lowerResponse.includes('lead') || lowerResponse.includes('customer')) challenges.push('lead management')
+  if (lowerResponse.includes('time') || lowerResponse.includes('hours')) challenges.push('time management')
+  if (lowerResponse.includes('manual') || lowerResponse.includes('paperwork')) challenges.push('manual processes')
+  
+  if (challenges.length > 0) analysis.challenges = challenges
+  
+  return analysis
+}
+
+// AUTOMATION responses by industry (keeping existing responses)
+const getAutomationResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'): string => {
+  const responses: Record<'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general', string[]> = {
+    hvac: [
+      "Nice! HVAC automation is where we really shine. We help companies like yours automate seasonal reminders (think spring tune-ups, fall maintenance), emergency dispatch routing, and follow-up sequences that turn one-time emergency calls into annual maintenance contracts. Our HVAC clients typically see 40% better customer retention and save 12+ hours weekly on admin work.",
+      "Sweet! So HVAC automation is basically our bread and butter here in West Texas. We set up systems that automatically send maintenance reminders before peak summer heat, route emergency calls to the right techs based on location and expertise, and follow up with customers about preventative services. One local HVAC company went from 30% callback rate to 85% just by automating their seasonal outreach.",
+      "Awesome! HVAC businesses love our automation because it handles the stuff that drives you crazy - like remembering to follow up on estimates, sending seasonal maintenance reminders, and routing emergency calls efficiently. We've helped local companies increase their maintenance contract sales by 60% through automated follow-up sequences.",
+      "Perfect! HVAC automation is huge out here. We automate everything from initial lead response (under 2 minutes!), to seasonal campaign management, to emergency dispatch workflows that get the right tech to the right job faster. Our clients typically see 50% improvement in converting estimates to jobs and save about 15 hours per week on admin tasks."
+    ],
+    plumbing: [
+      "Nice! Plumbing automation is perfect because y'all deal with so many emergencies mixed with routine work. We automate emergency dispatch (gets the right plumber to urgent calls faster), follow-up sequences for maintenance services, and review requests that help you get found online. Our plumbing clients see 45% better emergency response times and convert 35% more emergency calls into ongoing customers.",
+      "Sweet! Plumbing businesses have some of the best automation opportunities. We set up systems that instantly route emergency calls, automatically follow up on estimates (plumbing has notoriously low estimate conversion), and send maintenance reminders for things like water heater flushes and drain cleaning. One local plumber increased their repeat customer rate from 20% to 60% just through automated follow-up.",
+      "Awesome! Plumbing automation helps with both the emergency side and the planned maintenance side. We automate emergency dispatch workflows, estimate follow-up sequences (since plumbing estimates often get delayed), and customer education campaigns about preventative maintenance. Our plumbing clients typically see 40% improvement in estimate-to-job conversion and save 10+ hours weekly on admin work.",
+      "Perfect! Plumbing automation is huge because you're dealing with both urgent emergencies and planned work. We automate emergency call routing, follow-up sequences for estimates and maintenance, and educational campaigns that turn emergency customers into maintenance customers. Local plumbers using our system see 50% better conversion on estimates and 30% increase in maintenance contracts."
+    ],
+    roofing: [
+      "Nice! Roofing automation is especially powerful because of how seasonal and weather-dependent your business is. We automate storm damage follow-up sequences, insurance claim support workflows, and maintenance reminder campaigns that keep customers engaged between major jobs. Our roofing clients see 65% better conversion on storm leads and 40% increase in maintenance work during slow seasons.",
+      "Sweet! Roofing is perfect for automation because there's so much follow-up involved - insurance claims, inspection schedules, maintenance reminders. We set up systems that automatically nurture storm leads, manage inspection workflows, and send seasonal maintenance reminders (gutter cleaning, inspection after storms). One local roofer went from converting 25% of storm leads to 70% just through automated follow-up sequences.",
+      "Awesome! Roofing automation helps with the long sales cycles and seasonal nature of your business. We automate insurance claim workflows, multi-touch follow-up for big jobs, and maintenance campaigns that generate revenue during slow periods. Our roofing clients typically see 50% improvement in storm lead conversion and 35% increase in maintenance/repair work.",
+      "Perfect! Roofing has some unique automation opportunities because of insurance work and seasonal patterns. We automate storm response workflows, insurance documentation processes, and maintenance reminder sequences that keep you busy year-round. Local roofers using our system see 60% better conversion on insurance jobs and consistent revenue through automated maintenance programs."
+    ],
+    contractor: [
+      "Nice! General contractor automation is powerful because you're juggling so many different types of projects and customers. We automate estimate follow-up (contractors lose tons of money here), project milestone communications, and referral request sequences. Our contractor clients see 45% better estimate conversion and 40% increase in referral business.",
+      "Sweet! Contractor automation helps with the complexity of managing multiple projects and maintaining relationships. We set up systems that automatically follow up on estimates, send project updates to customers, and request reviews/referrals at completion. One local contractor increased their estimate-to-job conversion from 30% to 60% through automated follow-up sequences.",
+      "Awesome! General contractors have great automation opportunities because of all the touchpoints - estimates, project updates, completion follow-up, referral requests. We automate estimate nurturing, project communication workflows, and post-completion sequences that generate repeat business and referrals. Our contractor clients typically save 12+ hours weekly on admin work and see 50% improvement in customer satisfaction scores.",
+      "Perfect! Contractor automation handles the relationship management that's so crucial for your business. We automate estimate follow-up sequences, project milestone communications, and post-completion workflows that generate reviews and referrals. Local contractors using our system see 40% better estimate conversion and 55% increase in referral business."
+    ],
+    general: [
+      "Nice! So automation is basically our bread and butter. We help local businesses like HVAC companies, contractors, and plumbers automate all the boring stuff - like follow-ups, scheduling, invoice generation, you name it. Most of our clients save like 15+ hours a week and see way better lead conversion.",
+      "Sweet! Automation is where we really help West Texas businesses shine. We connect your existing tools to automate tasks like lead follow-up, appointment scheduling, and customer communications. Our clients typically see 40-60% improvement in lead conversion and save 15+ hours weekly on admin work.",
+      "Awesome! We specialize in automating workflows for home service businesses throughout West Texas. Things like instant lead responses, appointment reminders, follow-up sequences, and review requests. Most clients see ROI within 30 days through better lead conversion and time savings.",
+      "Perfect! Automation helps local businesses compete with the big guys by making sure nothing falls through the cracks. We automate lead responses, customer follow-up, scheduling, and all the administrative stuff that eats up your day. Our clients typically save 10-20 hours weekly and see significant improvements in customer retention."
+    ]
+  }
+  
+  const industryResponses = responses[industry as keyof typeof responses] || responses.general
+  return industryResponses[Math.floor(Math.random() * industryResponses.length)]
+}
+
+// DIGITAL MARKETING responses by industry (abbreviated for space - use your existing responses)
+const getDigitalMarketingResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'): string => {
+  const responses: Record<'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general', string[]> = {
+    hvac: ["Sweet! HVAC digital marketing is all about seasonal timing and emergency response. We run Facebook and Instagram ads for pre-season maintenance (huge ROI before summer hits), emergency service campaigns, and educational content that builds trust. Our HVAC clients typically see $4-6 return for every $1 spent on ads, plus we track actual service calls, not just clicks."],
+    plumbing: ["Sweet! Plumbing digital marketing is amazing because when people need a plumber, they need one NOW. We run emergency response campaigns, maintenance service ads, and educational content about preventing problems. Our plumbing clients see $5-8 return per ad dollar and get higher-quality customers who become long-term clients."],
+    roofing: ["Sweet! Roofing digital marketing is incredibly powerful because of the high transaction values and seasonal patterns. We run storm response campaigns, seasonal maintenance ads, and educational content about roof care. Our roofing clients see $8-12 return per ad dollar (higher margins help!) and better-qualified leads."],
+    contractor: ["Sweet! General contractor marketing is all about showcasing your work quality and building trust before people choose you for big projects. We run campaigns for different service areas, before/after showcases, and educational content about home improvements. Our contractor clients see $6-10 return per ad dollar and attract higher-value projects."],
+    general: ["Sweet! Yeah, we do Facebook and Instagram ads for local home service businesses. The cool thing is we actually track real ROI - not just 'engagement' or whatever. We focus on getting you actual customers, not just likes. Plus we tie it all into your automation so leads don't fall through the cracks."]
+  }
+  
+  const industryResponses = responses[industry as keyof typeof responses] || responses.general
+  return industryResponses[Math.floor(Math.random() * industryResponses.length)]
+}
+
+// WEB DEVELOPMENT responses by industry (abbreviated for space - use your existing responses)
+const getWebDevelopmentResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'): string => {
+  const responses: Record<'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general', string[]> = {
+    hvac: ["Awesome! HVAC websites need to work for both emergency situations and planned services. We build sites with instant service request forms, seasonal service booking, emergency contact features that actually work on mobile, and integration with your dispatch system. Our HVAC clients see 50% more online bookings and way better lead quality."],
+    plumbing: ["Awesome! Plumbing websites need to handle both emergency calls and planned services effectively. We build sites with emergency service forms, maintenance booking systems, educational content about plumbing care, and mobile-optimized design for people in crisis. Our plumbing clients see 60% more online bookings and higher-value service calls."],
+    roofing: ["Awesome! Roofing websites need to handle both emergency storm work and planned replacement projects. We build sites with storm damage assessment forms, insurance claim support resources, project galleries, and mobile-optimized design for homeowners dealing with roof issues. Our roofing clients see 70% more qualified leads and higher-value projects."],
+    contractor: ["Awesome! Contractor websites need to showcase your work quality and make it easy for people to understand your services. We build sites with project portfolios, service area pages, estimate request systems, and trust-building content that converts visitors into customers. Our contractor clients see 50% more qualified leads and higher-value projects."],
+    general: ["Awesome! We build websites that actually work for your business - not just pretty pictures. Think automated lead capture, built-in booking systems, and everything connects to your workflow. No more leads sitting in some random contact form."]
+  }
+  
+  const industryResponses = responses[industry as keyof typeof responses] || responses.general
+  return industryResponses[Math.floor(Math.random() * industryResponses.length)]
+}
+
+// ADVANCED ANALYTICS responses by industry (abbreviated for space - use your existing responses)
+const getAdvancedAnalyticsResponse = (industry: 'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general'): string => {
+  const responses: Record<'hvac' | 'plumbing' | 'roofing' | 'contractor' | 'general', string[]> = {
+    hvac: ["Oh this is cool stuff! For HVAC businesses, we track metrics that actually matter - like seasonal conversion rates, emergency vs maintenance revenue, customer lifetime value, and which marketing channels bring in the highest-value customers. Most HVAC owners don't know that emergency customers convert to maintenance contracts at different rates depending on how you follow up."],
+    plumbing: ["Oh this is cool stuff! Plumbing analytics help you understand the difference between profitable customers and unprofitable ones. We track metrics like emergency vs planned service ratios, customer lifetime value, conversion rates from emergency to maintenance, and which marketing brings the best customers. Most plumbers don't realize that some customers are worth 10x others."],
+    roofing: ["Oh this is cool stuff! Roofing analytics are powerful because of the high transaction values and long sales cycles. We track lead source profitability, conversion rates from estimate to job, project profitability by type, and customer lifetime value (repeat customers and referrals are gold!). Most roofers don't know which marketing channels bring customers who actually close versus just tire-kickers."],
+    contractor: ["Oh this is cool stuff! Contractor analytics help you understand which projects, customers, and marketing channels actually drive profitable growth. We track project margins by type, customer lifetime value, referral patterns, and conversion rates from estimate to job. Most contractors don't know that some project types are 3x more profitable than others when you factor in time, complexity, and follow-on work."],
+    general: ["Oh this is cool stuff! We set up custom dashboards that show you exactly what's driving your business growth. Like, which marketing channels actually bring in money, not just traffic. Most business owners are flying blind - this gives you the real numbers."]
+  }
+  
+  const industryResponses = responses[industry as keyof typeof responses] || responses.general
+  return industryResponses[Math.floor(Math.random() * industryResponses.length)]
+}
+
 function EnhancedAIChatbot({ isOpen, onClose }: Props) {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -78,9 +426,27 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
   
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [currentFlow, setCurrentFlow] = useState<'general' | 'scheduling' | 'booking' | 'name' | 'company' | 'email'>('general')
+  const [currentFlow, setCurrentFlow] = useState<'general' | 'scheduling' | 'booking' | 'name' | 'company' | 'email' | 'followup'>('general')
   const [bookingDetails, setBookingDetails] = useState<Partial<BookingDetails>>({})
   const [availableSlots, setAvailableSlots] = useState<Array<{date: string, time: string}>>([])
+  
+  // Enhanced state for analytics and follow-ups
+  const [conversationContext, setConversationContext] = useState<ConversationContext>({
+    detectedIndustry: 'general',
+    confidence: 0,
+    mentionedServices: [],
+    painPoints: [],
+    followupStage: 0
+  })
+  
+  const [analytics, setAnalytics] = useState<ConversationAnalytics>(() => ({
+    sessionId: generateSessionId(),
+    startTime: new Date(),
+    topicSelections: [],
+    followupResponses: [],
+    leadQualification: {},
+    engagementScore: 0
+  }))
   
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -91,6 +457,20 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Track analytics when component unmounts or chat closes
+  useEffect(() => {
+    return () => {
+      const finalScore = calculateEngagementScore(analytics)
+      trackEvent(analytics, 'conversation_ended', {
+        engagementScore: finalScore,
+        messageCount: messages.length,
+        topicCount: analytics.topicSelections.length,
+        followupCount: analytics.followupResponses.length,
+        leadQualification: analytics.leadQualification
+      })
+    }
+  }, [analytics, messages])
 
   // Handle Schedule Free Consultation button click
   const handleScheduleConsultation = () => {
@@ -105,6 +485,12 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     
     setMessages(prev => [...prev, newMessage])
     setCurrentFlow('scheduling')
+    
+    // Track scheduling initiation
+    trackEvent(analytics, 'scheduling_initiated', {
+      fromTopic: conversationContext.currentTopic,
+      industry: conversationContext.detectedIndustry
+    })
   }
 
   // Handle meeting type selection
@@ -239,7 +625,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     }, 1500) // 1.5 second delay
   }
 
-  // Handle regular chat messages
+  // Enhanced sendMessage with follow-up handling
   const sendMessage = async () => {
     if (!inputValue.trim()) return
 
@@ -251,14 +637,99 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
     }
 
     setMessages(prev => [...prev, userMessage])
+    const currentInput = inputValue
     setInputValue('')
     setIsLoading(true)
 
     try {
-      // Handle booking flow step by step
+      // Handle follow-up responses
+      if (currentFlow === 'followup') {
+        // Analyze the response for lead qualification
+        const lastMessage = messages[messages.length - 1]
+        const questionContext = lastMessage.followupContext?.context || ''
+        const responseAnalysis = analyzeResponse(currentInput, questionContext)
+        
+        // Update analytics with follow-up response
+        setAnalytics(prev => ({
+          ...prev,
+          followupResponses: [...prev.followupResponses, {
+            question: lastMessage.content,
+            response: currentInput,
+            timestamp: new Date(),
+            questionType: lastMessage.followupContext?.questionType || 'engagement'
+          }],
+          leadQualification: { ...prev.leadQualification, ...responseAnalysis },
+          engagementScore: calculateEngagementScore({
+            ...prev,
+            followupResponses: [...prev.followupResponses, {
+              question: lastMessage.content,
+              response: currentInput,
+              timestamp: new Date(),
+              questionType: lastMessage.followupContext?.questionType || 'engagement'
+            }]
+          })
+        }))
+
+        // Generate intelligent follow-up or transition
+        setTimeout(() => {
+          let response = ""
+          
+          if (conversationContext.followupStage < 2) {
+            // Continue with more follow-ups
+            const followUps = getFollowUpQuestions(
+              conversationContext.currentTopic || 'Automation',
+              conversationContext.detectedIndustry,
+              conversationContext.followupStage + 1
+            )
+            
+            if (followUps.length > 0) {
+              const nextFollowUp = followUps[Math.floor(Math.random() * followUps.length)]
+              response = nextFollowUp.question
+              
+              const followUpMessage: Message = {
+                id: (Date.now() + 1).toString(),
+                role: 'assistant',
+                content: response,
+                timestamp: new Date(),
+                type: 'followup',
+                followupContext: {
+                  topic: conversationContext.currentTopic || 'Automation',
+                  industry: conversationContext.detectedIndustry,
+                  questionType: nextFollowUp.type,
+                  context: nextFollowUp.context
+                }
+              }
+              
+              setMessages(prev => [...prev, followUpMessage])
+              setConversationContext(prev => ({ ...prev, followupStage: prev.followupStage + 1 }))
+            }
+          } else {
+            // Transition to consultation offer
+            response = responseAnalysis.urgency === 'high' ? 
+              "Sounds like you've got some real opportunities to improve things! Want to hop on a quick call to see how we can help? I can get you set up with a free consultation." :
+              "That's helpful context! Based on what you're telling me, I think we could definitely help streamline some of those processes. Want to schedule a free consultation to dive deeper into your specific situation?"
+            
+            const consultationMessage: Message = {
+              id: (Date.now() + 1).toString(),
+              role: 'assistant',
+              content: response,
+              timestamp: new Date(),
+              type: 'selection',
+              options: ['Yeah, let\'s schedule something', 'Let me think about it', 'Send me some info instead']
+            }
+            
+            setMessages(prev => [...prev, consultationMessage])
+            setCurrentFlow('general')
+          }
+          
+          setIsLoading(false)
+        }, 1500)
+        return
+      }
+
+      // Handle booking flow step by step (existing code)
       if (currentFlow === 'name') {
-        // Capture name with natural delay
-        const name = inputValue.trim()
+        const name = currentInput.trim()
         setBookingDetails(prev => ({ ...prev, name }))
         
         setTimeout(() => {
@@ -271,13 +742,12 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           setMessages(prev => [...prev, companyMessage])
           setCurrentFlow('company')
           setIsLoading(false)
-        }, 1500) // 1.5 second delay
+        }, 1500)
         return
       }
 
       if (currentFlow === 'company') {
-        // Capture company with natural delay
-        const company = inputValue.trim()
+        const company = currentInput.trim()
         setBookingDetails(prev => ({ ...prev, company }))
         
         setTimeout(() => {
@@ -290,16 +760,14 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           setMessages(prev => [...prev, emailMessage])
           setCurrentFlow('email')
           setIsLoading(false)
-        }, 2000) // 2 second delay
+        }, 2000)
         return
       }
 
       if (currentFlow === 'email') {
-        // Capture email and complete booking with natural flow
-        const email = inputValue.trim()
+        const email = currentInput.trim()
         setBookingDetails(prev => ({ ...prev, email }))
         
-        // First message - booking in progress
         setTimeout(() => {
           const bookingMessage: Message = {
             id: (Date.now() + 1).toString(),
@@ -309,20 +777,18 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           }
           setMessages(prev => [...prev, bookingMessage])
           
-          // Execute all booking actions
           setTimeout(async () => {
             try {
-              // Create Cal.com booking and trigger Zapier webhook
               const bookingData = {
                 name: bookingDetails.name,
                 company: bookingDetails.company,
                 email: email,
                 meetingType: bookingDetails.meetingType,
                 timeSlot: bookingDetails.timeSlot,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                analytics: analytics
               }
               
-              // Call our API to handle Cal.com and Zapier
               const response = await fetch('/api/chat-booking', {
                 method: 'POST',
                 headers: {
@@ -340,11 +806,16 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
                 console.log('Booking created successfully')
               }
               
+              // Track successful booking
+              trackEvent(analytics, 'booking_completed', {
+                industry: conversationContext.detectedIndustry,
+                engagementScore: calculateEngagementScore(analytics)
+              })
+              
             } catch (error) {
               console.error('Booking process error:', error)
             }
             
-            // Second message - offer additional help
             setTimeout(() => {
               const helpMessage: Message = {
                 id: (Date.now() + 2).toString(),
@@ -353,89 +824,24 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
                 timestamp: new Date()
               }
               setMessages(prev => [...prev, helpMessage])
-              setCurrentFlow('general') // Reset to general chat mode
+              setCurrentFlow('general')
               setIsLoading(false)
-            }, 3000) // 3 second delay after booking actions
+            }, 3000)
             
-          }, 2000) // 2 second delay before executing booking actions
+          }, 2000)
           
-        }, 2500) // 2.5 second delay for first message
+        }, 2500)
         return
       }
 
-      // Check if this is legacy booking information (for backwards compatibility)
-      if (currentFlow === 'booking') {
-        console.log('Legacy booking flow detected, input:', inputValue)
-        
-        // More flexible parsing - handle different formats
-        let name = '', company = ''
-        
-        // Try different parsing methods
-        if (inputValue.includes('Name:') || inputValue.includes('Company:')) {
-          // Format: "Name: John Doe Company: ABC Corp" or multiline
-          const lines = inputValue.split(/[\n\r]|(?=Company:)|(?=Name:)/)
-          
-          lines.forEach(line => {
-            const trimmedLine = line.trim()
-            if (trimmedLine.toLowerCase().startsWith('name:')) {
-              name = trimmedLine.split(':')[1]?.trim() || ''
-            }
-            if (trimmedLine.toLowerCase().startsWith('company:')) {
-              company = trimmedLine.split(':')[1]?.trim() || ''
-            }
-          })
-        } else {
-          // Try to extract from single line without labels
-          const words = inputValue.trim().split(/\s+/)
-          if (words.length >= 2) {
-            // Assume first part is name, rest is company
-            const spaceIndex = inputValue.indexOf(' ')
-            if (spaceIndex > 0) {
-              name = inputValue.substring(0, spaceIndex).trim()
-              company = inputValue.substring(spaceIndex + 1).trim()
-            }
-          }
-        }
-
-        console.log('Parsed name:', name, 'company:', company)
-
-        // If we have at least a name, proceed with booking
-        if (name.length > 0) {
-          const confirmationMessage: Message = {
-            id: (Date.now() + 1).toString(),
-            role: 'assistant',
-            content: `Perfect! I'm setting up your ${bookingDetails.meetingType} consultation for ${bookingDetails.timeSlot}. ${company ? `I have your company as "${company}".` : ''} Please include your contact details when you email us to confirm this appointment.`,
-            timestamp: new Date()
-          }
-          setMessages(prev => [...prev, confirmationMessage])
-          
-          setTimeout(() => {
-            window.location.href = `mailto:admin@amarilloautomation.com?subject=Website Chatbot - Consultation Booking&body=Name: ${name}%0A${company ? `Company: ${company}%0A` : ''}Meeting Type: ${bookingDetails.meetingType}%0ARequested Time: ${bookingDetails.timeSlot}%0A%0APlease confirm this appointment time.`
-          }, 2000)
-          setIsLoading(false)
-          return
-        } else {
-          // Ask for clarification
-          const clarificationMessage: Message = {
-            id: (Date.now() + 1).toString(),
-            role: 'assistant',
-            content: "I didn't catch your name clearly. Could you please provide it again? You can just type your name, or use the format 'Name: Your Name'",
-            timestamp: new Date()
-          }
-          setMessages(prev => [...prev, clarificationMessage])
-          setIsLoading(false)
-          return
-        }
-      }
-
-      // Regular chat API call
+      // Regular chat API call for general conversation
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: inputValue,
+          message: currentInput,
           conversation_history: messages.map(msg => ({
             role: msg.role,
             content: msg.content
@@ -480,16 +886,36 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
 
   const handleOptionSelect = (option: string, message: Message) => {
     if (currentFlow === 'general' && message.options?.includes(option)) {
-      // Handle topic selection from welcome message
       handleTopicSelection(option)
     } else if (currentFlow === 'scheduling') {
       handleMeetingTypeSelection(option)
     } else if (currentFlow === 'booking' && message.timeSlot) {
       handleTimeSlotConfirmation(option, message.timeSlot)
+    } else if (option.includes('schedule')) {
+      handleScheduleConsultation()
+    } else if (option.includes('info')) {
+      // Handle "Send me some info" option
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        role: 'user',
+        content: option,
+        timestamp: new Date()
+      }
+      setMessages(prev => [...prev, userMessage])
+      
+      setTimeout(() => {
+        const infoMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: "Perfect! Just shoot us an email at admin@amarilloautomation.com and mention what you're most interested in. We'll send you some case studies and examples specific to your industry. Usually get back to people within a couple hours!",
+          timestamp: new Date()
+        }
+        setMessages(prev => [...prev, infoMessage])
+      }, 1500)
     }
   }
 
-  // Handle topic selection from welcome message
+  // Enhanced topic selection with follow-up questions
   const handleTopicSelection = (topic: string) => {
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -504,25 +930,54 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
       return
     }
 
-    // Generate casual responses for each topic
+    // Industry detection from conversation context
+    const conversationText = messages.map(m => m.content.toLowerCase()).join(' ')
+    const detectedIndustry = detectIndustry(conversationText)
+    
+    // Update analytics
+    setAnalytics(prev => ({
+      ...prev,
+      topicSelections: [...prev.topicSelections, {
+        topic,
+        timestamp: new Date(),
+        industry: detectedIndustry
+      }]
+    }))
+    
+    // Update conversation context
+    setConversationContext(prev => ({
+      ...prev,
+      detectedIndustry,
+      currentTopic: topic,
+      followupStage: 0
+    }))
+
+    // Track topic selection
+    trackEvent(analytics, 'topic_selected', {
+      topic,
+      industry: detectedIndustry,
+      messageCount: messages.length
+    })
+
+    // Generate industry-specific response with human-like delay
     setTimeout(() => {
       let response = ""
       
       switch (topic) {
         case 'Automation':
-          response = "Nice! So automation is basically our bread and butter. We help local businesses like HVAC companies, contractors, and plumbers automate all the boring stuff - like follow-ups, scheduling, invoice generation, you name it. Most of our clients save like 15+ hours a week and see way better lead conversion. What kind of business are you running?"
+          response = getAutomationResponse(detectedIndustry)
           break
         case 'Digital Marketing':
-          response = "Sweet! Yeah, we do Facebook and Instagram ads for local home service businesses. The cool thing is we actually track real ROI - not just 'engagement' or whatever. We focus on getting you actual customers, not just likes. Plus we tie it all into your automation so leads don't fall through the cracks. What's your main way of getting customers right now?"
+          response = getDigitalMarketingResponse(detectedIndustry)
           break
         case 'Web Development':
-          response = "Awesome! We build websites that actually work for your business - not just pretty pictures. Think automated lead capture, built-in booking systems, and everything connects to your workflow. No more leads sitting in some random contact form. Want to see what we can do with yours?"
+          response = getWebDevelopmentResponse(detectedIndustry)
           break
         case 'Advanced Analytics':
-          response = "Oh this is cool stuff! We set up custom dashboards that show you exactly what's driving your business growth. Like, which marketing channels actually bring in money, not just traffic. Most business owners are flying blind - this gives you the real numbers. What metrics do you wish you had better visibility on?"
+          response = getAdvancedAnalyticsResponse(detectedIndustry)
           break
         default:
-          response = "That's a great question! I'd love to learn more about your specific situation. What's the biggest challenge you're dealing with in your business right now?"
+          response = "That's a great question! I'd love to learn more about your specific situation."
       }
 
       const assistantMessage: Message = {
@@ -532,6 +987,41 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
         timestamp: new Date()
       }
       setMessages(prev => [...prev, assistantMessage])
+      
+      // Add follow-up question after a short delay
+      setTimeout(() => {
+        const followUps = getFollowUpQuestions(topic, detectedIndustry, 0)
+        if (followUps.length > 0) {
+          const selectedFollowUp = followUps[Math.floor(Math.random() * followUps.length)]
+          
+          const followUpMessage: Message = {
+            id: (Date.now() + 2).toString(),
+            role: 'assistant',
+            content: selectedFollowUp.question,
+            timestamp: new Date(),
+            type: 'followup',
+            followupContext: {
+              topic,
+              industry: detectedIndustry,
+              questionType: selectedFollowUp.type,
+              context: selectedFollowUp.context
+            }
+          }
+          
+          setMessages(prev => [...prev, followUpMessage])
+          setCurrentFlow('followup')
+          setConversationContext(prev => ({ ...prev, followupStage: 1 }))
+          
+          // Track follow-up question
+          trackEvent(analytics, 'followup_question_asked', {
+            topic,
+            industry: detectedIndustry,
+            questionType: selectedFollowUp.type,
+            context: selectedFollowUp.context
+          })
+        }
+      }, 2000) // 2 second delay for follow-up
+      
     }, 1500) // 1.5 second delay for natural feel
   }
 
@@ -593,6 +1083,8 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
                   className={`px-4 py-2 rounded-lg ${
                     message.role === 'user'
                       ? 'bg-green-600 text-white ml-auto'
+                      : message.type === 'followup'
+                      ? 'bg-blue-700 text-blue-100'
                       : 'bg-gray-700 text-gray-100'
                   }`}
                 >
@@ -658,6 +1150,7 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
                 currentFlow === 'name' ? "Your name..." :
                 currentFlow === 'company' ? "Company name..." :
                 currentFlow === 'email' ? "Your email address..." :
+                currentFlow === 'followup' ? "Tell me more..." :
                 currentFlow === 'booking' ? "Enter your name and company..." :
                 "Type your message..."
               }
