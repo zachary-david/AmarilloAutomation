@@ -1,13 +1,10 @@
-// app/page.tsx - Corrected implementation with Enhanced Chatbot
+// app/page.tsx - Updated with Enhanced Mobile Chatbot
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import { ChevronRight, Star, CheckCircle, ArrowRight, Play } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import EnhancedAIChatbot from './components/EnhancedAIChatbot'
-// Add this temporarily at the top of your page.tsx after imports
-console.log('EnhancedAIChatbot type:', typeof EnhancedAIChatbot)
-console.log('EnhancedAIChatbot value:', EnhancedAIChatbot)
 
 export default function Homepage() {
   const vantaRef = useRef<HTMLDivElement>(null)
@@ -49,13 +46,13 @@ export default function Homepage() {
                 gyroControls: false,
                 minHeight: 200.00,
                 minWidth: 200.00,
-                scale: 1.00,
-                scaleMobile: 1.00,
+                scale: 0.8,
+                scaleMobile: 0.6,
                 color: 0x10b981,
                 backgroundColor: 0x0a1224,
                 points: 6.00,
                 maxDistance: 15.00,
-                spacing: 18.00,
+                spacing: 12.00
               }
             } else if (isTablet) {
               vantaConfig = {
@@ -65,13 +62,13 @@ export default function Homepage() {
                 gyroControls: false,
                 minHeight: 200.00,
                 minWidth: 200.00,
-                scale: 1.00,
-                scaleMobile: 1.00,
+                scale: 0.9,
+                scaleMobile: 0.8,
                 color: 0x10b981,
                 backgroundColor: 0x0a1224,
-                points: 6.00,
-                maxDistance: 16.00,
-                spacing: 16.00,
+                points: 8.00,
+                maxDistance: 18.00,
+                spacing: 14.00
               }
             } else {
               vantaConfig = {
@@ -85,22 +82,22 @@ export default function Homepage() {
                 scaleMobile: 1.00,
                 color: 0x10b981,
                 backgroundColor: 0x0a1224,
-                points: 8.00,
-                maxDistance: 18.00,
-                spacing: 16.00,
+                points: 10.00,
+                maxDistance: 20.00,
+                spacing: 15.00
               }
             }
             
             vantaEffect.current = window.VANTA.NET(vantaConfig)
           }
         } catch (error) {
-          console.log('Vanta.js loading failed:', error)
+          console.error('Failed to load Vanta.js:', error)
         }
       }
     }
-    
+
     loadVanta()
-    
+
     return () => {
       if (vantaEffect.current) {
         vantaEffect.current.destroy()
@@ -109,6 +106,7 @@ export default function Homepage() {
     }
   }, [])
 
+  // Google Analytics tracking
   const trackCTA = (action: string) => {
     if (typeof window !== 'undefined' && 'gtag' in window) {
       (window as any).gtag('event', 'cta_click', {
@@ -119,7 +117,7 @@ export default function Homepage() {
     }
   }
 
-  // CTA Button Handlers - Updated to use Enhanced Chatbot
+  // CTA Button Handlers
   const handleAskAnything = (source: string) => {
     trackCTA(`${source}_ask_anything`)
     setIsChatbotOpen(true)
@@ -176,349 +174,198 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* Enhanced CTA Section with new functionality */}
-            <div>
-              <h2 className="mobile-heading-responsive font-bold text-white mb-8">
-                Ready to Automate Your Business?
-              </h2>
-              <p className="mobile-subheading-responsive text-gray-300 mb-12">
-                Join 40+ West Texas contractors who've streamlined their operations with our proven systems.
-              </p>
+            {/* CTA Buttons - Mobile Optimized */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center cta-container-mobile">
+              <button 
+                onClick={() => handleAskAnything('hero')}
+                className="cta-mobile bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-3 transition-all duration-300 w-full sm:w-auto"
+              >
+                Ask About Your Business
+                <ArrowRight className="w-5 h-5" />
+              </button>
               
-              {/* Updated CTA buttons with functionality */}
-              <div className="cta-container-mobile">
-                <button 
-                  onClick={() => handleAskAnything('hero')}
-                  className="cta-mobile bg-green-600 hover:bg-green-700 text-white transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
-                >
-                  Ask us Anything
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-                <button 
-                  onClick={() => handleTryDemo('hero')}
-                  className="cta-mobile bg-green-600 hover:bg-green-700 text-white transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
-                >
-                  Try a Demo
-                  <Play className="w-4 h-4" />
-                </button>
-              </div>
+              <button 
+                onClick={() => handleTryDemo('hero')}
+                className="cta-secondary-mobile border-2 border-green-600 text-green-400 hover:bg-green-600 hover:text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-3 transition-all duration-300 w-full sm:w-auto"
+              >
+                <Play className="w-5 h-5" />
+                Try Demo
+              </button>
             </div>
           </div>
         </section>
 
-        {/* Section 3: Why Us - Fixed Desktop Layout */}
-        <section className="section-padding">
-          <div className="max-w-6xl mx-auto content-spacing-mobile">
-            <div className="text-center mb-16">
-              <h2 className="mobile-heading-responsive font-bold text-white mb-6">Why Choose Amarillo Automation</h2>
-              <p className="mobile-subheading-responsive text-gray-300 max-w-3xl mx-auto">
-                We're not just another tech company. We're local automation experts who understand the unique challenges of West Texas home service businesses.
-              </p>
+        {/* Section 2: Social Proof */}
+        <section className="section-padding bg-gray-900/50 backdrop-blur-sm">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <span className="text-gray-300 font-medium">5.0 from local contractors</span>
             </div>
             
-            {/* Fixed: Center and stretch on desktop, stack on mobile */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-              <div className="text-center lg:text-left">
-                <h3 className="mobile-subheading-responsive font-bold text-white mb-6">Industry Expertise That Delivers Results</h3>
-                <div className="space-y-4 max-w-2xl mx-auto lg:mx-0">
-                  <div className="flex items-start justify-center lg:justify-start">
-                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="mobile-text-responsive text-gray-300 text-left">5+ years automating workflows for contractors, roofers, HVAC, and plumbing companies</p>
-                  </div>
-                  <div className="flex items-start justify-center lg:justify-start">
-                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="mobile-text-responsive text-gray-300 text-left">Deep understanding of home service business operations and pain points</p>
-                  </div>
-                  <div className="flex items-start justify-center lg:justify-start">
-                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="mobile-text-responsive text-gray-300 text-left">Proven track record with 40+ local businesses and $2M+ in additional revenue generated</p>
-                  </div>
-                  <div className="flex items-start justify-center lg:justify-start">
-                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="mobile-text-responsive text-gray-300 text-left">Local support you can trust - we're your neighbors, not a distant corporation</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="text-center lg:text-left">
-                <div className="service-card-mobile max-w-2xl mx-auto lg:mx-0">
-                  <h4 className="mobile-subheading-responsive font-bold text-white mb-4">What Sets Us Apart</h4>
-                  <ul className="space-y-3 mobile-text-responsive text-gray-300 text-left">
-                    <li>• Same-day response to all inquiries</li>
-                    <li>• Custom solutions, not cookie-cutter templates</li>
-                    <li>• Ongoing support and optimization included</li>
-                    <li>• ROI-focused approach - every automation pays for itself</li>
-                    <li>• No long-term contracts or hidden fees</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+            <blockquote className="mobile-text-responsive text-gray-300 italic mb-8 max-w-3xl mx-auto leading-relaxed">
+              "Since implementing Amarillo Automation's lead system, we've doubled our response time and increased our close rate by 40%. The automated follow-up alone has brought in $50K in additional revenue this quarter."
+            </blockquote>
+            <cite className="text-green-400 font-semibold">— Sarah M., Roofing Contractor</cite>
           </div>
         </section>
-        
-        {/* Section 4: Reviews/Case Studies - Enhanced Mobile */}
-        <section className="section-padding bg-gray-900/50 backdrop-blur-sm">
-          <div className="max-w-6xl mx-auto content-spacing-mobile">
+
+        {/* Section 3: Problem/Solution */}
+        <section className="section-padding">
+          <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="mobile-heading-responsive font-bold text-white mb-6">Real Results from Real Businesses</h2>
-              <p className="mobile-subheading-responsive text-gray-300">
-                See how we've helped local contractors save time, increase revenue, and grow their businesses.
+              <h2 className="mobile-heading-responsive font-bold text-white mb-4">
+                Stop Losing Leads to Competitors
+              </h2>
+              <p className="mobile-text-responsive text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                The average contractor loses 67% of leads due to slow response times. 
+                Our automation ensures you're first to respond, every time.
               </p>
             </div>
             
             <div className="case-study-mobile">
-              {[
-                {
-                  company: "Amarillo Roofing Company",
-                  problem: "Leads were falling through the cracks, taking hours to respond to new inquiries",
-                  solution: "Automated lead routing and instant response system",
-                  result: "Response time went from 4+ hours to under 2 minutes. Closed 40% more deals last quarter.",
-                  rating: 5
-                },
-                {
-                  company: "Amarillo HVAC Company",
-                  problem: "Spending 2+ hours daily on manual scheduling and customer follow-ups",
-                  solution: "Complete workflow automation for scheduling and customer communications",
-                  result: "Saved 15 hours per week on admin work. Customer satisfaction scores up 35%.",
-                  rating: 5
-                },
-                {
-                  company: "Amarillo Plumbing Company",
-                  problem: "Lost track of estimates and follow-ups, missing potential revenue",
-                  solution: "Automated estimate tracking and follow-up sequences", 
-                  result: "Estimate-to-sale conversion increased by 60%. Haven't lost a lead since.",
-                  rating: 5
-                }
-              ].map((review, index) => (
-                <div key={index} className="service-card-mobile">
-                  <div className="flex items-center mb-4">
-                    {[...Array(review.rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
-                    ))}
-                  </div>
-                  
-                  <h4 className="mobile-subheading-responsive font-bold text-white mb-4">{review.company}</h4>
-                  
-                  <div className="space-y-3 mobile-text-responsive">
-                    <div>
-                      <span className="text-red-400 font-semibold">Problem: </span>
-                      <span className="text-gray-300">{review.problem}</span>
-                    </div>
-                    <div>
-                      <span className="text-blue-400 font-semibold">Solution: </span>
-                      <span className="text-gray-300">{review.solution}</span>
-                    </div>
-                    <div>
-                      <span className="text-green-400 font-semibold">Result: </span>
-                      <span className="text-gray-300">{review.result}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              <div className="service-card-mobile bg-red-900/20 border border-red-500/30">
+                <h3 className="mobile-subheading-responsive font-bold text-red-400 mb-4">❌ Without Automation</h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="mobile-text-responsive">• Leads wait hours for responses</li>
+                  <li className="mobile-text-responsive">• Manual follow-up gets forgotten</li>
+                  <li className="mobile-text-responsive">• Competitors respond faster</li>
+                  <li className="mobile-text-responsive">• Revenue lost to slow processes</li>
+                </ul>
+              </div>
+              
+              <div className="service-card-mobile bg-green-900/20 border border-green-500/30">
+                <h3 className="mobile-subheading-responsive font-bold text-green-400 mb-4">✅ With Our System</h3>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="mobile-text-responsive">• Instant automated responses</li>
+                  <li className="mobile-text-responsive">• Smart follow-up sequences</li>
+                  <li className="mobile-text-responsive">• Beat competitors every time</li>
+                  <li className="mobile-text-responsive">• 40%+ more qualified appointments</li>
+                </ul>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Section 5: Services and Solutions - Enhanced Mobile */}
-        <section className="section-padding">
-          <div className="max-w-6xl mx-auto content-spacing-mobile">
-            {/* Sales Hook */}
+        {/* Section 4: Services Grid */}
+        <section className="section-padding bg-gray-900/30 backdrop-blur-sm">
+          <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="mobile-heading-responsive font-bold text-white mb-6">
-                You Don't Need High Dollar Software to Use Premium Features
+              <h2 className="mobile-heading-responsive font-bold text-white mb-4">
+                Complete Business Automation Suite
               </h2>
-              <p className="mobile-subheading-responsive text-gray-300 max-w-4xl mx-auto">
-                We connect your existing tools and create powerful automations using platforms you already trust. No expensive enterprise software required.
+              <p className="mobile-text-responsive text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                From lead capture to customer management, we automate the entire customer journey for home service businesses.
               </p>
             </div>
-
-            {/* Workflow Automations Examples - Mobile Optimized */}
-            <div className="mb-16">
-              <div className="max-w-5xl mx-auto mb-12">
-                <div className="case-study-mobile">
-                  {[
-                    {
-                      title: 'New Lead Received',
-                      effect: 'Log and organize into your existing database',
-                      description: 'Follow up with leads instantly'
-                    },
-                    {
-                      title: 'Missed Call',
-                      effect: 'Automatic Text Back',
-                      description: 'Never miss a potential customer again'
-                    },
-                    {
-                      title: 'Upcoming Appointment',
-                      effect: 'Send Reminder Texts',
-                      description: 'Remind customers about appointments'
-                    },
-                    {
-                      title: 'Job Completed',
-                      effect: 'Generate and Send Invoice',
-                      description: 'Send quotes automatically'
-                    },
-                    {
-                      title: 'Payment Received',
-                      effect: 'Request Google Review',
-                      description: 'Request reviews when work is done'
-                    },
-                    {
-                      title: 'Your Custom Trigger',
-                      effect: 'Your Biggest Lead Solution',
-                      description: 'Track jobs in Google Sheets or your CRM',
-                      isCustom: true
-                    }
-                  ].map((automation, index) => (
-                    <div 
-                      key={index}
-                      className={`service-card-mobile transition-all duration-300 hover:shadow-xl backdrop-blur-sm ${
-                        automation.isCustom 
-                          ? 'border-green-500/50 bg-gradient-to-br from-green-900/20 to-blue-900/20' 
-                          : 'hover:border-green-500/30'
-                      }`}
-                    >
-                      <div className="text-center">
-                        <div className="mb-4">
-                          <p className="mobile-text-responsive text-gray-300 text-center">
-                            {automation.description}
-                          </p>
-                        </div>
-                        <h3 className="mobile-subheading-responsive font-semibold text-white mb-3">
-                          {automation.title}
-                        </h3>
-                        <div className="flex justify-center mb-3">
-                          <svg className="w-8 h-8 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <h4 className="mobile-text-responsive font-medium text-green-400">
-                          {automation.effect}
-                        </h4>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-12 text-center">
-                  <div className="bg-green-900/20 border border-green-600/30 rounded-xl p-6 backdrop-blur-sm">
-                    <p className="mobile-subheading-responsive text-green-200 font-semibold">
-                      Everything's customized to your business. No extra software. No forced migration. No stress.
-                    </p>
-                    <p className="mobile-subheading-responsive text-green-400 font-semibold mt-2">
-                      You get results — not software headaches.
-                    </p>
+            
+            <div className="service-grid-mobile">
+              <div className="service-card-mobile">
+                <h3 className="mobile-subheading-responsive font-bold text-white mb-4">Lead Automation</h3>
+                <p className="mobile-text-responsive text-gray-300 mb-6 leading-relaxed">
+                  Capture leads from ANGI, Google, Facebook, and your website. Instant responses and smart routing to your team.
+                </p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span className="mobile-text-responsive text-gray-300">2-minute response guarantee</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span className="mobile-text-responsive text-gray-300">Multi-platform integration</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span className="mobile-text-responsive text-gray-300">Smart lead scoring</span>
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Tools We Use - Mobile Optimized */}
-            <div className="mb-16">
-              <h3 className="mobile-heading-responsive font-bold text-white mb-8 text-center">Tools We Use</h3>
-              <p className="mobile-subheading-responsive text-gray-300 text-center mb-8 max-w-3xl mx-auto">
-                We integrate with the platforms you already know and trust. No learning curve, no forced migrations.
-              </p>
               
-              <div className="tools-grid-mobile">
-                {[
-                  'Zapier', 'Make.com', 'GoHighLevel', 'Airtable', 
-                  'Google Workspace', 'Facebook', 'Instagram', 'YouTube',
-                  'QuickBooks', 'Calendly', 'Mailchimp', 'HubSpot',
-                  'Salesforce', 'Slack', 'Twilio', 'Gmail',
-                  'Google Sheets', 'Notion'
-                ].map((tool, index) => (
-                  <div key={index} className="tool-card-mobile hover:border-green-500/30 transition-all">
-                    <span className="text-gray-300 font-medium text-sm">{tool}</span>
+              <div className="service-card-mobile">
+                <h3 className="mobile-subheading-responsive font-bold text-white mb-4">CRM & Follow-up</h3>
+                <p className="mobile-text-responsive text-gray-300 mb-6 leading-relaxed">
+                  Automated customer relationship management with intelligent follow-up sequences that convert prospects to customers.
+                </p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span className="mobile-text-responsive text-gray-300">Automated appointment booking</span>
                   </div>
-                ))}
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span className="mobile-text-responsive text-gray-300">Smart follow-up sequences</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span className="mobile-text-responsive text-gray-300">Customer lifecycle management</span>
+                  </div>
+                </div>
               </div>
               
-              <div className="text-center mt-8">
-                <p className="mobile-text-responsive text-gray-400">And many more! If you use it, we can probably integrate with it.</p>
-              </div>
-            </div>
-
-            {/* Additional Services - Fixed to 2x2 Grid */}
-            <div>
-              <h3 className="mobile-heading-responsive font-bold text-white mb-8 text-center">Additional Services</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {[
-                  {
-                    title: "Meta Marketing",
-                    description: "Facebook and Instagram advertising campaigns that target your ideal customers and track real ROI"
-                  },
-                  {
-                    title: "Advanced Analytics", 
-                    description: "Custom dashboards and reporting systems that show exactly what's driving your business growth"
-                  },
-                  {
-                    title: "Artificial Intelligence",
-                    description: "AI-powered chatbots and smart tools that qualify leads and handle customer inquiries 24/7"
-                  },
-                  {
-                    title: "General Consultation",
-                    description: "Strategic business guidance to identify your biggest growth opportunities and operational improvements"
-                  }
-                ].map((service, index) => (
-                  <div key={index} className="service-card-mobile">
-                    <h4 className="mobile-subheading-responsive font-bold text-white mb-3">{service.title}</h4>
-                    <p className="mobile-text-responsive text-gray-300">{service.description}</p>
+              <div className="service-card-mobile">
+                <h3 className="mobile-subheading-responsive font-bold text-white mb-4">Marketing Automation</h3>
+                <p className="mobile-text-responsive text-gray-300 mb-6 leading-relaxed">
+                  Multi-channel marketing campaigns that run automatically, nurturing leads from first contact to conversion.
+                </p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span className="mobile-text-responsive text-gray-300">Email & SMS campaigns</span>
                   </div>
-                ))}
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span className="mobile-text-responsive text-gray-300">Social media automation</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span className="mobile-text-responsive text-gray-300">Review request automation</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Final CTA - Enhanced with both buttons */}
-        <section className="section-padding bg-gray-900/80 backdrop-blur-sm">
+        {/* Section 5: CTA */}
+        <section className="section-padding">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="mobile-heading-responsive font-bold text-white mb-6">
-              Stop Losing Leads. Start Growing Your Business.
+              Ready to Automate Your Business Growth?
             </h2>
-            <p className="mobile-subheading-responsive text-gray-300 mb-8">
-              Every day without automation is money left on the table. Let's change that.
+            <p className="mobile-text-responsive text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
+              Join West Texas contractors who've automated their way to 40% more leads and 10+ hours saved weekly.
             </p>
             
-            {/* Repeat both CTA buttons in footer with functionality */}
-            <div className="cta-container-mobile">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center cta-container-mobile">
               <button 
-                onClick={() => handleAskAnything('footer')}
-                className="cta-mobile bg-green-600 hover:bg-green-700 text-white transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
+                onClick={() => handleAskAnything('bottom')}
+                className="cta-mobile bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-3 transition-all duration-300 w-full sm:w-auto"
               >
-                Ask us Anything
-                <ArrowRight className="w-5 h-5" />
+                Get Your Free Automation Plan
+                <ChevronRight className="w-5 h-5" />
               </button>
+              
               <button 
-                onClick={() => handleTryDemo('footer')}
-                className="cta-mobile bg-green-600 hover:bg-green-700 text-white transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
+                onClick={() => handleTryDemo('bottom')}
+                className="cta-secondary-mobile border-2 border-green-600 text-green-400 hover:bg-green-600 hover:text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-3 transition-all duration-300 w-full sm:w-auto"
               >
-                Try a Demo
-                <Play className="w-4 h-4" />
+                <Play className="w-5 h-5" />
+                See Demo First
               </button>
             </div>
           </div>
         </section>
       </div>
 
-      {/* Enhanced AI Chatbot with Scheduling Functionality */}
+      {/* Enhanced AI Chatbot */}
       <EnhancedAIChatbot 
         isOpen={isChatbotOpen} 
         onClose={closeChatbot} 
       />
-
-      {/* Floating Chat Button (when chatbot is closed) */}
-      {!isChatbotOpen && (
-        <button
-          onClick={openChatbot}
-          className="fixed bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white p-4 rounded-full shadow-lg transition-colors z-40"
-          aria-label="Open chat"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-1.946-.274A8.955 8.955 0 0112 20.5c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8c0 1.508.417 2.927 1.146 4.146A8.955 8.955 0 0112 20.5c.34 0 .678-.027 1.01-.08L21 21c.552 0 1-.448 1-1v-8z" />
-          </svg>
-        </button>
-      )}
     </div>
   )
 }

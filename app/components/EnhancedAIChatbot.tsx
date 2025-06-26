@@ -6,7 +6,7 @@ import { Bot, X, Send, Calendar, Phone, Video, Mail, Clock } from 'lucide-react'
 // Mobile viewport utilities integrated directly into component
 const setDynamicVH = (): void => {
   const vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--chatbot-vh', `${vh}px`);
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
 };
 
 const debouncedSetVH = (() => {
@@ -256,31 +256,31 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
   if (!isOpen) return null
 
   return (
-    <div className="chatbot-backdrop">
-      <div className="chatbot-container">
+    <div className="chatbot-backdrop-mobile">
+      <div className="chatbot-mobile bg-gray-900 rounded-lg shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="chatbot-header">
-          <div className="chatbot-header-content">
-            <div className="chatbot-avatar">
-              <Bot className="chatbot-bot-icon" />
+        <div className="chatbot-header-mobile bg-gray-800 border-b border-gray-700">
+          <div className="flex items-center gap-3 flex-1">
+            <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 text-white" />
             </div>
-            <div className="chatbot-title-section">
-              <h3 className="chatbot-title">Automation Assistant</h3>
-              <p className="chatbot-subtitle">Ask about marketing, web dev, or automation</p>
+            <div className="flex-1 min-w-0">
+              <h3 className="chatbot-title-mobile text-white font-semibold">Automation Assistant</h3>
+              <p className="text-xs text-gray-400 truncate">Ask about marketing, web dev, or automation</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="chatbot-close-btn"
+            className="chatbot-close-mobile bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all duration-200"
             aria-label="Close chat"
           >
-            <X className="chatbot-close-icon" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Quick Actions - Show before booking flow */}
         {!isInBookingFlow && (
-          <div className="chatbot-quick-actions">
+          <div className="p-4 border-b border-gray-700">
             <button
               onClick={() => {
                 const consultationMessage: Message = {
@@ -295,46 +295,52 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
                 setIsInBookingFlow(true)
                 setBookingStep('preference')
               }}
-              className="chatbot-cta-btn"
+              className="chatbot-consultation-mobile bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
             >
-              <Calendar className="chatbot-cta-icon" />
+              <Calendar className="w-4 h-4" />
               Schedule Free Consultation
             </button>
           </div>
         )}
 
         {/* Messages Area */}
-        <div className="chatbot-messages">
+        <div className="chatbot-messages-mobile flex-1 overflow-y-auto">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`chatbot-message-wrapper ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}
+              className={`flex gap-3 mb-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {message.role === 'assistant' && (
-                <div className="chatbot-message-avatar">
-                  <Bot className="chatbot-avatar-icon" />
+                <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Bot className="w-4 h-4 text-white" />
                 </div>
               )}
               
-              <div className="chatbot-message-content">
-                <div className={`chatbot-message-bubble ${message.role}`}>
+              <div className="chatbot-message-mobile flex flex-col max-w-[85%]">
+                <div
+                  className={`px-4 py-2 rounded-lg ${
+                    message.role === 'user'
+                      ? 'bg-green-600 text-white ml-auto'
+                      : 'bg-gray-700 text-gray-100'
+                  }`}
+                >
                   {message.content}
                 </div>
                 
                 {/* Selection Options */}
                 {message.type === 'selection' && message.options && (
-                  <div className="chatbot-options">
+                  <div className="mt-2 space-y-2">
                     {message.options.map((option, index) => (
                       <button
                         key={index}
                         onClick={() => handleOptionSelect(option)}
-                        className="chatbot-option-btn"
+                        className="chatbot-option-mobile text-left flex items-center gap-2 w-full p-3 border border-green-500 rounded-lg bg-green-900/20 text-green-400 hover:bg-green-900/30 transition-all duration-200"
                       >
-                        {option.includes('Video') && <Video className="chatbot-option-icon" />}
-                        {option.includes('Phone') && <Phone className="chatbot-option-icon" />}
-                        {option.includes('email') && <Mail className="chatbot-option-icon" />}
-                        {option.includes('consultation') && <Calendar className="chatbot-option-icon" />}
-                        <span className="chatbot-option-text">{option}</span>
+                        {option.includes('Video') && <Video className="w-4 h-4 flex-shrink-0" />}
+                        {option.includes('Phone') && <Phone className="w-4 h-4 flex-shrink-0" />}
+                        {option.includes('email') && <Mail className="w-4 h-4 flex-shrink-0" />}
+                        {option.includes('consultation') && <Calendar className="w-4 h-4 flex-shrink-0" />}
+                        <span className="flex-1">{option}</span>
                       </button>
                     ))}
                   </div>
@@ -345,17 +351,15 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
           
           {/* Loading indicator */}
           {isLoading && (
-            <div className="chatbot-message-wrapper assistant-message">
-              <div className="chatbot-message-avatar">
-                <Clock className="chatbot-avatar-icon animate-spin" />
+            <div className="chatbot-loading-mobile flex gap-3 items-center">
+              <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <Clock className="w-4 h-4 text-white animate-spin" />
               </div>
-              <div className="chatbot-message-content">
-                <div className="chatbot-loading">
-                  <div className="chatbot-loading-dots">
-                    <div className="chatbot-dot"></div>
-                    <div className="chatbot-dot"></div>
-                    <div className="chatbot-dot"></div>
-                  </div>
+              <div className="bg-gray-700 text-gray-100 px-4 py-2 rounded-lg">
+                <div className="flex space-x-1">
+                  <div className="chatbot-loading-dots-mobile animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="chatbot-loading-dots-mobile animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="chatbot-loading-dots-mobile animate-bounce" style={{ animationDelay: '300ms' }}></div>
                 </div>
               </div>
             </div>
@@ -365,8 +369,8 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
         </div>
 
         {/* Input Area */}
-        <div className="chatbot-input-area">
-          <div className="chatbot-input-wrapper">
+        <div className="chatbot-input-mobile bg-gray-800 border-t border-gray-700">
+          <div className="flex gap-3">
             <input
               ref={inputRef}
               type="text"
@@ -380,21 +384,21 @@ function EnhancedAIChatbot({ isOpen, onClose }: Props) {
                 bookingStep === 'complete' ? "Consultation scheduled!" :
                 "Ask me about automation, marketing, web dev, or analytics..."
               }
-              className="chatbot-input"
+              className="chatbot-input-field-mobile flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-green-500 text-base"
               disabled={isLoading || bookingStep === 'complete'}
               maxLength={500}
             />
             <button
               onClick={sendMessage}
               disabled={isLoading || !inputValue.trim() || bookingStep === 'complete'}
-              className="chatbot-send-btn"
+              className="chatbot-send-mobile bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white rounded-lg transition-colors flex items-center justify-center"
               aria-label="Send message"
             >
-              <Send className="chatbot-send-icon" />
+              <Send className="w-4 h-4" />
             </button>
           </div>
-          <div className="chatbot-input-footer">
-            <span className="chatbot-footer-text">
+          <div className="flex justify-between items-center mt-2">
+            <span className="text-xs text-gray-400">
               {inputValue.length}/500 characters
             </span>
           </div>
