@@ -82,8 +82,8 @@ export default function Homepage() {
         <section className="min-h-screen flex items-center justify-center px-4 pt-8">
           <div className="max-w-4xl mx-auto text-center">
             {/* 1.01 Company Name */}
-            <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight">
-              AMARILLO AUTOMATION
+            <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight">
+              AMARILLO<br />AUTOMATION
             </h1>
             
             {/* 1.02 Subheader */}
@@ -139,31 +139,31 @@ export default function Homepage() {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start md:items-center">
-              <div className="text-center md:text-left">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div>
                 <h3 className="text-2xl font-bold text-white mb-6">Industry Expertise That Delivers Results</h3>
-                <div className="space-y-4 max-w-lg mx-auto md:mx-0">
-                  <div className="flex items-start text-left">
+                <div className="space-y-4">
+                  <div className="flex items-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
                     <p className="text-gray-300">5+ years automating workflows for contractors, roofers, HVAC, and plumbing companies</p>
                   </div>
-                  <div className="flex items-start text-left">
+                  <div className="flex items-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
                     <p className="text-gray-300">Deep understanding of home service business operations and pain points</p>
                   </div>
-                  <div className="flex items-start text-left">
+                  <div className="flex items-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
                     <p className="text-gray-300">Proven track record with 40+ local businesses and $2M+ in additional revenue generated</p>
                   </div>
-                  <div className="flex items-start text-left">
+                  <div className="flex items-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
                     <p className="text-gray-300">Local support you can trust - we're your neighbors, not a distant corporation</p>
                   </div>
                 </div>
               </div>
               
-              <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-lg p-6 md:p-8 mx-auto md:mx-0 w-full max-w-lg md:max-w-none">
-                <h4 className="text-xl font-bold text-white mb-4 text-center md:text-left">What Sets Us Apart</h4>
+              <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-lg p-8">
+                <h4 className="text-xl font-bold text-white mb-4">What Sets Us Apart</h4>
                 <ul className="space-y-3 text-gray-300">
                   <li>• Same-day response to all inquiries</li>
                   <li>• Custom solutions, not cookie-cutter templates</li>
@@ -402,8 +402,8 @@ export default function Homepage() {
         {/* Final CTA */}
         <section className="py-20 px-4 bg-gray-900/80 backdrop-blur-sm">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Stop Losing Leads. Start Growing Your Business.
+            <h2 className="text-2xl md:text-4xl font-bold text-white mb-6">
+              Stop Losing Leads.<br />Start Growing Your Business.
             </h2>
             <p className="text-xl text-gray-300 mb-8">
               Every day without automation is money left on the table. Let's change that.
