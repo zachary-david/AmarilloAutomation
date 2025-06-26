@@ -1,15 +1,13 @@
-// app/page.tsx - Updated with Enhanced Mobile Chatbot
+// app/page.tsx - Chatbot Removed, Direct Contact CTAs
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { ChevronRight, Star, CheckCircle, ArrowRight, Play } from 'lucide-react'
+import { useEffect, useRef } from 'react'
+import { ChevronRight, Star, CheckCircle, ArrowRight, Play, Phone } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import EnhancedAIChatbot from './components/EnhancedAIChatbot'
 
 export default function Homepage() {
   const vantaRef = useRef<HTMLDivElement>(null)
   const vantaEffect = useRef<any>(null)
-  const [isChatbotOpen, setIsChatbotOpen] = useState(false)
   const router = useRouter()
 
   // Enhanced Vanta.js effect with mobile optimization
@@ -117,19 +115,27 @@ export default function Homepage() {
     }
   }
 
-  // CTA Button Handlers
-  const handleAskAnything = (source: string) => {
-    trackCTA(`${source}_ask_anything`)
-    setIsChatbotOpen(true)
+  // Updated CTA Button Handlers - Direct Contact Methods
+  const handleCallNow = (source: string) => {
+    trackCTA(`${source}_call_now`)
+    // Replace with your actual phone number
+    window.location.href = 'tel:+18065551234'
+  }
+
+  const handleGetConsultation = (source: string) => {
+    trackCTA(`${source}_consultation`)
+    // You can either redirect to a contact page or use a scheduling link
+    // Option 1: Redirect to contact page
+    router.push('/contact')
+    
+    // Option 2: Direct to scheduling tool (uncomment and replace with your actual link)
+    // window.open('https://calendly.com/amarilloautomation', '_blank')
   }
 
   const handleTryDemo = (source: string) => {
     trackCTA(`${source}_demo`)
     router.push('/demo')
   }
-
-  const openChatbot = () => setIsChatbotOpen(true)
-  const closeChatbot = () => setIsChatbotOpen(false)
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
@@ -174,14 +180,14 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* CTA Buttons - Mobile Optimized */}
+            {/* CTA Buttons - Updated for Direct Contact */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center cta-container-mobile">
               <button 
-                onClick={() => handleAskAnything('hero')}
+                onClick={() => handleCallNow('hero')}
                 className="cta-mobile bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-3 transition-all duration-300 w-full sm:w-auto"
               >
-                Ask About Your Business
-                <ArrowRight className="w-5 h-5" />
+                <Phone className="w-5 h-5" />
+                Call for Free Consultation
               </button>
               
               <button 
@@ -342,7 +348,7 @@ export default function Homepage() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center cta-container-mobile">
               <button 
-                onClick={() => handleAskAnything('bottom')}
+                onClick={() => handleGetConsultation('bottom')}
                 className="cta-mobile bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-3 transition-all duration-300 w-full sm:w-auto"
               >
                 Get Your Free Automation Plan
@@ -357,15 +363,30 @@ export default function Homepage() {
                 See Demo First
               </button>
             </div>
+
+            {/* Additional Contact Info */}
+            <div className="mt-12 pt-8 border-t border-gray-700">
+              <p className="text-gray-400 mb-4">Prefer to talk directly?</p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a 
+                  href="tel:+18065551234"
+                  className="flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors"
+                >
+                  <Phone className="w-4 h-4" />
+                  (806) 555-1234
+                </a>
+                <span className="hidden sm:block text-gray-600">|</span>
+                <a 
+                  href="mailto:admin@amarilloautomation.com"
+                  className="text-green-400 hover:text-green-300 transition-colors"
+                >
+                  admin@amarilloautomation.com
+                </a>
+              </div>
+            </div>
           </div>
         </section>
       </div>
-
-      {/* Enhanced AI Chatbot */}
-      <EnhancedAIChatbot 
-        isOpen={isChatbotOpen} 
-        onClose={closeChatbot} 
-      />
     </div>
   )
 }
