@@ -82,7 +82,7 @@ export default function Homepage() {
         <section className="min-h-screen flex items-center justify-center px-4 pt-8">
           <div className="max-w-4xl mx-auto text-center">
             {/* 1.01 Company Name */}
-            <h1 className="section-header-primary">
+            <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight">
               AMARILLO AUTOMATION
             </h1>
             
@@ -109,11 +109,11 @@ export default function Homepage() {
 
             {/* Call to Action - Moved up */}
             <div>
-              <h2 className="section-header-primary">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
                 Ready to Automate Your Business?
               </h2>
               <p className="text-xl text-gray-300 mb-12">
-                Join the contractors who've streamlined their operations with our proven systems.
+                Join 40+ West Texas contractors who've streamlined their operations with our proven systems.
               </p>
               <div className="flex justify-center">
                 <a 
@@ -133,37 +133,37 @@ export default function Homepage() {
         <section className="py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="section-header-primary">Why Choose Amarillo Automation</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Why Choose Amarillo Automation</h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Local automation experts who understand the unique challenges of local home service businesses.
+                Local automation experts who understand the unique challenges of local businesses.
               </p>
             </div>
             
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h3 className="section-header-secondary">Industry Expertise That Delivers Results</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start md:items-center">
+              <div className="text-center md:text-left">
+                <h3 className="text-2xl font-bold text-white mb-6">Industry Expertise That Delivers Results</h3>
+                <div className="space-y-4 max-w-lg mx-auto md:mx-0">
+                  <div className="flex items-start text-left">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
                     <p className="text-gray-300">5+ years automating workflows for contractors, roofers, HVAC, and plumbing companies</p>
                   </div>
-                  <div className="flex items-start">
+                  <div className="flex items-start text-left">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
                     <p className="text-gray-300">Deep understanding of home service business operations and pain points</p>
                   </div>
-                  <div className="flex items-start">
+                  <div className="flex items-start text-left">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
                     <p className="text-gray-300">Proven track record with 40+ local businesses and $2M+ in additional revenue generated</p>
                   </div>
-                  <div className="flex items-start">
+                  <div className="flex items-start text-left">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
                     <p className="text-gray-300">Local support you can trust - we're your neighbors, not a distant corporation</p>
                   </div>
                 </div>
               </div>
               
-              <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-lg p-8">
-                <h4 className="text-xl font-bold text-white mb-4">What Sets Us Apart</h4>
+              <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-lg p-6 md:p-8 mx-auto md:mx-0 w-full max-w-lg md:max-w-none">
+                <h4 className="text-xl font-bold text-white mb-4 text-center md:text-left">What Sets Us Apart</h4>
                 <ul className="space-y-3 text-gray-300">
                   <li>• Same-day response to all inquiries</li>
                   <li>• Custom solutions, not cookie-cutter templates</li>
@@ -180,7 +180,7 @@ export default function Homepage() {
         <section className="py-20 px-4 bg-gray-900/50 backdrop-blur-sm">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="section-header-primary">Real Results from Real Businesses</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Real Results from Real Businesses</h2>
               <p className="text-xl text-gray-300">
                 See how we've helped local contractors save time, increase revenue, and grow their businesses.
               </p>
@@ -244,7 +244,7 @@ export default function Homepage() {
           <div className="max-w-6xl mx-auto">
             {/* 5.1 Sales Hook */}
             <div className="text-center mb-16">
-              <h2 className="section-header-primary">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
                 You Don't Need High Dollar Software to Use Premium Features
               </h2>
               <p className="text-xl text-gray-300 max-w-4xl mx-auto">
@@ -343,12 +343,12 @@ export default function Homepage() {
 
             {/* Tools We Use */}
             <div className="mb-16">
-              <h3 className="section-header-secondary">Tools We Use</h3>
+              <h3 className="text-2xl font-bold text-white mb-8 text-center">Tools We Use</h3>
               <p className="text-xl text-gray-300 text-center mb-8 max-w-3xl mx-auto">
                 We integrate with the platforms you already know and trust. No learning curve, no forced migrations.
               </p>
               
-              <div className="tools-grid-mobile">
+              <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 {[
                   'Zapier', 'Make.com', 'GoHighLevel', 'Airtable', 
                   'Google Workspace', 'Facebook', 'Instagram', 'YouTube',
@@ -356,7 +356,7 @@ export default function Homepage() {
                   'Salesforce', 'Slack', 'Twilio', 'Gmail',
                   'Google Sheets', 'Notion'
                 ].map((tool, index) => (
-                  <div key={index} className="tool-card-mobile">
+                  <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 text-center hover:border-green-500/30 transition-all">
                     <span className="text-gray-300 font-medium text-sm">{tool}</span>
                   </div>
                 ))}
@@ -367,44 +367,42 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* 5.3 Other Services - FIXED SECTION */}
-            <section className="service-section">
-              <div className="services-container">
-                <h2 className="section-header-secondary">Additional Services</h2>
-                <div className="service-grid-mobile">
-                  {[
-                    {
-                      title: "Meta Marketing",
-                      description: "Facebook and Instagram advertising campaigns that target your ideal customers and track real ROI"
-                    },
-                    {
-                      title: "Advanced Analytics", 
-                      description: "Custom dashboards and reporting systems that show exactly what's driving your business growth"
-                    },
-                    {
-                      title: "AI SEO",
-                      description: "Future-proof your online presence by optimizing for LLM queries and AI-powered search engines that are revolutionizing how customers discover local businesses"
-                    },
-                    {
-                      title: "General Consultation",
-                      description: "Strategic business guidance to identify your biggest growth opportunities and operational improvements"
-                    }
-                  ].map((service, index) => (
-                    <div key={index} className="service-card-mobile">
-                      <h3>{service.title}</h3>
-                      <p>{service.description}</p>
-                    </div>
-                  ))}
-                </div>
+            {/* 5.3 Other Services */}
+            <div>
+              <h3 className="text-2xl font-bold text-white mb-8 text-center">Additional Services</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                {[
+                  {
+                    title: "Meta Marketing",
+                    description: "Facebook and Instagram advertising campaigns that target your ideal customers and track real ROI"
+                  },
+                  {
+                    title: "Advanced Analytics", 
+                    description: "Custom dashboards and reporting systems that show exactly what's driving your business growth"
+                  },
+                  {
+                    title: "AI SEO",
+                    description: "Future-proof your online presence by optimizing for LLM queries and AI-powered search enginges that are changing how customers discover local businesses"
+                  },
+                  {
+                    title: "General Consultation",
+                    description: "Strategic business guidance to identify your biggest growth opportunities and operational improvements"
+                  }
+                ].map((service, index) => (
+                  <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+                    <h4 className="text-lg font-bold text-white mb-3">{service.title}</h4>
+                    <p className="text-gray-300">{service.description}</p>
+                  </div>
+                ))}
               </div>
-            </section>
+            </div>
           </div>
         </section>
 
         {/* Final CTA */}
         <section className="py-20 px-4 bg-gray-900/80 backdrop-blur-sm">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="section-header-primary">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
               Stop Losing Leads. Start Growing Your Business.
             </h2>
             <p className="text-xl text-gray-300 mb-8">
