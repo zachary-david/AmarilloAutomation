@@ -115,21 +115,15 @@ export default function Homepage() {
               <p className="text-xl text-gray-300 mb-12">
                 Join the contractors who've streamlined their operations with our proven systems.
               </p>
-              <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                <button 
-                  onClick={() => trackCTA('primary_consultation')}
+              <div className="flex justify-center">
+                <a 
+                  href="mailto:admin@amarilloautomation.com"
+                  onClick={() => trackCTA('email_us_now')}
                   className="px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
                 >
-                  Schedule Free Consultation
+                  Email us now
                   <ArrowRight className="w-5 h-5 ml-2 inline" />
-                </button>
-                <button 
-                  onClick={() => trackCTA('secondary_demo')}
-                  className="px-8 py-4 border border-gray-600 text-white hover:bg-gray-800 font-bold rounded-lg transition-all duration-300 active:scale-95"
-                >
-                  See Demo
-                  <ChevronRight className="w-5 h-5 ml-2 inline" />
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -407,20 +401,21 @@ export default function Homepage() {
 
         {/* Final CTA */}
         <section className="py-20 px-4 bg-gray-900/80 backdrop-blur-sm">
-          <div className="max-w-4xl mx-auto text-center">
+               <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
               Stop Losing Leads. Start Growing Your Business.
             </h2>
             <p className="text-xl text-gray-300 mb-8">
               Every day without automation is money left on the table. Let's change that.
             </p>
-            <button 
-              onClick={() => trackCTA('final_cta')}
+            <a 
+              href="mailto:admin@amarilloautomation.com"
+              onClick={() => trackCTA('final_email_cta')}
               className="px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl text-lg"
             >
-              Get Started Today
+              Email us now
               <ArrowRight className="w-5 h-5 ml-2 inline" />
-            </button>
+            </a>
           </div>
         </section>
       </div>
