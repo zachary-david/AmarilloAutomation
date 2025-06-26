@@ -381,8 +381,8 @@ export default function Homepage() {
                     description: "Custom dashboards and reporting systems that show exactly what's driving your business growth"
                   },
                   {
-                    title: "Artificial Intelligence",
-                    description: "AI-powered chatbots and smart tools that qualify leads and handle customer inquiries 24/7"
+                    title: "AI SEO",
+                    description: "Future-proof your online presence by optimizing for LLM queries and AI-powered search engines that are revolutionizing how customers discover local businesses"
                   },
                   {
                     title: "General Consultation",
