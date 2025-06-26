@@ -368,13 +368,7 @@ export default function Homepage() {
             <div className="mt-12 pt-8 border-t border-gray-700">
               <p className="text-gray-400 mb-4">Prefer to talk directly?</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a 
-                  href="tel:+18065551234"
-                  className="flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors"
-                >
-                  <Phone className="w-4 h-4" />
-                  (806) 555-1234
-                </a>
+
                 <span className="hidden sm:block text-gray-600">|</span>
                 <a 
                   href="mailto:admin@amarilloautomation.com"
