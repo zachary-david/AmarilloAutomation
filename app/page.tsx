@@ -44,8 +44,8 @@ export default function Homepage() {
                 gyroControls: false,
                 minHeight: 200.00,
                 minWidth: 200.00,
-                scale: 0.8,
-                scaleMobile: 0.6,
+                scale: 1.0,
+                scaleMobile: 1.0,
                 color: 0x10b981,
                 backgroundColor: 0x0a1224,
                 points: 6.00,
@@ -119,7 +119,7 @@ export default function Homepage() {
   const handleCallNow = (source: string) => {
     trackCTA(`${source}_call_now`)
     // Replace with your actual phone number
-    window.location.href = 'tel:+18065551234'
+    window.location.href = 'tel:+18066404586'
   }
 
   const handleGetConsultation = (source: string) => {
@@ -129,7 +129,7 @@ export default function Homepage() {
     router.push('/contact')
     
     // Option 2: Direct to scheduling tool (uncomment and replace with your actual link)
-    // window.open('https://calendly.com/amarilloautomation', '_blank')
+    // window.open('https://cal.com/amarilloautomation/consultation', '_blank')
   }
 
   const handleTryDemo = (source: string) => {
