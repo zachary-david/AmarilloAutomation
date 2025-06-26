@@ -7,9 +7,7 @@ import { Phone, Mail, MessageSquare, Clock, CheckCircle, Zap, Play, RotateCcw } 
 const InteractiveLeadDemo = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [userPhone, setUserPhone] = useState('');
   const [userEmail, setUserEmail] = useState('');
-  const [userBusiness, setUserBusiness] = useState('');
   const [demoStarted, setDemoStarted] = useState(false);
   const [responseTime, setResponseTime] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,7 +31,7 @@ const InteractiveLeadDemo = () => {
     },
     {
       title: "📲 Contractor Notified",
-      description: `SMS sent to ${userPhone || 'your phone'}`,
+      description: `SMS sent to contractor's phone`,
       detail: "Text: 'URGENT: $8K roof repair lead - respond now!'",
       icon: <MessageSquare className="w-5 h-5 text-blue-500" />,
       delay: 2500,
@@ -73,8 +71,8 @@ const InteractiveLeadDemo = () => {
   }, [isPlaying, currentStep, demoSteps.length, responseTime]);
 
   const startDemo = async () => {
-    if (!userPhone || !userEmail || !userBusiness) {
-      alert('Please fill in all fields to see your personalized demo!');
+    if (!userEmail) {
+      alert('Please enter your email to see your personalized demo!');
       return;
     }
 
@@ -86,9 +84,9 @@ const InteractiveLeadDemo = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          phone: userPhone,
+          phone: 'Demo User',
           email: userEmail,
-          business: userBusiness,
+          business: 'General Contractor',
           source: 'Interactive Demo',
           timestamp: new Date().toISOString()
         })
@@ -131,20 +129,6 @@ const InteractiveLeadDemo = () => {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Your Phone Number *
-            </label>
-            <input
-              type="tel"
-              placeholder="(806) 555-0123"
-              value={userPhone}
-              onChange={(e) => setUserPhone(e.target.value)}
-              required
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
               Your Email *
             </label>
             <input
@@ -155,26 +139,6 @@ const InteractiveLeadDemo = () => {
               required
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent"
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Your Business Type *
-            </label>
-            <select
-              value={userBusiness}
-              onChange={(e) => setUserBusiness(e.target.value)}
-              required
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            >
-              <option value="">Select your business type</option>
-              <option value="Roofing">Roofing Contractor</option>
-              <option value="HVAC">HVAC Service</option>
-              <option value="Plumbing">Plumbing Service</option>
-              <option value="General">General Contractor</option>
-              <option value="Electrical">Electrical Service</option>
-              <option value="Other">Other Home Service</option>
-            </select>
           </div>
 
           <button
