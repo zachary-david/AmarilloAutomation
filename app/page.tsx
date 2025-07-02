@@ -82,7 +82,7 @@ export default function Homepage() {
         <section className="min-h-screen flex items-center justify-center px-4 pt-8">
           <div className="max-w-4xl mx-auto text-center">
             {/* 1.01 Company Name */}
-            <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight">
+            <h1 className="text-6xl sm:text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight">
               AMARILLO<br />AUTOMATION
             </h1>
             
@@ -342,8 +342,8 @@ export default function Homepage() {
             </div>
 
             {/* Tools We Use */}
-            <div className="mb-16">
-              <h3 className="text-2xl font-bold text-white mb-8 text-center">Tools We Use</h3>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Tools We Use</h2>
               <p className="text-xl text-gray-300 text-center mb-8 max-w-3xl mx-auto">
                 We integrate with the platforms you already know and trust. No learning curve, no forced migrations.
               </p>
@@ -368,8 +368,8 @@ export default function Homepage() {
             </div>
 
             {/* 5.3 Other Services */}
-            <div>
-              <h3 className="text-2xl font-bold text-white mb-8 text-center">Additional Services</h3>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Additional Services</h2>
               <div className="grid md:grid-cols-2 gap-6">
                 {[
                   {
@@ -400,7 +400,7 @@ export default function Homepage() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-20 px-4 bg-gray-900/80 backdrop-blur-sm">
+        <section className="py-20 px-4 bg-gray-900/90">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-2xl md:text-4xl font-bold text-white mb-6">
               Stop Losing Leads.<br />Start Growing Your Business.
