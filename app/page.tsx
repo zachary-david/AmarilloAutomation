@@ -82,7 +82,7 @@ export default function Homepage() {
         <section className="min-h-screen flex items-center justify-center px-4 pt-8">
           <div className="max-w-4xl mx-auto text-center">
             {/* 1.01 Company Name */}
-            <h1 className="text-6xl sm:text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight">
+            <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight">
               AMARILLO<br />AUTOMATION
             </h1>
             
@@ -129,130 +129,18 @@ export default function Homepage() {
           </div>
         </section>
 
-        {/* Section 3: Why Us */}
+        {/* Section 2: Services and Solutions - MOVED UP */}
         <section className="py-20 px-4">
           <div className="max-w-6xl mx-auto">
+            {/* 2.1 Sales Hook */}
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Why Choose Amarillo Automation</h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Local automation experts who understand the unique challenges of local businesses.
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-6">Industry Expertise That Delivers Results</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="text-gray-300">5+ years automating workflows for contractors, roofers, HVAC, and plumbing companies</p>
-                  </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="text-gray-300">Deep understanding of home service business operations and pain points</p>
-                  </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="text-gray-300">Proven track record with 40+ local businesses and $2M+ in additional revenue generated</p>
-                  </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                    <p className="text-gray-300">Local support you can trust - we're your neighbors, not a distant corporation</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-lg p-8">
-                <h4 className="text-xl font-bold text-white mb-4">What Sets Us Apart</h4>
-                <ul className="space-y-3 text-gray-300">
-                  <li>• Same-day response to all inquiries</li>
-                  <li>• Custom solutions, not cookie-cutter templates</li>
-                  <li>• Ongoing support and optimization included</li>
-                  <li>• ROI-focused approach - every automation pays for itself</li>
-                  <li>• No long-term contracts or hidden fees</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 4: Reviews/Case Studies */}
-        <section className="py-20 px-4 bg-gray-900/50 backdrop-blur-sm">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Real Results from Real Businesses</h2>
-              <p className="text-xl text-gray-300">
-                See how we've helped local contractors save time, increase revenue, and grow their businesses.
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  company: "Amarillo Roofing Company",
-                  problem: "Leads were falling through the cracks, taking hours to respond to new inquiries",
-                  solution: "Automated lead routing and instant response system",
-                  result: "Response time went from 4+ hours to under 2 minutes. Closed 40% more deals last quarter.",
-                  rating: 5
-                },
-                {
-                  company: "Amarillo HVAC Company",
-                  problem: "Spending 2+ hours daily on manual scheduling and customer follow-ups",
-                  solution: "Complete workflow automation for scheduling and customer communications",
-                  result: "Saved 15 hours per week on admin work. Customer satisfaction scores up 35%.",
-                  rating: 5
-                },
-                {
-                  company: "Amarillo Plumbing Company",
-                  problem: "Lost track of estimates and follow-ups, missing potential revenue",
-                  solution: "Automated estimate tracking and follow-up sequences", 
-                  result: "Estimate-to-sale conversion increased by 60%. Haven't lost a lead since.",
-                  rating: 5
-                }
-              ].map((review, index) => (
-                <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-                  <div className="flex items-center mb-4">
-                    {[...Array(review.rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
-                    ))}
-                  </div>
-                  
-                  <h4 className="text-lg font-bold text-white mb-4">{review.company}</h4>
-                  
-                  <div className="space-y-3 text-sm">
-                    <div>
-                      <span className="text-red-400 font-semibold">Problem: </span>
-                      <span className="text-gray-300">{review.problem}</span>
-                    </div>
-                    <div>
-                      <span className="text-blue-400 font-semibold">Solution: </span>
-                      <span className="text-gray-300">{review.solution}</span>
-                    </div>
-                    <div>
-                      <span className="text-green-400 font-semibold">Result: </span>
-                      <span className="text-gray-300">{review.result}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Section 5: Services and Solutions */}
-        <section className="py-20 px-4">
-          <div className="max-w-6xl mx-auto">
-            {/* 5.1 Sales Hook */}
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                You Don't Need High Dollar Software to Use Premium Features
-              </h2>
+              <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">You Don't Need High Dollar Software to Use Premium Features</h3>
               <p className="text-xl text-gray-300 max-w-4xl mx-auto">
                 We connect your existing tools and create powerful automations using platforms you already trust. No expensive enterprise software required.
               </p>
             </div>
 
-            {/* 5.2 Workflow Automations Examples */}
+            {/* 2.2 Workflow Automations Examples */}
             <div className="mb-16">
               {/* Real Automation Examples - Mobile-First Grid */}
               <div className="max-w-5xl mx-auto mb-12">
@@ -341,7 +229,7 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* Tools We Use */}
+            {/* 2.3 Tools We Use */}
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Tools We Use</h2>
               <p className="text-xl text-gray-300 text-center mb-8 max-w-3xl mx-auto">
@@ -367,9 +255,9 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* 5.3 Other Services */}
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Additional Services</h2>
+            {/* 2.4 Additional Services */}
+            <div>
+              <h3 className="text-3xl md:text-4xl font-bold text-white mb-8 text-center">Additional Services</h3>
               <div className="grid md:grid-cols-2 gap-6">
                 {[
                   {
@@ -382,7 +270,7 @@ export default function Homepage() {
                   },
                   {
                     title: "AI SEO",
-                    description: "Future-proof your online presence by optimizing for LLM queries and AI-powered search enginges that are changing how customers discover local businesses"
+                    description: "Future-proof your online presence by optimizing for LLM queries and AI-powered search engines that are changing how customers discover local businesses"
                   },
                   {
                     title: "General Consultation",
@@ -399,22 +287,121 @@ export default function Homepage() {
           </div>
         </section>
 
-        {/* Final CTA */}
-        <section className="py-20 px-4 bg-gray-900/90">
+        {/* Section 3: Why Us - MOVED DOWN */}
+        <section className="py-20 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Why Choose Amarillo Automation</h2>
+              <p className="text-xl text-gray-300">
+                Local automation experts who understand the unique challenges of local businesses.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="text-center md:text-left">
+                <h3 className="text-3xl md:text-4xl font-bold text-white mb-6 text-center md:text-left">Industry Expertise That Delivers Results</h3>
+                <div className="space-y-4">
+                  <div className="flex items-start justify-center md:justify-start">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
+                    <p className="text-gray-300 text-left">5+ years automating workflows for contractors, roofers, HVAC, and plumbing companies</p>
+                  </div>
+                  <div className="flex items-start justify-center md:justify-start">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
+                    <p className="text-gray-300 text-left">Deep understanding of home service business operations and pain points</p>
+                  </div>
+                  <div className="flex items-start justify-center md:justify-start">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
+                    <p className="text-gray-300 text-left">Proven track record with 40+ local businesses and $2M+ in additional revenue generated</p>
+                  </div>
+                  <div className="flex items-start justify-center md:justify-start">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
+                    <p className="text-gray-300 text-left">Local support you can trust - we're your neighbors, not a distant corporation</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-lg p-8">
+                <h4 className="text-xl font-bold text-white mb-4">What Sets Us Apart</h4>
+                <ul className="space-y-3 text-gray-300">
+                  <li>• Same-day response to all inquiries</li>
+                  <li>• Custom solutions, not cookie-cutter templates</li>
+                  <li>• Ongoing support and optimization included</li>
+                  <li>• ROI-focused approach - every automation pays for itself</li>
+                  <li>• No long-term contracts or hidden fees</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 4: Reviews/Case Studies */}
+        <section className="py-20 px-4 bg-gray-900/50 backdrop-blur-sm">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Real Results from Real Businesses</h2>
+              <p className="text-xl text-gray-300">
+                See how we've helped local contractors save time, increase revenue, and grow their businesses.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  company: "Amarillo Roofing Company",
+                  problem: "Leads were falling through the cracks, taking hours to respond to new inquiries",
+                  solution: "Automated lead routing and instant response system",
+                  result: "Response time went from 4+ hours to under 2 minutes. Closed 40% more deals last quarter.",
+                  rating: 5
+                },
+                {
+                  company: "Amarillo HVAC Company",
+                  problem: "Spending 2+ hours daily on manual scheduling and customer follow-ups",
+                  solution: "Complete workflow automation for scheduling and customer communications",
+                  result: "Saved 15 hours per week on admin work. Customer satisfaction scores up 35%.",
+                  rating: 5
+                },
+                {
+                  company: "Amarillo Plumbing Company",
+                  problem: "Lost track of estimates and follow-ups, missing potential revenue",
+                  solution: "Automated estimate tracking and follow-up sequences", 
+                  result: "Estimate-to-sale conversion increased by 60%. Haven't lost a lead since.",
+                  rating: 5
+                }
+              ].map((testimonial, index) => (
+                <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+                  <div className="flex mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
+                    ))}
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-3">{testimonial.company}</h3>
+                  <div className="space-y-3 text-sm text-gray-300">
+                    <p><strong className="text-red-400">Problem:</strong> {testimonial.problem}</p>
+                    <p><strong className="text-blue-400">Solution:</strong> {testimonial.solution}</p>
+                    <p><strong className="text-green-400">Result:</strong> {testimonial.result}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Section 5: Final CTA */}
+        <section className="py-20 px-4 bg-gray-900/90 relative overflow-visible">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-2xl md:text-4xl font-bold text-white mb-6">
               Stop Losing Leads.<br />Start Growing Your Business.
             </h2>
-            <p className="text-xl text-gray-300 mb-8">
+            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
               Every day without automation is money left on the table. Let's change that.
             </p>
             <a 
               href="mailto:admin@amarilloautomation.com"
               onClick={() => trackCTA('final_email_cta')}
-              className="px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl text-lg"
+              className="inline-flex items-center px-6 md:px-8 py-3 md:py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl text-base md:text-lg"
             >
               Email us now
-              <ArrowRight className="w-5 h-5 ml-2 inline" />
+              <ArrowRight className="w-5 h-5 ml-2" />
             </a>
           </div>
         </section>
