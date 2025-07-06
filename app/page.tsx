@@ -7,26 +7,21 @@ export default function Homepage() {
   const vantaRef = useRef<HTMLDivElement>(null)
   const vantaEffect = useRef<any>(null)
 
-  // Load Vanta.js effect
   useEffect(() => {
     const loadVanta = async () => {
       if (typeof window !== 'undefined' && !window.VANTA) {
         try {
-          // Load Three.js first
           const threeScript = document.createElement('script')
           threeScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js'
           document.head.appendChild(threeScript)
           
           await new Promise(resolve => { threeScript.onload = resolve })
           
-          // Then load Vanta.js
           const vantaScript = document.createElement('script')
           vantaScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.net.min.js'
           document.head.appendChild(vantaScript)
           
           await new Promise(resolve => { vantaScript.onload = resolve })
-          
-          // Initialize Vanta effect
           if (vantaRef.current && window.VANTA) {
             vantaEffect.current = window.VANTA.NET({
               el: vantaRef.current,
@@ -72,52 +67,36 @@ export default function Homepage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
-      {/* Vanta Background */}
       <div ref={vantaRef} className="fixed inset-0 z-0" />
-      
-      {/* Content */}
       <div className="relative z-10">
         
-        {/* Section 1: Hero */}
         <section className="min-h-screen flex items-center justify-center px-4 pt-8">
           <div className="max-w-4xl mx-auto text-center">
-            {/* 1.01 Company Name */}
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-9xl font-bold text-white mb-6 tracking-tight">
               AMARILLO<br />AUTOMATION
             </h1>
-            
-            {/* 1.02 Subheader */}
+
             <h2 className="text-2xl md:text-3xl text-gray-300 mb-12 font-light">
-              Helping contractors and small businesses grow by focusing on what really matters:
+              We help contractors and small businesses grow through digital marketing, customer databases, and careful brand management. <br /> <br /> To put it plainly, we want to help your business: 
             </h2>
             
-            <div className="grid md:grid-cols-3 gap-8 mb-16">
-              <div className="flex items-center justify-center md:justify-start">
-                <div className="flex items-center justify-center md:justify-start">
+                <div className="grid md:grid-cols-3 gap-8 mb-16">              
+                  <div className="flex items-center justify-center lg:justify-start">
                 <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
-                <h3 className="text-xl font-bold text-white">Careful Brand Management</h3>
+                <h3 className="text-3xl font-bold text-white">Save Time</h3>
               </div>
+              <div className="flex items-center justify-center lg:justify-start">
                 <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
-                <h3 className="text-xl font-bold text-white">Saving Time</h3>
+                <h3 className="text-3xl font-bold text-white">Make Money</h3>
               </div>
-              <div className="flex items-center justify-center md:justify-start">
+              <div className="flex items-center justify-center lg:justify-start">
                 <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
-                <h3 className="text-xl font-bold text-white">Making Money</h3>
-              </div>
-              <div className="flex items-center justify-center md:justify-start">
-                <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
-                <h3 className="text-xl font-bold text-white">Keeping It Simple</h3>
+                <h3 className="text-3xl font-bold text-white">Keep It Simple</h3>
               </div>
             </div>
-
-            {/* Call to Action - Moved up */}
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
-                Ready to get started?
-              </h2>
-              <p className="text-xl text-gray-300 mb-12">
-                Skip the rest and get straight to getting in touch with us.
-              </p>
+              <p className="text-3xl text-gray-300 mb-12">
+              If any of that sounds good, click the button below to message us now.</p>
               <div className="flex justify-center">
                 <a 
                   href="mailto:admin@amarilloautomation.com"
@@ -131,19 +110,16 @@ export default function Homepage() {
             </div>
           </div>
         </section>
-
-        {/* Section 2: Services and Solutions */}
         <section className="py-20 px-4">
           <div className="max-w-6xl mx-auto">
-            {/* 2.1 Sales Hook */}
             <div className="text-center mb-16">
-              <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">You Don't Need to Overspend to Get Paying Customers</h3>
-              <p className="text-xl text-gray-300 max-w-4xl mx-auto">
-                The secret recipe for efficient and effective digital marketing isn't as complicated as it used to be. You just need the right marketing partner to handle the hard stuff for you.
+              <h3 className="text-4xl md:text-4xl font-bold text-white mb-6">You Don't Need to Overspend to Get New Customers</h3>
+              <p className="text-2xl text-gray-300 max-w-4xl mx-auto">
+                The secret recipe for efficient and effective digital marketing <br /> isn't as complicated as it used to be.
+                The most important part is finding the right marketing partner to handle the hard stuff for you.
               </p>
             </div>
 
-            {/* 2.2 Additional Services - MOVED UP */}
             <div className="mb-16">
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
@@ -152,8 +128,8 @@ export default function Homepage() {
                     description: "Get instant visibility when customers search for your services. We manage campaigns that pay for themselves."
                   },
                   {
-                    title: "Local SEO", 
-                    description: "We're sure you've heard of this by now. We can do this, too."
+                    title: "E-Commerce Integration", 
+                    description: "Expand beyond local with online sales capabilities that integrate with your existing operations and inventory systems."
                   },
                   {
                     title: "Social Media Advertising",
@@ -164,20 +140,20 @@ export default function Homepage() {
                     description: "Fast, mobile-optimized websites that turn visitors into leads with clear calls-to-action and professional credibility."
                   },
                   {
-                    title: "Email Marketing & Follow-Up",
+                    title: "Email Marketing",
                     description: "Automated email sequences that nurture leads, retain customers, and generate repeat business without manual work."
                   },
                   {
                     title: "Performance Analytics", 
-                    description: "Custom dashboards that show exactly which marketing efforts are driving revenue, so you know where to invest more."
+                    description: "Custom dashboards that show exactly which marketing efforts are driving revenue."
                   },
                   {
                     title: "AI Search Optimization",
-                    description: "Future-proof your business by optimizing for ChatGPT, voice search, and AI-powered search engines before competitors catch on."
+                    description: "Future-proof your business by optimizing for ChatGPT, voice search, and AI-powered search engines."
                   },
                   {
-                    title: "E-Commerce Integration",
-                    description: "Expand beyond local with online sales capabilities that integrate with your existing operations and inventory systems."
+                    title: "Local SEO",
+                    description: "We're sure you've heard of this by now and it is still important. We can help here, too."
                   }
                 ].map((service, index) => (
                   <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-6 hover:border-green-500/30 transition-all">
@@ -188,11 +164,11 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* 2.3 Automation Features */}
             <div className="text-center mb-16">
-              <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">You Don't Need High Dollar Software to Use Premium Features</h3>
-              <p className="text-xl text-gray-300 max-w-4xl mx-auto">
-                We connect your existing tools and create powerful automations using platforms you already trust. And if you already have the high dollar software, let's give it some gas.
+              <h3 className="text-4xl md:text-4xl font-bold text-white mb-6">You Don't Need High Dollar Software to Use Premium Features</h3>
+              <p className="text-2xl text-gray-300 max-w-4xl mx-auto">
+                We connect your existing tools and create powerful automations using platforms you already trust. <br />
+                (And if you already have the high dollar software, let's give it some gas.)
               </p>
             </div>
 
@@ -241,7 +217,6 @@ export default function Homepage() {
                       }`}
                     >
                       <div className="text-center">
-                        {/* Description */}
                         <div className="mb-4">
                           <p className="text-sm text-gray-300 text-center">
                             {automation.description}
@@ -269,7 +244,6 @@ export default function Homepage() {
                   ))}
                 </div>
 
-                {/* Custom automation callout */}
                 <div className="mt-12 text-center">
                   <div className="bg-green-900/20 border border-green-600/30 rounded-xl p-6 backdrop-blur-sm">
                     <p className="text-green-200 text-lg font-semibold">
@@ -283,7 +257,6 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* 2.4 Tools We Use */}
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Tools We Use</h2>
               <p className="text-xl text-gray-300 text-center mb-8 max-w-3xl mx-auto">
@@ -317,7 +290,6 @@ export default function Homepage() {
           </div>
         </section>
 
-        {/* Section 3: Why Us - MOVED DOWN */}
         <section className="py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -366,7 +338,6 @@ export default function Homepage() {
           </div>
         </section>
 
-        {/* Section 4: Reviews/Case Studies */}
         <section className="py-20 px-4 bg-gray-900/50 backdrop-blur-sm">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
@@ -418,7 +389,6 @@ export default function Homepage() {
           </div>
         </section>
 
-        {/* Section 5: Final CTA */}
         <section className="py-20 px-4 bg-gray-900/90 relative overflow-visible">
           <div className="max-w-5xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
