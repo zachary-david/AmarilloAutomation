@@ -1,55 +1,78 @@
 # Robots.txt for Amarillo Automation
-# Preventing search engine indexing during development phase
-# Remove or modify when ready for SEO traffic
+# Dual-Track Strategy: Optimized for traditional SEO AND AI platform indexing
+# Supporting both immediate profit optimization AND future AI search positioning
 
-# Block all web crawlers from all content
+# Allow all web crawlers but manage crawl rate strategically
 User-agent: *
-Disallow: /
+Allow: /
+Crawl-delay: 1
 
-# Specifically block major search engines
+# Optimize for major search engines
 User-agent: Googlebot
-Disallow: /
+Allow: /
+Crawl-delay: 1
 
 User-agent: Bingbot
-Disallow: /
+Allow: /
+Crawl-delay: 1
 
-User-agent: Slurp
-Disallow: /
+# Critical: Allow AI platforms that train on web content
+User-agent: ChatGPT-User
+Allow: /
 
-User-agent: DuckDuckBot
-Disallow: /
+User-agent: Google-Extended
+Allow: /
 
-User-agent: Baiduspider
-Disallow: /
+User-agent: anthropic-ai
+Allow: /
 
-User-agent: YandexBot
-Disallow: /
+User-agent: Claude-Web
+Allow: /
 
+# Allow social media crawlers for content distribution
 User-agent: facebookexternalhit
-Disallow: /
+Allow: /
 
 User-agent: Twitterbot
-Disallow: /
+Allow: /
 
 User-agent: LinkedInBot
-Disallow: /
+Allow: /
 
-# Block SEO/analysis tools that consume bandwidth
+# Control SEO tools to manage server load (but don't block - they're useful)
 User-agent: AhrefsBot
-Disallow: /
+Allow: /
+Crawl-delay: 5
 
 User-agent: SemrushBot
-Disallow: /
+Allow: /
+Crawl-delay: 5
 
 User-agent: MJ12bot
+Allow: /
+Crawl-delay: 10
+
+# Block unwanted scrapers
+User-agent: SiteBot
 Disallow: /
 
-User-agent: DotBot
+User-agent: WebCopier
 Disallow: /
 
-# Allow specific beneficial crawlers (optional)
-# User-agent: GTmetrix
-# Allow: /
+User-agent: HTTrack
+Disallow: /
 
-# No sitemap specified during no-index phase
-# Sitemap: https://amarilloautomation.com/sitemap.xml
+# Allow performance monitoring tools
+User-agent: GTmetrix
+Allow: /
+
+User-agent: PageSpeed
+Allow: /
+
+# Specify sitemap location
+Sitemap: https://amarilloautomation.com/sitemap.xml
+
+# Block sensitive areas if they exist
+# Disallow: /admin/
+# Disallow: /client-data/
+# Disallow: /internal/

@@ -832,16 +832,3 @@ body {
   }
 }
 
-  h2[class*="text-2xl"][class*="text-4xl"] {
-    font-size: 1.75rem !important; /* 28px - same size as other headers */
-    line-height: 1.2 !important;
-    word-break: break-word !important;
-  }
-/* For very small screens, scale down slightly but keep larger than before */
-@media (max-width: 375px) {
-  h2[class*="text-3xl"][class*="text-4xl"],
-  h3[class*="text-3xl"][class*="text-4xl"],
-  h2[class*="text-2xl"][class*="text-4xl"] {
-    font-size: 1.5rem !important; /* 24px - still larger than the original */
-  }
-}
