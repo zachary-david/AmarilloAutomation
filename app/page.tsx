@@ -88,32 +88,31 @@ export default function Homepage() {
             
             {/* 1.02 Subheader */}
             <h2 className="text-2xl md:text-3xl text-gray-300 mb-12 font-light">
-              Workflow automation experts for local home services
+              Helping contractors and small businesses grow by focusing on what really matters:
             </h2>
             
-            {/* 1.03 Value Proposition - No containers, no emojis */}
             <div className="grid md:grid-cols-3 gap-8 mb-16">
-              <div>
-                <h3 className="text-xl font-bold text-white mb-3">Save Time</h3>
-                <p className="text-gray-300 leading-relaxed">Automate repetitive tasks and eliminate manual data entry. Focus on what matters - growing your business.</p>
+              <div className="flex items-center justify-center md:justify-start">
+                <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
+                <h3 className="text-xl font-bold text-white">Saving Time</h3>
               </div>
-              <div>
-                <h3 className="text-xl font-bold text-white mb-3">Make Money</h3>
-                <p className="text-gray-300 leading-relaxed">Faster lead response times and better follow-up systems mean more customers and higher conversion rates.</p>
+              <div className="flex items-center justify-center md:justify-start">
+                <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
+                <h3 className="text-xl font-bold text-white">Making Money</h3>
               </div>
-              <div>
-                <h3 className="text-xl font-bold text-white mb-3">Simplify Operations</h3>
-                <p className="text-gray-300 leading-relaxed">Streamline your workload and lead management with systems that work while you sleep.</p>
+              <div className="flex items-center justify-center md:justify-start">
+                <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
+                <h3 className="text-xl font-bold text-white">Careful Brand Management</h3>
               </div>
             </div>
 
             {/* Call to Action - Moved up */}
             <div>
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
-                Ready to Automate Your Business?
+                Ready to get started?
               </h2>
               <p className="text-xl text-gray-300 mb-12">
-                Join 40+ West Texas contractors who've streamlined their operations with our proven systems.
+                Skip the rest and get straight to getting in touch with us.
               </p>
               <div className="flex justify-center">
                 <a 
@@ -129,20 +128,71 @@ export default function Homepage() {
           </div>
         </section>
 
-        {/* Section 2: Services and Solutions - MOVED UP */}
+        {/* Section 2: Services and Solutions */}
         <section className="py-20 px-4">
           <div className="max-w-6xl mx-auto">
             {/* 2.1 Sales Hook */}
             <div className="text-center mb-16">
-              <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">You Don't Need High Dollar Software to Use Premium Features</h3>
+              <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">You Don't Need to Overspend to Get Paying Customers</h3>
               <p className="text-xl text-gray-300 max-w-4xl mx-auto">
-                We connect your existing tools and create powerful automations using platforms you already trust. No expensive enterprise software required.
+                The secret recipe for efficient and effective digital marketing isn't as complicated as it used to be. You just need the right marketing partner to handle the hard stuff for you.
               </p>
             </div>
 
-            {/* 2.2 Workflow Automations Examples */}
+            {/* 2.2 Additional Services - MOVED UP */}
             <div className="mb-16">
-              {/* Real Automation Examples - Mobile-First Grid */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  {
+                    title: "Google Ads",
+                    description: "Get instant visibility when customers search for your services. We manage campaigns that pay for themselves."
+                  },
+                  {
+                    title: "Local SEO", 
+                    description: "We're sure you've heard of this by now. We can do this, too."
+                  },
+                  {
+                    title: "Social Media Advertising",
+                    description: "Facebook and Instagram campaigns that target your ideal customers in your service area and track real ROI, not just likes."
+                  },
+                  {
+                    title: "Websites That Convert",
+                    description: "Fast, mobile-optimized websites that turn visitors into leads with clear calls-to-action and professional credibility."
+                  },
+                  {
+                    title: "Email Marketing & Follow-Up",
+                    description: "Automated email sequences that nurture leads, retain customers, and generate repeat business without manual work."
+                  },
+                  {
+                    title: "Performance Analytics", 
+                    description: "Custom dashboards that show exactly which marketing efforts are driving revenue, so you know where to invest more."
+                  },
+                  {
+                    title: "AI Search Optimization",
+                    description: "Future-proof your business by optimizing for ChatGPT, voice search, and AI-powered search engines before competitors catch on."
+                  },
+                  {
+                    title: "E-Commerce Integration",
+                    description: "Expand beyond local with online sales capabilities that integrate with your existing operations and inventory systems."
+                  }
+                ].map((service, index) => (
+                  <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-6 hover:border-green-500/30 transition-all">
+                    <h4 className="text-lg font-bold text-white mb-3">{service.title}</h4>
+                    <p className="text-gray-300 text-sm">{service.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 2.3 Automation Features */}
+            <div className="text-center mb-16">
+              <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">You Don't Need High Dollar Software to Use Premium Features</h3>
+              <p className="text-xl text-gray-300 max-w-4xl mx-auto">
+                We connect your existing tools and create powerful automations using platforms you already trust. And if you already have the high dollar software, let's give it some gas.
+              </p>
+            </div>
+
+            <div className="mb-16">
               <div className="max-w-5xl mx-auto mb-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {[
@@ -172,9 +222,9 @@ export default function Homepage() {
                       description: 'Request reviews when work is done'
                     },
                     {
-                      title: 'Your Custom Trigger',
-                      effect: 'Your Biggest Lead Solution',
-                      description: 'Track jobs in Google Sheets or your CRM',
+                      title: 'Your Biggest Headache',
+                      effect: 'Your Biggest Solution',
+                      description: 'Custom Built Solutions',
                       isCustom: true
                     }
                   ].map((automation, index) => (
@@ -229,7 +279,7 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* 2.3 Tools We Use */}
+            {/* 2.4 Tools We Use */}
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Tools We Use</h2>
               <p className="text-xl text-gray-300 text-center mb-8 max-w-3xl mx-auto">
@@ -238,11 +288,14 @@ export default function Homepage() {
               
               <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 {[
-                  'Zapier', 'Make.com', 'GoHighLevel', 'Airtable', 
-                  'Google Workspace', 'Facebook', 'Instagram', 'YouTube',
-                  'QuickBooks', 'Calendly', 'Mailchimp', 'HubSpot',
-                  'Salesforce', 'Slack', 'Twilio', 'Gmail',
-                  'Google Sheets', 'Notion'
+                  'Google Ads', 'Facebook', 'Instagram', 'YouTube', 
+                  'Google Workspace', 'Gmail', 'Gemini', 'Google Reviews',
+                  'Zapier', 'Make.com', 'GoHighLevel', 'Airtable',
+                  'QuickBooks', 'Stripe', 'PayPal', 'Calendly',
+                  'Mailchimp', 'HubSpot', 'JobNimbus', 'Pipedrive',
+                  'Salesforce', 'Slack', 'Microsoft Teams', 'Shopify',
+                  'ChatGPT', 'Claude', 'Midjourney', 'Canva AI',
+                  'Twilio', 'Yelp',
                 ].map((tool, index) => (
                   <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 text-center hover:border-green-500/30 transition-all">
                     <span className="text-gray-300 font-medium text-sm">{tool}</span>
@@ -255,52 +308,21 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* 2.4 Additional Services */}
-            <div>
-              <h3 className="text-3xl md:text-4xl font-bold text-white mb-8 text-center">Additional Services</h3>
-              <div className="grid md:grid-cols-2 gap-6">
-                {[
-                  {
-                    title: "Meta Marketing",
-                    description: "Facebook and Instagram advertising campaigns that target your ideal customers and track real ROI"
-                  },
-                  {
-                    title: "Advanced Analytics", 
-                    description: "Custom dashboards and reporting systems that show exactly what's driving your business growth"
-                  },
-                  {
-                    title: "AI SEO",
-                    description: "Future-proof your online presence by optimizing for LLM queries and AI-powered search engines that are changing how customers discover local businesses"
-                  },
-                  {
-                    title: "General Consultation",
-                    description: "Strategic business guidance to identify your biggest growth opportunities and operational improvements"
-                  }
-                ].map((service, index) => (
-                  <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-                    <h4 className="text-lg font-bold text-white mb-3">{service.title}</h4>
-                    <p className="text-gray-300">{service.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+
           </div>
         </section>
 
         {/* Section 3: Why Us - MOVED DOWN */}
         <section className="py-20 px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Why Choose Amarillo Automation</h2>
-              <p className="text-xl text-gray-300">
-                Local automation experts who understand the unique challenges of local businesses.
-              </p>
-            </div>
-            
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="text-center md:text-left">
                 <h3 className="text-3xl md:text-4xl font-bold text-white mb-6 text-center md:text-left">Industry Expertise That Delivers Results</h3>
                 <div className="space-y-4">
+                  <div className="flex items-start justify-center md:justify-start">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
+                    <p className="text-gray-300 text-left">5+ years building and managing paid digital media campaigns across all categories</p>
+                  </div>
                   <div className="flex items-start justify-center md:justify-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
                     <p className="text-gray-300 text-left">5+ years automating workflows for contractors, roofers, HVAC, and plumbing companies</p>
@@ -326,8 +348,9 @@ export default function Homepage() {
                   <li>• Same-day response to all inquiries</li>
                   <li>• Custom solutions, not cookie-cutter templates</li>
                   <li>• Ongoing support and optimization included</li>
-                  <li>• ROI-focused approach - every automation pays for itself</li>
+                  <li>• ROI-focused approach -- If it doesn't pay for itself, it's not worth doing </li>
                   <li>• No long-term contracts or hidden fees</li>
+                  <li>• We won't force solutions you don't need just to hit a budget or quota</li>
                 </ul>
               </div>
             </div>
@@ -348,9 +371,9 @@ export default function Homepage() {
               {[
                 {
                   company: "Amarillo Roofing Company",
-                  problem: "Leads were falling through the cracks, taking hours to respond to new inquiries",
-                  solution: "Automated lead routing and instant response system",
-                  result: "Response time went from 4+ hours to under 2 minutes. Closed 40% more deals last quarter.",
+                  problem: "We were drowning in marketing costs, and we didn't even know if it was doing anything for us",
+                  solution: "Trackable Marketing Performance and Campaign Management using existing assets",
+                  result: "Generated more than $100,000 in revenue over 6-month period at 10% of original spend.",
                   rating: 5
                 },
                 {
@@ -388,13 +411,10 @@ export default function Homepage() {
 
         {/* Section 5: Final CTA */}
         <section className="py-20 px-4 bg-gray-900/90 relative overflow-visible">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-2xl md:text-4xl font-bold text-white mb-6">
-              Stop Losing Leads.<br />Start Growing Your Business.
+          <div className="max-w-5xl mx-auto text-center">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              So, How Can We Help?
             </h2>
-            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Every day without automation is money left on the table. Let's change that.
-            </p>
             <a 
               href="mailto:admin@amarilloautomation.com"
               onClick={() => trackCTA('final_email_cta')}
