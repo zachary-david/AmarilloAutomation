@@ -93,6 +93,10 @@ export default function Homepage() {
             
             <div className="grid md:grid-cols-3 gap-8 mb-16">
               <div className="flex items-center justify-center md:justify-start">
+                <div className="flex items-center justify-center md:justify-start">
+                <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
+                <h3 className="text-xl font-bold text-white">Careful Brand Management</h3>
+              </div>
                 <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
                 <h3 className="text-xl font-bold text-white">Saving Time</h3>
               </div>
@@ -102,7 +106,7 @@ export default function Homepage() {
               </div>
               <div className="flex items-center justify-center md:justify-start">
                 <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
-                <h3 className="text-xl font-bold text-white">Careful Brand Management</h3>
+                <h3 className="text-xl font-bold text-white">Keeping It Simple</h3>
               </div>
             </div>
 
@@ -289,8 +293,9 @@ export default function Homepage() {
               <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 {[
                   'Google Ads', 'Facebook', 'Instagram', 'YouTube', 
-                  'Google Workspace', 'Gmail', 'Gemini', 'Google Reviews',
-                  'Zapier', 'Make.com', 'GoHighLevel', 'Airtable',
+                  'Google Workspace', 'Google Analytics', 'Google My Business', 'Gemini',
+                  'Zapier', 'Make.com', 'GoHighLevel', 'AirTable',
+                  'WordPress', 'WooCommerce', 'Wix Studio', 'TikTok',
                   'QuickBooks', 'Stripe', 'PayPal', 'Calendly',
                   'Mailchimp', 'HubSpot', 'JobNimbus', 'Pipedrive',
                   'Salesforce', 'Slack', 'Microsoft Teams', 'Shopify',
@@ -326,6 +331,10 @@ export default function Homepage() {
                   <div className="flex items-start justify-center md:justify-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
                     <p className="text-gray-300 text-left">5+ years automating workflows for contractors, roofers, HVAC, and plumbing companies</p>
+                  </div>
+                  <div className="flex items-start justify-center md:justify-start">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
+                    <p className="text-gray-300 text-left">Certifications in most listed tools and/or affiliate partnerships</p>
                   </div>
                   <div className="flex items-start justify-center md:justify-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
