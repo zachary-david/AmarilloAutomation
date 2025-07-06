@@ -68,7 +68,50 @@ export default function Homepage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       <div ref={vantaRef} className="fixed inset-0 z-0" />
+      {/* Overlay to subdue Vanta effect */}
+      <div className="fixed inset-0 z-[5] bg-gray-900/60 backdrop-blur-[0.5px]" />
       <div className="relative z-10">
+
+        <nav className="w-full py-6 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-wrap items-center justify-center text-center font-['Inter'] text-sm md:text-base">
+              <a
+                href="#digital-advertising"
+                className="text-white/80 hover:text-white hover:underline transition-all duration-300 px-2"
+              >
+                Digital Advertising
+              </a>
+              <span className="text-white/60 mx-2">|</span>
+              <a
+                href="#crm-services"
+                className="text-white/80 hover:text-white hover:underline transition-all duration-300 px-2"
+              >
+                CRM Services
+              </a>
+              <span className="text-white/60 mx-2">|</span>
+              <a
+                href="#tools"
+                className="text-white/80 hover:text-white hover:underline transition-all duration-300 px-2"
+              >
+                Tools
+              </a>
+              <span className="text-white/60 mx-2">|</span>
+              <a
+                href="#about"
+                className="text-white/80 hover:text-white hover:underline transition-all duration-300 px-2"
+              >
+                About
+              </a>
+              <span className="text-white/60 mx-2">|</span>
+              <a
+                href="#reviews"
+                className="text-white/80 hover:text-white hover:underline transition-all duration-300 px-2"
+              >
+                Reviews
+              </a>
+            </div>
+          </div>
+        </nav>
         
         <section className="min-h-screen flex items-center justify-center px-4 pt-8">
           <div className="max-w-4xl mx-auto text-center">
@@ -80,8 +123,8 @@ export default function Homepage() {
               We help contractors and small businesses grow through digital marketing, customer databases, and careful brand management. <br /> <br /> To put it plainly, we want to help your business: 
             </h2>
             
-                <div className="grid md:grid-cols-3 gap-8 mb-16">              
-                  <div className="flex items-center justify-center lg:justify-start">
+            <div className="grid md:grid-cols-3 gap-8 mb-16">              
+              <div className="flex items-center justify-center lg:justify-start">
                 <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
                 <h3 className="text-3xl font-bold text-white">Save Time</h3>
               </div>
@@ -110,10 +153,11 @@ export default function Homepage() {
             </div>
           </div>
         </section>
+
         <section className="py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h3 className="text-4xl md:text-4xl font-bold text-white mb-6">You Don't Need to Overspend to Get New Customers</h3>
+              <h3 className="text-3xl md:text-3xl font-bold text-white mb-6">You Don't Need to Overspend to Get New Customers</h3>
               <p className="text-2xl text-gray-300 max-w-4xl mx-auto">
                 The secret recipe for efficient and effective digital marketing <br /> isn't as complicated as it used to be.
                 The most important part is finding the right marketing partner to handle the hard stuff for you.
@@ -163,9 +207,13 @@ export default function Homepage() {
                 ))}
               </div>
             </div>
+          </div>
+        </section>
 
+        <section className="py-20 px-4">
+          <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h3 className="text-4xl md:text-4xl font-bold text-white mb-6">You Don't Need High Dollar Software to Use Premium Features</h3>
+              <h3 className="text-3xl md:text-3xl font-bold text-white mb-6">You Don't Need High Dollar Software to Use Premium Features</h3>
               <p className="text-2xl text-gray-300 max-w-4xl mx-auto">
                 We connect your existing tools and create powerful automations using platforms you already trust. <br />
                 (And if you already have the high dollar software, let's give it some gas.)
@@ -256,9 +304,13 @@ export default function Homepage() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
 
+        <section className="py-20 px-4" id="tools">
+          <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Tools We Use</h2>
+              <h2 className="text-3xl md:text-3xl font-bold text-white mb-6">Tools We Use</h2>
               <p className="text-xl text-gray-300 text-center mb-8 max-w-3xl mx-auto">
                 We integrate with the platforms you already know and trust. No learning curve, no forced migrations.
               </p>
@@ -285,16 +337,14 @@ export default function Homepage() {
                 <p className="text-gray-400">And many more! If you use it, we can probably integrate with it.</p>
               </div>
             </div>
-
-
           </div>
         </section>
 
-        <section className="py-20 px-4">
+        <section className="py-20 px-4" id="about">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="text-center md:text-left">
-                <h3 className="text-3xl md:text-4xl font-bold text-white mb-6 text-center md:text-left">Industry Expertise That Delivers Results</h3>
+                <h3 className="text-3xl md:text-3xl font-bold text-white mb-6 text-center md:text-left">Industry Expertise That Delivers Results</h3>
                 <div className="space-y-4">
                   <div className="flex items-start justify-center md:justify-start">
                     <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
@@ -338,10 +388,10 @@ export default function Homepage() {
           </div>
         </section>
 
-        <section className="py-20 px-4 bg-gray-900/50 backdrop-blur-sm">
+        <section className="py-20 px-4 bg-gray-900/50 backdrop-blur-sm" id="reviews">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Real Results from Real Businesses</h2>
+              <h2 className="text-3xl md:text-3xl font-bold text-white mb-6">Real Results from Real Businesses</h2>
               <p className="text-xl text-gray-300">
                 See how we've helped local contractors save time, increase revenue, and grow their businesses.
               </p>
@@ -392,7 +442,7 @@ export default function Homepage() {
         <section className="py-20 px-4 bg-gray-900/90 relative overflow-visible">
           <div className="max-w-5xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              So, How Can We Help?
+              Want to Learn More?
             </h2>
             <a 
               href="mailto:admin@amarilloautomation.com"
