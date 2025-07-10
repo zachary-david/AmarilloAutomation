@@ -171,21 +171,12 @@ export const metadata: Metadata = {
     siteName: 'Amarillo Automation',
     title: 'Advanced Digital Advertising and Programmatic Solutions',
     description: 'Using tomorrow\'s tools today to help local businesses create simple solutions and digital marketing strategies.',
-    images: [
-      {
-        url: '/og-image-ai-agency.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Amarillo Automation - Advanced Digital Advertising and Programmatic Solutions',
-      },
-    ],
   },
   
   twitter: {
     card: 'summary_large_image',
     title: 'Advanced Digital Advertising and Programmatic Solutions | Amarillo Automation',
     description: 'Using tomorrow\'s tools today to help local businesses create simple solutions and digital marketing strategies.',
-    images: ['/og-image-ai-agency.jpg'],
   },
   
   verification: {
@@ -284,7 +275,6 @@ export default function RootLayout({
               "name": "Amarillo Automation",
               "alternateName": "Amarillo Automation - Advanced Digital Marketing and Programmatic Solutions",
               "url": "https://amarilloautomation.com",
-              "logo": "https://amarilloautomation.com/logo.png",
               "description": "Using tomorrow\'s tools today to help local businesses create simple solutions and digital marketing strategies.",
               "foundingDate": "2024",
               "address": {
