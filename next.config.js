@@ -2,6 +2,9 @@
 const nextConfig = {
   // DO NOT use output: 'export' - this breaks API routes
   
+  // Enable standalone output for Docker
+  output: 'standalone',
+  
   // Cloudflare Pages specific settings
   images: {
     unoptimized: true

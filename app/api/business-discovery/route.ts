@@ -1,0 +1,440 @@
+// app/api/business-discovery/route.ts
+import { NextRequest, NextResponse } from 'next/server'
+
+// Types
+interface BusinessSearchParams {
+  industry: string
+  location: string
+  radius?: number
+  maxResults?: number
+}
+
+interface DiscoveredBusiness {
+  placeId: string
+  name: string
+  address: string
+  phone?: string
+  website?: string
+  rating?: number
+  reviewCount?: number
+  types: string[]
+  email?: string
+  emailSource?: 'hunter' | 'manual' | 'none'
+  automationScore?: number
+  leadScore?: number
+  painPoints?: string[]
+}
+
+interface DiscoveryResponse {
+  success: boolean
+  businesses: DiscoveredBusiness[]
+  totalFound: number
+  savedToAirtable: number
+  errors?: string[]
+}
+
+// Google Places API integration
+async function searchBusinesses(params: BusinessSearchParams): Promise<any[]> {
+  const apiKey = process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_PLACES_API
+  
+  if (!apiKey) {
+    throw new Error('Google Places API key not configured')
+  }
+
+  try {
+    // Text search for businesses
+    const query = `${params.industry} in ${params.location}`
+    const radius = params.radius || 5000 // Default 5km
+    
+    const searchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&radius=${radius}&key=${apiKey}`
+    
+    const response = await fetch(searchUrl)
+    const data = await response.json()
+    
+    if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
+      throw new Error(`Google Places API error: ${data.status}`)
+    }
+    
+    // Limit results
+    const maxResults = params.maxResults || 20
+    return data.results.slice(0, maxResults)
+  } catch (error) {
+    console.error('Error searching businesses:', error)
+    throw error
+  }
+}
+
+// Get detailed business information
+async function getBusinessDetails(placeId: string): Promise<any> {
+  const apiKey = process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_PLACES_API
+  
+  if (!apiKey) {
+    throw new Error('Google Places API key not configured')
+  }
+
+  try {
+    const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,formatted_phone_number,website,rating,user_ratings_total,types&key=${apiKey}`
+    
+    const response = await fetch(detailsUrl)
+    const data = await response.json()
+    
+    if (data.status !== 'OK') {
+      throw new Error(`Google Places API error: ${data.status}`)
+    }
+    
+    return data.result
+  } catch (error) {
+    console.error('Error getting business details:', error)
+    throw error
+  }
+}
+
+// Hunter.io email discovery
+async function findBusinessEmail(domain: string, companyName: string): Promise<{ email?: string, source?: string }> {
+  const apiKey = process.env.HUNTER_API_KEY
+  
+  if (!apiKey) {
+    return { email: undefined, source: 'none' }
+  }
+
+  try {
+    // Try domain search first
+    if (domain) {
+      const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '')
+      const domainSearchUrl = `https://api.hunter.io/v2/domain-search?domain=${cleanDomain}&api_key=${apiKey}`
+      
+      const response = await fetch(domainSearchUrl)
+      const data = await response.json()
+      
+      if (data.data && data.data.emails && data.data.emails.length > 0) {
+        // Prefer info@, contact@, or highest confidence email
+        const emails = data.data.emails
+        const preferredEmail = 
+          emails.find((e: any) => e.value.startsWith('info@')) ||
+          emails.find((e: any) => e.value.startsWith('contact@')) ||
+          emails.find((e: any) => e.value.startsWith('hello@')) ||
+          emails[0]
+        
+        return { email: preferredEmail.value, source: 'hunter' }
+      }
+    }
+    
+    // Fallback: Try company name search
+    const companySearchUrl = `https://api.hunter.io/v2/email-finder?company=${encodeURIComponent(companyName)}&api_key=${apiKey}`
+    
+    const companyResponse = await fetch(companySearchUrl)
+    const companyData = await companyResponse.json()
+    
+    if (companyData.data && companyData.data.email) {
+      return { email: companyData.data.email, source: 'hunter' }
+    }
+    
+    return { email: undefined, source: 'none' }
+  } catch (error) {
+    console.error('Error finding email:', error)
+    return { email: undefined, source: 'none' }
+  }
+}
+
+// Calculate automation potential score
+function calculateAutomationScore(business: any): number {
+  let score = 50 // Base score
+  
+  // Industry indicators (service businesses have high automation potential)
+  const highPotentialTypes = [
+    'contractor', 'plumber', 'electrician', 'roofer', 'painter',
+    'hvac_contractor', 'locksmith', 'moving_company', 'home_goods_store',
+    'real_estate_agency', 'insurance_agency', 'lawyer', 'accounting',
+    'dentist', 'doctor', 'beauty_salon', 'hair_care', 'spa'
+  ]
+  
+  if (business.types?.some((type: string) => highPotentialTypes.includes(type))) {
+    score += 20
+  }
+  
+  // No website = high automation potential
+  if (!business.website) {
+    score += 15
+  }
+  
+  // Lower rating might indicate operational issues
+  if (business.rating && business.rating < 4.0) {
+    score += 10
+  }
+  
+  // High review count = busy business that needs automation
+  if (business.reviewCount && business.reviewCount > 50) {
+    score += 10
+  }
+  
+  return Math.min(score, 100)
+}
+
+// Identify potential pain points
+function identifyPainPoints(business: any): string[] {
+  const painPoints = []
+  
+  if (!business.website) {
+    painPoints.push('no_website')
+  }
+  
+  if (business.rating && business.rating < 4.0) {
+    painPoints.push('reputation_management')
+  }
+  
+  if (business.reviewCount && business.reviewCount > 100) {
+    painPoints.push('high_volume_inquiries')
+  }
+  
+  // Service businesses typically have these pain points
+  if (business.types?.some((type: string) => type.includes('contractor') || type.includes('plumber'))) {
+    painPoints.push('appointment_scheduling', 'lead_follow_up', 'quote_generation')
+  }
+  
+  return painPoints
+}
+
+// Map industry to valid Airtable options
+function mapToValidIndustry(industry: string): string {
+  const industryLower = industry.toLowerCase()
+  
+  // Direct mappings to available options
+  if (industryLower.includes('hvac') || industryLower.includes('heating') || industryLower.includes('cooling') || industryLower.includes('air condition')) {
+    return 'HVAC'
+  }
+  if (industryLower.includes('plumb')) {
+    return 'Plumbing'
+  }
+  if (industryLower.includes('roof')) {
+    return 'Roofing'
+  }
+  
+  // Default to HVAC if no match (since we need a valid option)
+  // In production, you might want to handle this differently
+  return 'HVAC'
+}
+
+// Calculate lead score
+function calculateLeadScore(business: DiscoveredBusiness): number {
+  let score = 30 // Base score for discovered lead
+  
+  // Has email = higher score
+  if (business.email) {
+    score += 20
+  }
+  
+  // High automation potential
+  if (business.automationScore && business.automationScore > 70) {
+    score += 20
+  }
+  
+  // Has website (easier to work with)
+  if (business.website) {
+    score += 10
+  }
+  
+  // Good rating (quality business)
+  if (business.rating && business.rating >= 4.0) {
+    score += 10
+  }
+  
+  // Multiple pain points
+  if (business.painPoints && business.painPoints.length > 2) {
+    score += 10
+  }
+  
+  return Math.min(score, 100)
+}
+
+// Main discovery handler
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json()
+    const { industry, location, radius, maxResults } = body as BusinessSearchParams
+    
+    if (!industry || !location) {
+      return NextResponse.json(
+        { error: 'Industry and location are required' },
+        { status: 400 }
+      )
+    }
+    
+    const response: DiscoveryResponse = {
+      success: false,
+      businesses: [],
+      totalFound: 0,
+      savedToAirtable: 0,
+      errors: []
+    }
+    
+    // Step 1: Search for businesses
+    console.log(`🔍 Searching for ${industry} businesses in ${location}...`)
+    const searchResults = await searchBusinesses({ industry, location, radius, maxResults })
+    response.totalFound = searchResults.length
+    
+    // Step 2: Enrich each business
+    for (const place of searchResults) {
+      try {
+        // Get detailed information
+        const details = await getBusinessDetails(place.place_id)
+        
+        // Find email if website exists
+        let emailInfo: { email?: string, source?: string } = { email: undefined, source: 'none' }
+        if (details.website) {
+          emailInfo = await findBusinessEmail(details.website, details.name)
+        }
+        
+        // Calculate scores and identify pain points
+        const automationScore = calculateAutomationScore(details)
+        const painPoints = identifyPainPoints(details)
+        
+        // Build enriched business object
+        const enrichedBusiness: DiscoveredBusiness = {
+          placeId: place.place_id,
+          name: details.name,
+          address: details.formatted_address,
+          phone: details.formatted_phone_number,
+          website: details.website,
+          rating: details.rating,
+          reviewCount: details.user_ratings_total,
+          types: details.types || [],
+          email: emailInfo.email,
+          emailSource: emailInfo.source as any,
+          automationScore,
+          painPoints,
+          leadScore: 0 // Will calculate after
+        }
+        
+        // Calculate lead score with all data
+        enrichedBusiness.leadScore = calculateLeadScore(enrichedBusiness)
+        
+        response.businesses.push(enrichedBusiness)
+        
+        // Step 3: Save to Airtable (all leads regardless of score)
+        if (true) {
+          // Generate notes as a string
+          const notesArray = [
+            `Business Discovery - ${industry} in ${location}`,
+            `Industry Searched: ${industry}`,
+            `Address: ${enrichedBusiness.address}`,
+            enrichedBusiness.website ? `Website: ${enrichedBusiness.website}` : 'No website',
+            `Rating: ${enrichedBusiness.rating || 'N/A'} (${enrichedBusiness.reviewCount || 0} reviews)`,
+            `Automation Score: ${enrichedBusiness.automationScore}%`,
+            enrichedBusiness.email ? `Email: ${enrichedBusiness.email} (${enrichedBusiness.emailSource})` : 'No email found',
+            enrichedBusiness.painPoints && enrichedBusiness.painPoints.length > 0 
+              ? `Pain Points: ${enrichedBusiness.painPoints.join(', ')}` 
+              : '',
+            `Google Place ID: ${enrichedBusiness.placeId}`
+          ].filter(Boolean).join('\n')
+          
+          // Create Airtable-compatible data for Business Intelligence table
+          const airtableData = {
+            fields: {
+              'Business Name': enrichedBusiness.name,
+              'Industry': mapToValidIndustry(industry),
+              'Address': enrichedBusiness.address,
+              'Phone': enrichedBusiness.phone || '',
+              'Website': enrichedBusiness.website || '',
+              'Google Rating': enrichedBusiness.rating ? Math.round(enrichedBusiness.rating) : undefined,
+              'Review Count': enrichedBusiness.reviewCount || 0,
+              'Business Status': 'Operational',
+              'Discovery Date': new Date().toISOString().split('T')[0], // YYYY-MM-DD format
+              'Google Place ID': enrichedBusiness.placeId,
+              'Primary Email': enrichedBusiness.email || '',
+              'Email Confidence Score': enrichedBusiness.email ? (enrichedBusiness.emailSource === 'hunter' ? 85 : 50) : 0,
+              'Outreach Status': 'Not Contacted',
+              'Notes': notesArray,
+              'AI Analysis': `Automation Score: ${enrichedBusiness.automationScore}%\n` +
+                           `Pain Points: ${enrichedBusiness.painPoints?.join(', ') || 'None identified'}\n` +
+                           `Email Source: ${enrichedBusiness.emailSource || 'Not found'}`,
+              'Lead Score': enrichedBusiness.leadScore,
+              'Revenue Potential': enrichedBusiness.leadScore >= 80 ? 'High' : 
+                                 enrichedBusiness.leadScore >= 65 ? 'Medium' : 'Low'
+            }
+          }
+          
+          try {
+            // Direct Airtable API call for better error handling
+            const apiKey = process.env.AIRTABLE_PERSONAL_ACCESS_TOKEN
+            const baseId = process.env.AIRTABLE_BASE_ID
+            
+            if (!apiKey || !baseId) {
+              console.error('❌ Airtable not configured')
+              response.errors?.push(`Airtable not configured for ${enrichedBusiness.name}`)
+              continue
+            }
+            
+            const airtableResponse = await fetch(
+              `https://api.airtable.com/v0/${baseId}/Business%20Intelligence`,
+              {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${apiKey}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(airtableData)
+              }
+            )
+            
+            const airtableResult = await airtableResponse.json()
+            
+            if (airtableResponse.ok) {
+              console.log(`✅ Saved ${enrichedBusiness.name} to Airtable:`, airtableResult.id)
+              response.savedToAirtable++
+            } else {
+              console.error(`❌ Failed to save ${enrichedBusiness.name} to Airtable:`, airtableResult)
+              response.errors?.push(`Airtable error for ${enrichedBusiness.name}: ${JSON.stringify(airtableResult.error)}`)
+            }
+          } catch (saveError) {
+            console.error(`❌ Error saving ${enrichedBusiness.name} to Airtable:`, saveError)
+            response.errors?.push(`Failed to save ${enrichedBusiness.name}: ${saveError}`)
+          }
+        }
+        
+      } catch (error) {
+        console.error(`Error processing business ${place.name}:`, error)
+        response.errors?.push(`Failed to process ${place.name}`)
+      }
+    }
+    
+    response.success = true
+    
+    console.log(`✅ Discovery complete: Found ${response.totalFound} businesses, enriched ${response.businesses.length}, saved ${response.savedToAirtable} to Airtable`)
+    
+    return NextResponse.json(response)
+    
+  } catch (error) {
+    console.error('Business discovery error:', error)
+    return NextResponse.json(
+      { 
+        error: 'Failed to discover businesses', 
+        details: error instanceof Error ? error.message : 'Unknown error' 
+      },
+      { status: 500 }
+    )
+  }
+}
+
+// GET endpoint for testing
+export async function GET(req: NextRequest) {
+  return NextResponse.json({
+    message: 'Business Discovery API',
+    endpoints: {
+      POST: {
+        description: 'Discover and enrich local businesses',
+        parameters: {
+          industry: 'Business type to search for (e.g., "plumber", "restaurant")',
+          location: 'Location to search in (e.g., "Amarillo, TX")',
+          radius: 'Search radius in meters (optional, default: 5000)',
+          maxResults: 'Maximum number of results (optional, default: 20)'
+        },
+        example: {
+          industry: 'plumber',
+          location: 'Amarillo, TX',
+          radius: 10000,
+          maxResults: 10
+        }
+      }
+    }
+  })
+}

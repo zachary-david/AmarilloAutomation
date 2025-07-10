@@ -233,7 +233,7 @@ export default function RootLayout({
             __html: `
               window.fbAsyncInit = function() {
                 FB.init({
-                  appId      : '1277149313746470',
+                  appId      : '577226632129353',
                   cookie     : true,
                   xfbml      : true,
                   version    : 'v23.0'
