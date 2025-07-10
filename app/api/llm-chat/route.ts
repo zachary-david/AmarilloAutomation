@@ -1,10 +1,6 @@
 import OpenAI from 'openai'
 import { NextRequest, NextResponse } from 'next/server'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-
 // System prompt that defines the AI's personality and knowledge
 const SYSTEM_PROMPT = `You are an AI assistant for Amarillo Automation. You help local home service businesses (HVAC, plumbing, roofing, contractors) with automation, digital marketing, web development, and analytics.
 
@@ -42,6 +38,11 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { message, conversationHistory = [] } = body
+
+    // Initialize OpenAI client inside the request handler
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
 
     // Build conversation context for OpenAI
     const messages = [
