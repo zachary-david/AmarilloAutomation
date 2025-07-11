@@ -1,5 +1,5 @@
 // app/layout.tsx - Updated Metadata & Schema with Dual-Track Strategy
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import GoogleTagManager, { GTMNoScript } from './components/GoogleTagManager'
@@ -193,8 +193,6 @@ export const metadata: Metadata = {
   
   applicationName: 'Amarillo Automation',
   referrer: 'origin-when-cross-origin',
-  colorScheme: 'dark',
-  themeColor: '#10b981',
   
   other: {
     'business-model': 'dual-track-marketing-consultancy',
@@ -205,6 +203,11 @@ export const metadata: Metadata = {
     'service-area': 'west-texas-primary-regional-expansion-planned',
     'revenue-model': 'diversified-traditional-plus-ai-services'
   }
+}
+
+export const viewport: Viewport = {
+  colorScheme: 'dark',
+  themeColor: '#10b981',
 }
 
 export default function RootLayout({
