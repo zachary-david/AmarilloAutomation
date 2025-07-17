@@ -32,7 +32,7 @@ export default function BusinessDiscovery() {
   
   const [industry, setIndustry] = useState('')
   const [location, setLocation] = useState('Amarillo, TX')
-  const [radius, setRadius] = useState(3) // Default 3 miles
+  const [radius, setRadius] = useState(5) // Default 5 miles
   const [maxResults, setMaxResults] = useState(10)
   const [loading, setLoading] = useState(false)
   const [results, setResults] = useState<DiscoveryResponse | null>(null)
@@ -90,8 +90,13 @@ export default function BusinessDiscovery() {
 
   const availableIndustries = [
     'HVAC',
-    'Plumbing', 
-    'Roofing'
+    'Plumber',
+    'Electrician',
+    'Roofing',
+    'Restaurant',
+    'Dentist',
+    'Auto Repair',
+    'Real Estate'
   ]
 
   // Additional search terms that map to the available categories
@@ -234,9 +239,9 @@ export default function BusinessDiscovery() {
                     <div>
                       <p className="text-xs text-gray-400 mb-2 font-medium">Available Categories:</p>
                       <div className="flex flex-wrap gap-2">
-                        {availableIndustries.map((ind) => (
+                        {availableIndustries && availableIndustries.map((ind, index) => (
                           <button
-                            key={ind}
+                            key={`industry-${index}`}
                             type="button"
                             onClick={() => setIndustry(ind)}
                             className="text-xs px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 hover:text-emerald-200 rounded-md transition-all duration-200 border border-emerald-500/30 font-medium"
@@ -251,9 +256,9 @@ export default function BusinessDiscovery() {
                     <div>
                       <p className="text-xs text-gray-400 mb-2 font-medium">Common Search Terms:</p>
                       <div className="flex flex-wrap gap-2">
-                        {industrySearchTerms.slice(0, 8).map((term) => (
+                        {industrySearchTerms && industrySearchTerms.slice(0, 8).map((term, index) => (
                           <button
-                            key={term}
+                            key={`search-${index}`}
                             type="button"
                             onClick={() => setIndustry(term)}
                             className="text-xs px-3 py-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 hover:text-white rounded-md transition-all duration-200 border border-gray-600/30"
@@ -292,10 +297,7 @@ export default function BusinessDiscovery() {
                     onChange={(e) => setRadius(Number(e.target.value))}
                     className="w-full px-4 py-3 bg-gray-900/50 border border-gray-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
                   >
-                    <option value={1}>1 mile radius</option>
-                    <option value={3}>3 miles radius</option>
                     <option value={5}>5 miles radius</option>
-                    <option value={10}>10 miles radius</option>
                     <option value={25}>25 miles radius</option>
                     <option value={50}>50 miles radius</option>
                   </select>

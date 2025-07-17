@@ -44,7 +44,7 @@ async function searchBusinesses(params: BusinessSearchParams): Promise<any[]> {
   try {
     // Text search for businesses
     const query = `${params.industry} in ${params.location}`
-    const radiusInMiles = params.radius || 3 // Default 3 miles
+    const radiusInMiles = params.radius || 5 // Default 5 miles
     const radiusInMeters = Math.round(radiusInMiles * 1609.344) // Convert miles to meters
     
     const searchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&radius=${radiusInMeters}&key=${apiKey}`
@@ -426,13 +426,13 @@ export async function GET(req: NextRequest) {
         parameters: {
           industry: 'Business type to search for (e.g., "plumber", "restaurant")',
           location: 'Location to search in (e.g., "Amarillo, TX")',
-          radius: 'Search radius in miles (optional, default: 3)',
+          radius: 'Search radius in miles (optional, default: 5)',
           maxResults: 'Maximum number of results (optional, default: 20)'
         },
         example: {
           industry: 'plumber',
           location: 'Amarillo, TX',
-          radius: 6,
+          radius: 25,
           maxResults: 10
         }
       }
