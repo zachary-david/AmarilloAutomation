@@ -99,20 +99,20 @@ export default function BusinessDiscovery() {
     'Real Estate'
   ]
 
-  // Additional search terms that map to the available categories
+  // Additional search terms for different industries
   const industrySearchTerms = [
-    'HVAC Contractor',
-    'Heating and Cooling',
-    'Air Conditioning',
-    'Furnace Repair',
-    'Plumber',
-    'Plumbing Services',
-    'Pipe Repair',
-    'Water Heater',
-    'Roofer',
-    'Roofing Contractor',
-    'Roof Repair',
-    'Roof Installation'
+    'Landscaping',
+    'Cleaning Service',
+    'Locksmith',
+    'Painting Contractor',
+    'Flooring',
+    'Insurance Agency',
+    'Law Firm',
+    'Accounting',
+    'Veterinarian',
+    'Barber Shop',
+    'Nail Salon',
+    'Grocery Store'
   ]
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -254,7 +254,7 @@ export default function BusinessDiscovery() {
                     
                     {/* Search Terms */}
                     <div>
-                      <p className="text-xs text-gray-400 mb-2 font-medium">Common Search Terms:</p>
+                      <p className="text-xs text-gray-400 mb-2 font-medium">Additional Categories:</p>
                       <div className="flex flex-wrap gap-2">
                         {industrySearchTerms && industrySearchTerms.slice(0, 8).map((term, index) => (
                           <button
