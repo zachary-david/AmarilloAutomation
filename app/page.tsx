@@ -83,13 +83,6 @@ export default function Homepage() {
               </a>
               <span className="text-white/60 mx-2">|</span>
               <a
-                href="#crm-services"
-                className="text-white/80 hover:text-white hover:underline transition-all duration-300 px-2"
-              >
-                CRM Services
-              </a>
-              <span className="text-white/60 mx-2">|</span>
-              <a
                 href="#tools"
                 className="text-white/80 hover:text-white hover:underline transition-all duration-300 px-2"
               >
@@ -107,7 +100,7 @@ export default function Homepage() {
                 href="#reviews"
                 className="text-white/80 hover:text-white hover:underline transition-all duration-300 px-2"
               >
-                Reviews
+                Review
               </a>
             </div>
           </div>
@@ -154,7 +147,7 @@ export default function Homepage() {
           </div>
         </section>
 
-        <section className="py-20 px-4">
+        <section className="py-20 px-4" id="digital-advertising">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h3 className="text-3xl md:text-3xl font-bold text-white mb-6">You Don't Need to Overspend to Get New Customers</h3>
