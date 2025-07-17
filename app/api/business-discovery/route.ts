@@ -74,7 +74,7 @@ async function getBusinessDetails(placeId: string): Promise<any> {
   }
 
   try {
-    const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,formatted_phone_number,website,rating,user_ratings_total,types&key=${apiKey}`
+    const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,address_components,formatted_phone_number,website,rating,user_ratings_total,types&key=${apiKey}`
     
     const response = await fetch(detailsUrl)
     const data = await response.json()
@@ -88,6 +88,60 @@ async function getBusinessDetails(placeId: string): Promise<any> {
     console.error('Error getting business details:', error)
     throw error
   }
+}
+
+// Parse address components from Google Places API
+function parseAddressComponents(addressComponents: any[] = []): {
+  streetNumber: string
+  streetName: string
+  address: string
+  city: string
+  state: string
+  zipCode: string
+  country: string
+} {
+  const parsed = {
+    streetNumber: '',
+    streetName: '',
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: ''
+  }
+
+  if (!addressComponents || !Array.isArray(addressComponents)) {
+    return parsed
+  }
+
+  addressComponents.forEach((component) => {
+    const types = component.types || []
+    
+    if (types.includes('street_number')) {
+      parsed.streetNumber = component.long_name || ''
+    }
+    if (types.includes('route')) {
+      parsed.streetName = component.long_name || ''
+    }
+    if (types.includes('locality')) {
+      parsed.city = component.long_name || ''
+    }
+    if (types.includes('administrative_area_level_1')) {
+      parsed.state = component.short_name || component.long_name || ''
+    }
+    if (types.includes('postal_code')) {
+      parsed.zipCode = component.long_name || ''
+    }
+    if (types.includes('country')) {
+      parsed.country = component.long_name || ''
+    }
+  })
+
+  // Construct full address
+  const addressParts = [parsed.streetNumber, parsed.streetName].filter(Boolean)
+  parsed.address = addressParts.join(' ')
+
+  return parsed
 }
 
 // Hunter.io email discovery
@@ -285,6 +339,9 @@ export async function POST(req: NextRequest) {
           emailInfo = await findBusinessEmail(details.website, details.name)
         }
         
+        // Parse address components
+        const addressParsed = parseAddressComponents(details.address_components)
+        
         // Calculate scores and identify pain points
         const automationScore = calculateAutomationScore(details)
         const painPoints = identifyPainPoints(details)
@@ -317,7 +374,8 @@ export async function POST(req: NextRequest) {
           const notesArray = [
             `Business Discovery - ${industry} in ${location}`,
             `Industry Searched: ${industry}`,
-            `Address: ${enrichedBusiness.address}`,
+            `Full Address: ${enrichedBusiness.address}`,
+            `Parsed Address: ${addressParsed.address}, ${addressParsed.city}, ${addressParsed.state} ${addressParsed.zipCode}`,
             enrichedBusiness.website ? `Website: ${enrichedBusiness.website}` : 'No website',
             `Rating: ${enrichedBusiness.rating || 'N/A'} (${enrichedBusiness.reviewCount || 0} reviews)`,
             `Automation Score: ${enrichedBusiness.automationScore}%`,
@@ -333,7 +391,10 @@ export async function POST(req: NextRequest) {
             fields: {
               'Business Name': enrichedBusiness.name,
               'Industry': mapToValidIndustry(industry),
-              'Address': enrichedBusiness.address,
+              'Address': addressParsed.address || enrichedBusiness.address,
+              'City': addressParsed.city,
+              'State': addressParsed.state,
+              'Zip Code': addressParsed.zipCode,
               'Phone': enrichedBusiness.phone || '',
               'Website': enrichedBusiness.website || '',
               'Google Rating': enrichedBusiness.rating ? Math.round(enrichedBusiness.rating) : undefined,
