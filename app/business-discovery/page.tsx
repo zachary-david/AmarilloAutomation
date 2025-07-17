@@ -32,7 +32,7 @@ export default function BusinessDiscovery() {
   
   const [industry, setIndustry] = useState('')
   const [location, setLocation] = useState('Amarillo, TX')
-  const [radius, setRadius] = useState(5000)
+  const [radius, setRadius] = useState(3) // Default 3 miles
   const [maxResults, setMaxResults] = useState(10)
   const [loading, setLoading] = useState(false)
   const [results, setResults] = useState<DiscoveryResponse | null>(null)
@@ -292,11 +292,12 @@ export default function BusinessDiscovery() {
                     onChange={(e) => setRadius(Number(e.target.value))}
                     className="w-full px-4 py-3 bg-gray-900/50 border border-gray-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
                   >
-                    <option value={1000}>1 km radius</option>
-                    <option value={5000}>5 km radius</option>
-                    <option value={10000}>10 km radius</option>
-                    <option value={25000}>25 km radius</option>
-                    <option value={50000}>50 km radius</option>
+                    <option value={1}>1 mile radius</option>
+                    <option value={3}>3 miles radius</option>
+                    <option value={5}>5 miles radius</option>
+                    <option value={10}>10 miles radius</option>
+                    <option value={25}>25 miles radius</option>
+                    <option value={50}>50 miles radius</option>
                   </select>
                 </div>
 
