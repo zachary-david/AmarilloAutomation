@@ -66,7 +66,7 @@ export default function BusinessDiscovery() {
               scale: 1.00,
               scaleMobile: 1.00,
               color: 0x10b981,
-              backgroundColor: 0x0a1224,
+              backgroundColor: 0xFFFFFF,
               points: 6.00,
               maxDistance: 20.00,
               spacing: 18.00,
@@ -297,9 +297,9 @@ export default function BusinessDiscovery() {
                     onChange={(e) => setRadius(Number(e.target.value))}
                     className="w-full px-4 py-3 bg-gray-900/50 border border-gray-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
                   >
-                    <option value={5}>5 miles radius</option>
-                    <option value={25}>25 miles radius</option>
-                    <option value={50}>50 miles radius</option>
+                    <option value={5}>5 mile radius</option>
+                    <option value={25}>25 mile radius</option>
+                    <option value={50}>50 mile radius</option>
                   </select>
                 </div>
 
