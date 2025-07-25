@@ -23,6 +23,17 @@ interface DiscoveredBusiness {
   automationScore?: number
   leadScore?: number
   painPoints?: string[]
+  airtableId?: string
+  // Parsed address components
+  parsedAddress?: {
+    streetNumber: string
+    streetName: string
+    address: string
+    city: string
+    state: string
+    zipCode: string
+    country: string
+  }
 }
 
 interface DiscoveryResponse {
@@ -56,8 +67,10 @@ async function searchBusinesses(params: BusinessSearchParams): Promise<any[]> {
       throw new Error(`Google Places API error: ${data.status}`)
     }
     
-    // Limit results
-    const maxResults = params.maxResults || 20
+    // Limit results (reduce for Vercel timeout constraints)
+    const isVercel = process.env.VERCEL === '1'
+    const defaultMax = isVercel ? 10 : 20 // Smaller default for Vercel
+    const maxResults = Math.min(params.maxResults || defaultMax, isVercel ? 15 : 50)
     return data.results.slice(0, maxResults)
   } catch (error) {
     console.error('Error searching businesses:', error)
@@ -111,6 +124,7 @@ function parseAddressComponents(addressComponents: any[] = []): {
   }
 
   if (!addressComponents || !Array.isArray(addressComponents)) {
+    console.warn('⚠️ No address components provided for parsing')
     return parsed
   }
 
@@ -140,6 +154,16 @@ function parseAddressComponents(addressComponents: any[] = []): {
   // Construct full address
   const addressParts = [parsed.streetNumber, parsed.streetName].filter(Boolean)
   parsed.address = addressParts.join(' ')
+  
+  // Log parsing results for debugging
+  console.log('📍 Parsed address:', {
+    streetNumber: parsed.streetNumber,
+    streetName: parsed.streetName,
+    fullAddress: parsed.address,
+    city: parsed.city,
+    state: parsed.state,
+    zipCode: parsed.zipCode
+  })
 
   return parsed
 }
@@ -304,6 +328,31 @@ function calculateLeadScore(business: DiscoveredBusiness): number {
 // Main discovery handler
 export async function POST(req: NextRequest) {
   try {
+    // Check critical environment variables first
+    const missingVars = []
+    if (!process.env.GOOGLE_PLACES_API_KEY && !process.env.GOOGLE_PLACES_API) {
+      missingVars.push('GOOGLE_PLACES_API_KEY or GOOGLE_PLACES_API')
+    }
+    if (!process.env.AIRTABLE_PERSONAL_ACCESS_TOKEN) {
+      missingVars.push('AIRTABLE_PERSONAL_ACCESS_TOKEN')
+    }
+    if (!process.env.AIRTABLE_BASE_ID) {
+      missingVars.push('AIRTABLE_BASE_ID')
+    }
+    
+    if (missingVars.length > 0) {
+      console.error('Missing required environment variables:', missingVars)
+      return NextResponse.json(
+        { 
+          error: 'Service configuration error',
+          details: process.env.NODE_ENV === 'development' 
+            ? `Missing environment variables: ${missingVars.join(', ')}`
+            : 'The business discovery service is not properly configured. Please contact support.'
+        },
+        { status: 500 }
+      )
+    }
+    
     const body = await req.json()
     const { industry, location, radius, maxResults } = body as BusinessSearchParams
     
@@ -324,11 +373,24 @@ export async function POST(req: NextRequest) {
     
     // Step 1: Search for businesses
     console.log(`🔍 Searching for ${industry} businesses in ${location}...`)
-    const searchResults = await searchBusinesses({ industry, location, radius, maxResults })
+    let searchResults
+    try {
+      searchResults = await searchBusinesses({ industry, location, radius, maxResults })
+    } catch (searchError) {
+      console.error('Failed to search businesses:', searchError)
+      return NextResponse.json(
+        { 
+          error: 'Failed to search businesses',
+          details: searchError instanceof Error ? searchError.message : 'Unknown search error'
+        },
+        { status: 500 }
+      )
+    }
     response.totalFound = searchResults.length
     
     // Step 2: Enrich each business
-    for (const place of searchResults) {
+    // Process in parallel to avoid Vercel timeout (10s on hobby plan)
+    const enrichmentPromises = searchResults.map(async (place) => {
       try {
         // Get detailed information
         const details = await getBusinessDetails(place.place_id)
@@ -339,8 +401,23 @@ export async function POST(req: NextRequest) {
           emailInfo = await findBusinessEmail(details.website, details.name)
         }
         
-        // Parse address components
-        const addressParsed = parseAddressComponents(details.address_components)
+        // Parse address components with error handling
+        let addressParsed
+        try {
+          addressParsed = parseAddressComponents(details.address_components)
+        } catch (error) {
+          console.error('Error parsing address components:', error)
+          // Fallback to empty parsed address
+          addressParsed = {
+            streetNumber: '',
+            streetName: '',
+            address: '',
+            city: '',
+            state: '',
+            zipCode: '',
+            country: ''
+          }
+        }
         
         // Calculate scores and identify pain points
         const automationScore = calculateAutomationScore(details)
@@ -360,7 +437,8 @@ export async function POST(req: NextRequest) {
           emailSource: emailInfo.source as any,
           automationScore,
           painPoints,
-          leadScore: 0 // Will calculate after
+          leadScore: 0, // Will calculate after
+          parsedAddress: addressParsed
         }
         
         // Calculate lead score with all data
@@ -375,7 +453,7 @@ export async function POST(req: NextRequest) {
             `Business Discovery - ${industry} in ${location}`,
             `Industry Searched: ${industry}`,
             `Full Address: ${enrichedBusiness.address}`,
-            `Parsed Address: ${addressParsed.address}, ${addressParsed.city}, ${addressParsed.state} ${addressParsed.zipCode}`,
+            `Parsed Address: ${enrichedBusiness.parsedAddress?.address || 'N/A'}, ${enrichedBusiness.parsedAddress?.city || 'N/A'}, ${enrichedBusiness.parsedAddress?.state || 'N/A'} ${enrichedBusiness.parsedAddress?.zipCode || 'N/A'}`,
             enrichedBusiness.website ? `Website: ${enrichedBusiness.website}` : 'No website',
             `Rating: ${enrichedBusiness.rating || 'N/A'} (${enrichedBusiness.reviewCount || 0} reviews)`,
             `Automation Score: ${enrichedBusiness.automationScore}%`,
@@ -391,10 +469,10 @@ export async function POST(req: NextRequest) {
             fields: {
               'Business Name': enrichedBusiness.name,
               'Industry': mapToValidIndustry(industry),
-              'Address': addressParsed.address || enrichedBusiness.address,
-              'City': addressParsed.city,
-              'State': addressParsed.state,
-              'Zip Code': addressParsed.zipCode,
+              'Address': enrichedBusiness.parsedAddress?.address || enrichedBusiness.address?.split(',')[0] || enrichedBusiness.address || '',
+              'City': enrichedBusiness.parsedAddress?.city || '',
+              'State': enrichedBusiness.parsedAddress?.state || '',
+              'Zip Code': enrichedBusiness.parsedAddress?.zipCode || '',
               'Phone': enrichedBusiness.phone || '',
               'Website': enrichedBusiness.website || '',
               'Google Rating': enrichedBusiness.rating ? Math.round(enrichedBusiness.rating) : undefined,
@@ -442,9 +520,10 @@ export async function POST(req: NextRequest) {
             
             if (airtableResponse.ok) {
               console.log(`✅ Saved ${enrichedBusiness.name} to Airtable:`, airtableResult.id)
-              response.savedToAirtable++
+              enrichedBusiness.airtableId = airtableResult.id
             } else {
               console.error(`❌ Failed to save ${enrichedBusiness.name} to Airtable:`, airtableResult)
+              console.error('Airtable request data:', JSON.stringify(airtableData, null, 2))
               response.errors?.push(`Airtable error for ${enrichedBusiness.name}: ${JSON.stringify(airtableResult.error)}`)
             }
           } catch (saveError) {
@@ -453,13 +532,39 @@ export async function POST(req: NextRequest) {
           }
         }
         
+        return enrichedBusiness
       } catch (error) {
         console.error(`Error processing business ${place.name}:`, error)
         response.errors?.push(`Failed to process ${place.name}`)
+        return null
       }
+    })
+    
+    // Wait for all enrichments to complete (with timeout for Vercel)
+    const timeoutPromise = new Promise<never>((_, reject) => 
+      setTimeout(() => reject(new Error('Enrichment timeout - Vercel limit approaching')), 8000)
+    )
+    
+    try {
+      const enrichmentResults = await Promise.race([
+        Promise.all(enrichmentPromises),
+        timeoutPromise
+      ])
+      
+      // Filter out failed enrichments
+      response.businesses = enrichmentResults.filter(business => business !== null) as DiscoveredBusiness[]
+    } catch (timeoutError) {
+      console.warn('⚠️ Enrichment timeout reached, returning partial results')
+      // Get whatever results completed before timeout
+      const settledResults = await Promise.allSettled(enrichmentPromises)
+      response.businesses = settledResults
+        .filter(result => result.status === 'fulfilled' && result.value !== null)
+        .map(result => (result as PromiseFulfilledResult<DiscoveredBusiness>).value)
+      response.errors?.push('Some businesses could not be processed due to timeout')
     }
     
     response.success = true
+    response.savedToAirtable = response.businesses.filter(b => b.airtableId).length
     
     console.log(`✅ Discovery complete: Found ${response.totalFound} businesses, enriched ${response.businesses.length}, saved ${response.savedToAirtable} to Airtable`)
     
