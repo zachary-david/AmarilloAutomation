@@ -390,6 +390,8 @@ export async function POST(req: NextRequest) {
     
     // Step 2: Enrich each business
     // Process in parallel to avoid Vercel timeout (10s on hobby plan)
+    const collectedErrors: string[] = []
+    
     const enrichmentPromises = searchResults.map(async (place) => {
       try {
         // Get detailed information
@@ -498,7 +500,7 @@ export async function POST(req: NextRequest) {
             
             if (!apiKey || !baseId) {
               console.error('❌ Airtable not configured')
-              response.errors?.push(`Airtable not configured for ${enrichedBusiness.name}`)
+              collectedErrors.push(`Airtable not configured for ${enrichedBusiness.name}`)
               return enrichedBusiness
             }
             
@@ -537,18 +539,18 @@ export async function POST(req: NextRequest) {
                   airtableResult.error) : 
                 `HTTP ${airtableResponse.status}: ${airtableResponse.statusText}`
               
-              response.errors?.push(`Airtable error for ${enrichedBusiness.name}: ${errorDetail}`)
+              collectedErrors.push(`Airtable error for ${enrichedBusiness.name}: ${errorDetail}`)
             }
           } catch (saveError) {
             console.error(`❌ Error saving ${enrichedBusiness.name} to Airtable:`, saveError)
-            response.errors?.push(`Failed to save ${enrichedBusiness.name}: ${saveError}`)
+            collectedErrors.push(`Failed to save ${enrichedBusiness.name}: ${saveError}`)
           }
         }
         
         return enrichedBusiness
       } catch (error) {
         console.error(`Error processing business ${place.name}:`, error)
-        response.errors?.push(`Failed to process ${place.name}`)
+        collectedErrors.push(`Failed to process ${place.name}`)
         return null
       }
     })
@@ -573,11 +575,12 @@ export async function POST(req: NextRequest) {
       response.businesses = settledResults
         .filter(result => result.status === 'fulfilled' && result.value !== null)
         .map(result => (result as PromiseFulfilledResult<DiscoveredBusiness>).value)
-      response.errors?.push('Some businesses could not be processed due to timeout')
+      collectedErrors.push('Some businesses could not be processed due to timeout')
     }
     
     response.success = true
     response.savedToAirtable = response.businesses.filter(b => b.airtableId).length
+    response.errors = collectedErrors
     
     console.log(`✅ Discovery complete: Found ${response.totalFound} businesses, enriched ${response.businesses.length}, saved ${response.savedToAirtable} to Airtable`)
     
