@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Test Google Places API
-  let googleAPITest = { status: 'Not tested', error: null }
+  let googleAPITest: { status: string; error: string | null; resultsFound?: number } = { status: 'Not tested', error: null }
   const googleAPIKey = process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_PLACES_API
   
   if (googleAPIKey) {
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Test Airtable connection
-  let airtableTest = { status: 'Not tested', error: null }
+  let airtableTest: { status: string; error: string | null } = { status: 'Not tested', error: null }
   if (process.env.AIRTABLE_PERSONAL_ACCESS_TOKEN && process.env.AIRTABLE_BASE_ID) {
     try {
       const response = await fetch(

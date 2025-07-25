@@ -501,7 +501,7 @@ export async function POST(req: NextRequest) {
             if (!apiKey || !baseId) {
               console.error('❌ Airtable not configured')
               response.errors?.push(`Airtable not configured for ${enrichedBusiness.name}`)
-              continue
+              return enrichedBusiness
             }
             
             const airtableResponse = await fetch(
