@@ -493,7 +493,7 @@ export async function POST(req: NextRequest) {
               'Address': enrichedBusiness.parsedAddress?.address || enrichedBusiness.address?.split(',')[0] || enrichedBusiness.address || '',
               'City': enrichedBusiness.parsedAddress?.city || '',
               'State': enrichedBusiness.parsedAddress?.state || '',
-              'Zip Code': finalZipCode, // Only send valid zip codes or null
+              'Zip Code': finalZipCode || '', // Send as string since Airtable field is now Single Line Text
               'Phone': enrichedBusiness.phone || '',
               'Website': enrichedBusiness.website || '',
               'Google Rating': enrichedBusiness.rating ? Math.round(enrichedBusiness.rating) : undefined,
