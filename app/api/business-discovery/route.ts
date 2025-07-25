@@ -341,6 +341,30 @@ function mapToValidIndustry(industry: string): string {
   if (industryLower.includes('storage') || industryLower.includes('warehouse')) {
     return 'Storage'
   }
+  if (industryLower.includes('church') || industryLower.includes('ministry') || industryLower.includes('religious')) {
+    return 'Church'
+  }
+  if (industryLower.includes('restaurant') || industryLower.includes('dining') || industryLower.includes('food') || industryLower.includes('cafe') || industryLower.includes('bar')) {
+    return 'Restaurant'
+  }
+  if (industryLower.includes('insurance') || industryLower.includes('coverage')) {
+    return 'Insurance Agency'
+  }
+  if (industryLower.includes('law') || industryLower.includes('lawyer') || industryLower.includes('attorney') || industryLower.includes('legal')) {
+    return 'Law Firm'
+  }
+  if (industryLower.includes('accountant') || industryLower.includes('accounting') || industryLower.includes('bookkeep') || industryLower.includes('tax')) {
+    return 'Accounting'
+  }
+  if (industryLower.includes('dentist') || industryLower.includes('dental') || industryLower.includes('orthodont')) {
+    return 'Dentist'
+  }
+  if (industryLower.includes('auto repair') || industryLower.includes('mechanic') || industryLower.includes('automotive') || industryLower.includes('car repair')) {
+    return 'Auto Repair'
+  }
+  if (industryLower.includes('real estate') || industryLower.includes('realtor') || industryLower.includes('property')) {
+    return 'Real Estate'
+  }
   
   // Default to General Services if no match
   return 'General Services'
