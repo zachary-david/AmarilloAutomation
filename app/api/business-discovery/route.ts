@@ -465,6 +465,27 @@ export async function POST(req: NextRequest) {
           ].filter(Boolean).join('\n')
           
           // Create Airtable-compatible data for Business Intelligence table
+          // Clean and validate zip code for Airtable
+          const rawZipCode = enrichedBusiness.parsedAddress?.zipCode || ''
+          let cleanZipCode = rawZipCode.replace(/[^0-9-]/g, '').trim() // Remove non-numeric chars except hyphen
+          
+          // Handle common zip code formats
+          if (cleanZipCode.length > 5) {
+            // If it's a ZIP+4 format (12345-6789), keep it
+            if (cleanZipCode.includes('-') && cleanZipCode.length <= 10) {
+              // Keep as is
+            } else {
+              // Take only first 5 digits
+              cleanZipCode = cleanZipCode.substring(0, 5)
+            }
+          }
+          
+          // Validate it's a proper zip code (5 digits or 5+4 format)
+          const isValidZip = /^\d{5}(-\d{4})?$/.test(cleanZipCode)
+          const finalZipCode = isValidZip ? cleanZipCode : null
+          
+          console.log(`📮 Zip code for ${enrichedBusiness.name}: raw="${rawZipCode}" clean="${cleanZipCode}" final="${finalZipCode}" valid=${isValidZip}`)
+          
           const airtableData = {
             fields: {
               'Business Name': enrichedBusiness.name,
@@ -472,7 +493,7 @@ export async function POST(req: NextRequest) {
               'Address': enrichedBusiness.parsedAddress?.address || enrichedBusiness.address?.split(',')[0] || enrichedBusiness.address || '',
               'City': enrichedBusiness.parsedAddress?.city || '',
               'State': enrichedBusiness.parsedAddress?.state || '',
-              'Zip Code': enrichedBusiness.parsedAddress?.zipCode || '',
+              'Zip Code': finalZipCode, // Only send valid zip codes or null
               'Phone': enrichedBusiness.phone || '',
               'Website': enrichedBusiness.website || '',
               'Google Rating': enrichedBusiness.rating ? Math.round(enrichedBusiness.rating) : undefined,
