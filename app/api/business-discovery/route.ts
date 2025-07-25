@@ -287,10 +287,63 @@ function mapToValidIndustry(industry: string): string {
   if (industryLower.includes('roof')) {
     return 'Roofing'
   }
+  if (industryLower.includes('electric') || industryLower.includes('electrical')) {
+    return 'Electrical'
+  }
+  if (industryLower.includes('landscap') || industryLower.includes('lawn') || industryLower.includes('garden')) {
+    return 'Landscaping'
+  }
+  if (industryLower.includes('clean') || industryLower.includes('maid') || industryLower.includes('janitorial')) {
+    return 'Cleaning Services'
+  }
+  if (industryLower.includes('pest') || industryLower.includes('exterminat')) {
+    return 'Pest Control'
+  }
+  if (industryLower.includes('paint') || industryLower.includes('interior') || industryLower.includes('exterior')) {
+    return 'Painting'
+  }
+  if (industryLower.includes('carpet') || industryLower.includes('floor') || industryLower.includes('tile')) {
+    return 'Flooring'
+  }
+  if (industryLower.includes('handyman') || industryLower.includes('repair') || industryLower.includes('maintenance')) {
+    return 'Handyman Services'
+  }
+  if (industryLower.includes('locksmith') || industryLower.includes('security')) {
+    return 'Locksmith'
+  }
+  if (industryLower.includes('tree') || industryLower.includes('arborist')) {
+    return 'Tree Services'
+  }
+  if (industryLower.includes('solar') || industryLower.includes('renewable')) {
+    return 'Solar'
+  }
+  if (industryLower.includes('pool') || industryLower.includes('spa')) {
+    return 'Pool Services'
+  }
+  if (industryLower.includes('driveway') || industryLower.includes('concrete') || industryLower.includes('asphalt')) {
+    return 'Concrete & Paving'
+  }
+  if (industryLower.includes('fence') || industryLower.includes('fencing')) {
+    return 'Fencing'
+  }
+  if (industryLower.includes('gutter')) {
+    return 'Gutter Services'
+  }
+  if (industryLower.includes('siding') || industryLower.includes('window') || industryLower.includes('door')) {
+    return 'Home Improvement'
+  }
+  if (industryLower.includes('kitchen') || industryLower.includes('bathroom') || industryLower.includes('remodel')) {
+    return 'Remodeling'
+  }
+  if (industryLower.includes('moving') || industryLower.includes('mover')) {
+    return 'Moving Services'
+  }
+  if (industryLower.includes('storage') || industryLower.includes('warehouse')) {
+    return 'Storage'
+  }
   
-  // Default to HVAC if no match (since we need a valid option)
-  // In production, you might want to handle this differently
-  return 'HVAC'
+  // Default to General Services if no match
+  return 'General Services'
 }
 
 // Calculate lead score
