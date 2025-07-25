@@ -444,8 +444,6 @@ export async function POST(req: NextRequest) {
         // Calculate lead score with all data
         enrichedBusiness.leadScore = calculateLeadScore(enrichedBusiness)
         
-        response.businesses.push(enrichedBusiness)
-        
         // Step 3: Save to Airtable (all leads regardless of score)
         if (true) {
           // Generate notes as a string
@@ -504,8 +502,13 @@ export async function POST(req: NextRequest) {
               return enrichedBusiness
             }
             
+            console.log(`📤 Attempting to save ${enrichedBusiness.name} to Airtable...`)
+            const tableName = encodeURIComponent('Business Intelligence')
+            const airtableUrl = `https://api.airtable.com/v0/${baseId}/${tableName}`
+            console.log('Airtable URL:', airtableUrl)
+            
             const airtableResponse = await fetch(
-              `https://api.airtable.com/v0/${baseId}/Business%20Intelligence`,
+              airtableUrl,
               {
                 method: 'POST',
                 headers: {
@@ -524,7 +527,17 @@ export async function POST(req: NextRequest) {
             } else {
               console.error(`❌ Failed to save ${enrichedBusiness.name} to Airtable:`, airtableResult)
               console.error('Airtable request data:', JSON.stringify(airtableData, null, 2))
-              response.errors?.push(`Airtable error for ${enrichedBusiness.name}: ${JSON.stringify(airtableResult.error)}`)
+              console.error('HTTP Status:', airtableResponse.status)
+              console.error('Status Text:', airtableResponse.statusText)
+              
+              // More detailed error message
+              const errorDetail = airtableResult.error ? 
+                (typeof airtableResult.error === 'object' ? 
+                  `${airtableResult.error.type || 'Unknown'}: ${airtableResult.error.message || JSON.stringify(airtableResult.error)}` : 
+                  airtableResult.error) : 
+                `HTTP ${airtableResponse.status}: ${airtableResponse.statusText}`
+              
+              response.errors?.push(`Airtable error for ${enrichedBusiness.name}: ${errorDetail}`)
             }
           } catch (saveError) {
             console.error(`❌ Error saving ${enrichedBusiness.name} to Airtable:`, saveError)

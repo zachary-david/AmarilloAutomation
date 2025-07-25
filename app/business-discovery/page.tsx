@@ -16,6 +16,7 @@ interface DiscoveredBusiness {
   automationScore?: number
   leadScore?: number
   painPoints?: string[]
+  airtableId?: string
 }
 
 interface DiscoveryResponse {
@@ -353,19 +354,38 @@ export default function BusinessDiscovery() {
 
           {/* Results Summary */}
           {results && (
-            <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-6 mb-8 backdrop-blur-sm">
-              <div className="flex items-center gap-4">
-                <CheckCircle2 className="w-6 h-6 text-emerald-400" />
-                <div>
-                  <h3 className="font-semibold text-emerald-400 mb-1">Discovery Complete!</h3>
-                  <p className="text-emerald-300">
-                    Found <span className="font-bold">{results.totalFound}</span> businesses • 
-                    Analyzed <span className="font-bold">{results.businesses.length}</span> profiles • 
-                    Added <span className="font-bold">{results.savedToAirtable}</span> leads to Business Intelligence database
-                  </p>
+            <>
+              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-6 mb-8 backdrop-blur-sm">
+                <div className="flex items-center gap-4">
+                  <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+                  <div>
+                    <h3 className="font-semibold text-emerald-400 mb-1">Discovery Complete!</h3>
+                    <p className="text-emerald-300">
+                      Found <span className="font-bold">{results.totalFound}</span> businesses • 
+                      Analyzed <span className="font-bold">{results.businesses.length}</span> profiles • 
+                      Added <span className="font-bold">{results.savedToAirtable}</span> leads to Business Intelligence database
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+              
+              {/* Error Messages */}
+              {results.errors && results.errors.length > 0 && (
+                <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-6 mb-8 backdrop-blur-sm">
+                  <div className="flex items-start gap-4">
+                    <AlertCircle className="w-6 h-6 text-red-400 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-red-400 mb-2">Some businesses could not be saved</h3>
+                      <ul className="space-y-1">
+                        {results.errors.map((error, index) => (
+                          <li key={index} className="text-sm text-red-300">{error}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {/* Results Grid */}
@@ -380,7 +400,20 @@ export default function BusinessDiscovery() {
                       <h3 className="text-lg font-semibold text-white leading-tight flex-1 pr-3">
                         {business.name}
                       </h3>
-                      <Building2 className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                      <div className="flex items-center gap-2">
+                        {business.airtableId ? (
+                          <div className="flex items-center gap-1" title="Saved to Airtable">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                            <span className="text-xs text-emerald-400">Saved</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1" title="Not saved to Airtable">
+                            <AlertCircle className="w-4 h-4 text-red-400" />
+                            <span className="text-xs text-red-400">Failed</span>
+                          </div>
+                        )}
+                        <Building2 className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                      </div>
                     </div>
                     <p className="text-sm text-gray-400 leading-relaxed">{business.address}</p>
                   </div>
