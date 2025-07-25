@@ -368,6 +368,9 @@ function mapToValidIndustry(industry: string): string {
   if (industryLower.includes('home builder') || industryLower.includes('house builder') || industryLower.includes('custom home') || industryLower.includes('construction') || industryLower.includes('builder')) {
     return 'Home Builder'
   }
+  if (industryLower.includes('remodeler') || industryLower.includes('renovation') || industryLower.includes('home improvement contractor')) {
+    return 'Remodeler'
+  }
   
   // Default to General Services if no match
   return 'General Services'
