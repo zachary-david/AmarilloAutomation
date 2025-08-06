@@ -107,42 +107,108 @@ export default function Homepage() {
         </nav>
         
         <section className="min-h-screen flex items-center justify-center px-4 pt-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl sm:text-5xl md:text-9xl font-bold text-white mb-6 tracking-tight">
-              AMARILLO<br />AUTOMATION
+          <div className="max-w-5xl mx-auto text-center">
+            {/* Brand Name with Subtitle */}
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4 md:mb-8 tracking-tight">
+              <span className="block md:inline">AMARILLO AUTOMATION</span>
+              <span className="block md:inline md:ml-4">
+                <span className="align-middle">⚡</span> Garrett Zamora
+              </span>
             </h1>
 
-            <h2 className="text-2xl md:text-3xl text-gray-300 mb-12 font-light">
-              We help contractors and small businesses grow through digital marketing, customer databases, and careful brand management. <br /> <br /> To put it plainly, we want to help your business: 
-            </h2>
-            
-            <div className="grid md:grid-cols-3 gap-8 mb-16">              
-              <div className="flex items-center justify-center lg:justify-start">
-                <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
-                <h3 className="text-3xl font-bold text-white">Save Time</h3>
-              </div>
-              <div className="flex items-center justify-center lg:justify-start">
-                <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
-                <h3 className="text-3xl font-bold text-white">Make Money</h3>
-              </div>
-              <div className="flex items-center justify-center lg:justify-start">
-                <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
-                <h3 className="text-3xl font-bold text-white">Keep It Simple</h3>
+            {/* Profile Image */}
+            <div className="relative w-48 h-48 md:w-56 md:h-56 mx-auto mb-8 mt-8">
+              <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-green-600 rounded-full animate-pulse"></div>
+              <div className="absolute inset-2 rounded-full overflow-hidden">
+                <img 
+                  src="/garrett-kaitlin.jpg" 
+                  alt="Garrett and Kaitlin - Amarillo Automation"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
-            <div>
-              <p className="text-3xl text-gray-300 mb-12">
-              If any of that sounds good, click the button below to message us now.</p>
-              <div className="flex justify-center">
-                <a 
-                  href="mailto:admin@amarilloautomation.com"
-                  onClick={() => trackCTA('email_us_now')}
-                  className="px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
-                >
-                  Email us now
-                  <ArrowRight className="w-5 h-5 ml-2 inline" />
-                </a>
+
+            {/* Three Primary CTAs */}
+            <div className="grid md:grid-cols-3 gap-4 mb-12 max-w-3xl mx-auto">
+              <a 
+                href="mailto:garrett@amarilloautomation.com"
+                onClick={() => trackCTA('get_a_quote')}
+                className="px-6 py-4 bg-green-600 hover:bg-green-700 text-white font-bold text-lg rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
+              >
+                Get a Quote
+              </a>
+              
+              <a 
+                href="/business-discovery"
+                onClick={() => trackCTA('see_demo')}
+                className="px-6 py-4 bg-green-600 hover:bg-green-700 text-white font-bold text-lg rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
+              >
+                See a Demo
+              </a>
+              
+              <a 
+                href="mailto:garrett@amarilloautomation.com"
+                onClick={() => trackCTA('contact_us')}
+                className="px-6 py-4 bg-green-600 hover:bg-green-700 text-white font-bold text-lg rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl"
+              >
+                Contact Us
+              </a>
+            </div>
+
+            {/* Main Value Proposition */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <p className="text-xl md:text-2xl text-gray-300 mb-6">
+                Put <span className="text-green-400 font-semibold">Digital Marketing & Automation</span> to work for your business!
+              </p>
+              
+              <p className="text-lg md:text-xl text-gray-400 mb-8">
+                We help contractors and small businesses grow through proven marketing strategies, 
+                customer management systems, and workflow automation.
+              </p>
+
+              {/* Core Benefits */}
+              <div className="grid md:grid-cols-3 gap-6 mb-8">              
+                <div className="flex flex-col items-center">
+                  <CheckCircle className="w-8 h-8 text-green-500 mb-2" />
+                  <h3 className="text-xl font-bold text-white">Save Time</h3>
+                  <p className="text-gray-400 text-sm mt-1">Automate repetitive tasks</p>
+                </div>
+                <div className="flex flex-col items-center">
+                  <CheckCircle className="w-8 h-8 text-green-500 mb-2" />
+                  <h3 className="text-xl font-bold text-white">Make Money</h3>
+                  <p className="text-gray-400 text-sm mt-1">Get more qualified leads</p>
+                </div>
+                <div className="flex flex-col items-center">
+                  <CheckCircle className="w-8 h-8 text-green-500 mb-2" />
+                  <h3 className="text-xl font-bold text-white">Keep It Simple</h3>
+                  <p className="text-gray-400 text-sm mt-1">No complex software</p>
+                </div>
               </div>
+            </div>
+
+            {/* Stats/Proof */}
+            <div className="flex flex-wrap justify-center items-center gap-8 text-lg md:text-xl text-gray-300 mb-12">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white">40+</div>
+                <div className="text-sm text-gray-400">Local Businesses</div>
+              </div>
+              <div className="text-gray-600">|</div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white">$6M+</div>
+                <div className="text-sm text-gray-400">Revenue Generated</div>
+              </div>
+              <div className="text-gray-600">|</div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white">5+</div>
+                <div className="text-sm text-gray-400">Years Experience</div>
+              </div>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="space-y-2 text-center">
+              <div className="text-green-400 font-semibold">Google Ads Certified Partner</div>
+              <div className="text-green-400 font-semibold">Certified Meta Developer</div>
+              <div className="text-green-400 font-semibold">Located in Amarillo, TX</div>
             </div>
           </div>
         </section>
@@ -438,7 +504,7 @@ export default function Homepage() {
               Want to Learn More?
             </h2>
             <a 
-              href="mailto:admin@amarilloautomation.com"
+              href="mailto:garrett@amarilloautomation.com"
               onClick={() => trackCTA('final_email_cta')}
               className="inline-flex items-center px-6 md:px-8 py-3 md:py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl text-base md:text-lg"
             >

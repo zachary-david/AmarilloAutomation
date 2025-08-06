@@ -14,6 +14,11 @@ export const metadata: Metadata = {
     template: '%s | Amarillo Automation'
   },
   description: 'Using tomorrow\'s tools today to help local businesses create simple solutions and digital marketing strategies.',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
   
   keywords: [
     'marketing profit optimization',
