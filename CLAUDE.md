@@ -72,3 +72,41 @@ When working on components:
 When modifying the chatbot functionality:
 - Main chatbot components are in `/app/components/EnhancedAIChatbot.tsx` and `SimpleChatbot.tsx`
 - Chat API routes are in `/app/api/chat`, `/app/api/openai-chat`, and `/app/api/llm-chat`
+
+### Business Intelligence Hub Update Instructions
+
+The Business Intelligence Hub is a critical component that discovers businesses, enriches their data, and saves them to Airtable. When updating business categories, you must modify THREE locations:
+
+#### 1. Frontend Component (`/app/business-discovery/page.tsx`)
+Update the industry categories displayed to users:
+- **Lines 92-101**: `availableIndustries` array - Main categories shown as green buttons
+- **Lines 104-117**: `industrySearchTerms` array - Additional categories shown as gray buttons
+
+#### 2. API Route Mapping (`/app/api/business-discovery/route.ts`)
+Update the `mapToValidIndustry` function (lines 276-377):
+- This function maps user search terms to valid Airtable industry options
+- Add new mappings for any new categories
+- Ensure mapped values EXACTLY match your Airtable field options
+- Default fallback is "General Services" if no match found
+
+Current mapped categories:
+- HVAC, Plumbing, Roofing, Electrical, Landscaping, Cleaning Services
+- Pest Control, Painting, Flooring, Handyman Services, Locksmith
+- Tree Services, Solar, Pool Services, Concrete & Paving, Fencing
+- Gutter Services, Home Improvement, Remodeling, Moving Services
+- Storage, Church, Restaurant, Insurance Agency, Law Firm
+- Accounting, Dentist, Auto Repair, Real Estate, Home Builder, Remodeler
+- Insulation Contractor
+
+#### 3. Airtable Configuration
+Ensure your Airtable base has:
+- Table name: "Business Intelligence"
+- Field name: "Industry" (Single Select field)
+- All category options from the mapping function must exist as valid choices
+- Case-sensitive matching is important
+
+#### Important Notes:
+- The API saves to the "Business Intelligence" table in Airtable
+- Industry field in Airtable must be a Single Select with matching options
+- Any mismatch between mapped values and Airtable options will cause save failures
+- Check API logs for specific Airtable errors when debugging
