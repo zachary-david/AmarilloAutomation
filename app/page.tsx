@@ -183,24 +183,6 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* Stats/Proof */}
-            <div className="flex flex-wrap justify-center items-center gap-8 text-lg md:text-xl text-gray-300 mb-12">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white">40+</div>
-                <div className="text-sm text-gray-400">Local Businesses</div>
-              </div>
-              <div className="text-gray-600">|</div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white">$6M+</div>
-                <div className="text-sm text-gray-400">Revenue Generated</div>
-              </div>
-              <div className="text-gray-600">|</div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white">5+</div>
-                <div className="text-sm text-gray-400">Years Experience</div>
-              </div>
-            </div>
-
             {/* Trust Indicators */}
             <div className="space-y-2 text-center">
               <div className="text-[#ffde59] font-semibold">Google Ads Certified Partner</div>
