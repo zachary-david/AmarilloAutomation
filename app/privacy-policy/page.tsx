@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
         scale: 1.00,
         scaleMobile: 1.00,
         color: 0x6366f1,
-        backgroundColor: 0x0a1224,
+        backgroundColor: 0x000000,
         points: 3,
         maxDistance: 18,
         spacing: 11,
@@ -165,8 +165,8 @@ export default function PrivacyPolicy() {
                 If you have questions about this Privacy Policy or wish to exercise your rights, please contact us at:
               </p>
               <div className="bg-gray-800/50 p-4 rounded-lg">
-                <p className="text-white font-semibold">Amarillo Automation</p>
-                <p className="text-gray-300">Email: <a href="mailto:admin@amarilloautomation.com" className="text-blue-400 hover:underline">admin@amarilloautomation.com</a></p>
+                <p className="text-white font-semibold">Garrett Zamora</p>
+                <p className="text-gray-300">Email: <a href="mailto:garrett@amarilloautomation.com" className="text-blue-400 hover:underline">garrett@amarilloautomation.com</a></p>
                 <p className="text-gray-300 text-sm mt-2">
                   For privacy policy inquiries, please send all correspondence to the email address above.
                 </p>

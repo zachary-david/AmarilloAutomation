@@ -165,9 +165,9 @@ async function sendFollowUpEmail(formData: any): Promise<{success: boolean, erro
         closing: isIntroductoryOffer ? "Thanks,\nGarrett" : "Feel free to reply with any specific questions or if you'd like to hop on a quick call to discuss your project.",
         signature: {
           name: "Garrett",
-          company: "Amarillo Automation",
-          email: "garrett@amarilloautomation.com",
-          website: "amarilloautomation.com"
+          company: "Garrett Zamora - Automation Consultant",
+          email: "garrett@garrettzamora.com",
+          website: "garrettzamora.com"
         }
       }
     }
@@ -312,7 +312,7 @@ export async function POST(request: NextRequest) {
           body: JSON.stringify({
             ...body,
             leadScore: body.leadScore,
-            _subject: 'New Contact Form Submission - Amarillo Automation',
+            _subject: 'New Contact Form Submission - Garrett Zamora',
           }),
         })
 

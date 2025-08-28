@@ -38,8 +38,8 @@ export default function DemoPage() {
               minWidth: 200.00,
               scale: 1.00,
               scaleMobile: 1.00,
-              color: 0x10b981,
-              backgroundColor: 0x0a1224,
+              color: 0xffde59,
+              backgroundColor: 0x000000,
               points: 6.00,
               maxDistance: 16.00,
               spacing: 16.00,
@@ -211,9 +211,7 @@ export default function DemoPage() {
                 Ready to Stop Losing Leads to Faster Competitors?
               </h3>
               <a 
-                href="https://calendly.com/amarilloautomation/strategy-call"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="mailto:garrett@amarilloautomation.com?subject=Get This System For My Business"
                 className="inline-block bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-lg font-bold text-lg hover:from-green-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105"
               >
                 🚀 Get This System For My Business

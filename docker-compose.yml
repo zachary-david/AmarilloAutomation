@@ -25,9 +25,7 @@ services:
       - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL}
       - N8N_WEBHOOK_TEST=${N8N_WEBHOOK_TEST}
       - N8N_WEBHOOK_PROD=${N8N_WEBHOOK_PROD}
-      # Cal.com Configuration
-      - CALCOM_API_KEY=${CALCOM_API_KEY}
-      - CALCOM_EVENT_TYPE_ID=${CALCOM_EVENT_TYPE_ID}
+      # Google Calendar Configuration (to be added)
       # API Keys
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - FACEBOOK_APP_ID=${FACEBOOK_APP_ID}

@@ -21,7 +21,7 @@ export default function TermsOfService() {
         scale: 1.00,
         scaleMobile: 1.00,
         color: 0x7c3aed, // Different purple for terms
-        backgroundColor: 0x0a1224,
+        backgroundColor: 0x000000,
         points: 3,
         maxDistance: 18,
         spacing: 11,
@@ -144,7 +144,7 @@ export default function TermsOfService() {
               <p className="text-gray-300 leading-relaxed mb-4">If you have any questions about these Terms and Conditions, You can contact us:</p>
               
               <ul className="text-gray-300 space-y-2 mb-8">
-                <li>• By email: <a href="mailto:admin@amarilloautomation.com" className="text-blue-400 hover:underline">admin@amarilloautomation.com</a></li>
+                <li>• By email: <a href="mailto:garrett@amarilloautomation.com" className="text-blue-400 hover:underline">garrett@amarilloautomation.com</a></li>
                 <li>• By visiting this page on our website: <a href="/terms-of-service" className="text-blue-400 hover:underline">Terms of Service</a></li>
               </ul>
 

@@ -245,9 +245,7 @@ const InteractiveLeadDemo = () => {
               Run Demo Again
             </button>
             <a 
-              href="https://calendly.com/amarilloautomation/strategy-call"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="mailto:garrett@amarilloautomation.com?subject=Get This System For My Business"
               className="bg-yellow-500 text-black px-6 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors text-sm"
             >
               🔥 Get This System For Your Business

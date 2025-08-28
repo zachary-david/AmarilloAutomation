@@ -2,12 +2,12 @@ import OpenAI from 'openai'
 import { NextRequest, NextResponse } from 'next/server'
 
 // System prompt that defines the AI's personality and knowledge
-const SYSTEM_PROMPT = `You are an AI assistant for Amarillo Automation, a West Texas automation company that helps local home service businesses (HVAC, plumbing, roofing, contractors) with automation, digital marketing, web development, and analytics.
+const SYSTEM_PROMPT = `You are an AI assistant for Garrett Zamora, a freelance automation consultant and developer that helps businesses with automation, digital marketing, web development, and analytics.
 
 PERSONALITY & TONE:
-- Conversational and friendly, like talking to a local business expert
-- Professional but not corporate - use "we" and "our clients"
-- West Texas local references when appropriate
+- Conversational and friendly, like talking to a business automation expert
+- Professional but personal - use "I" and "my clients" (first person as Garrett)
+- Personal service references when appropriate
 - Specific about time savings and ROI metrics
 - Never pushy or salesy
 
@@ -27,19 +27,19 @@ CONVERSATION FLOW:
 - NEVER try to collect booking details yourself - always hand off to booking system
 
 KEY PHRASES TO USE:
-- "Most of our clients save..." 
-- "We've helped local [industry] businesses..."
-- "Our [industry] clients typically see..."
-- "Here in West Texas..."
+- "Most of my clients save..." 
+- "I've helped [industry] businesses..."
+- "My [industry] clients typically see..."
+- "Working directly with me means..."
 
 IMPORTANT: When user wants to schedule or seems ready for next steps, respond with exactly: "TRIGGER_BOOKING_FLOW" and I'll handle the transition.
 
 EXAMPLES:
 User: "I'm an HVAC owner spending too much time on paperwork"
-You: "That's exactly what we help HVAC businesses solve here in West Texas. Most of our HVAC clients save 15+ hours weekly by automating lead responses, estimate follow-ups, and seasonal maintenance reminders. What's eating up most of your time - customer follow-ups, scheduling, or something else?"
+You: "That's exactly what I help HVAC businesses solve. Most of my HVAC clients save 15+ hours weekly by automating lead responses, estimate follow-ups, and seasonal maintenance reminders. What's eating up most of your time - customer follow-ups, scheduling, or something else?"
 
 User: "How much does this cost?"
-You: "Our pricing depends on which services you need and your business size. Most clients see ROI within 30 days through better lead conversion and time savings. What's your biggest challenge right now? We can discuss how our specific solutions would work for your situation."
+You: "My pricing depends on which services you need and your business size. Most clients see ROI within 30 days through better lead conversion and time savings. What's your biggest challenge right now? I can discuss how my specific solutions would work for your situation."
 
 User: "I want to learn more" or "Tell me about pricing" or "Can we schedule something?"
 You: "TRIGGER_BOOKING_FLOW"`
@@ -138,28 +138,28 @@ function getFallbackResponse(message: string) {
   // Service-specific fallbacks
   if (input.includes('automation')) {
     return {
-      response: "Automation is where we really help West Texas businesses shine. We typically save our clients 15+ hours per week by automating lead responses, follow-up sequences, and administrative tasks. What kind of repetitive work is eating up your time?",
+      response: "Automation is where I really help businesses shine. I typically save my clients 15+ hours per week by automating lead responses, follow-up sequences, and administrative tasks. What kind of repetitive work is eating up your time?",
       triggerBooking: false
     }
   }
   
   if (input.includes('marketing') || input.includes('ads')) {
     return {
-      response: "Our digital marketing focuses on getting you actual customers, not just likes and engagement. Our HVAC clients typically see $4-6 return for every $1 spent on ads. What's your main source of new customers right now?",
+      response: "My digital marketing focuses on getting you actual customers, not just likes and engagement. My HVAC clients typically see $4-6 return for every $1 spent on ads. What's your main source of new customers right now?",
       triggerBooking: false
     }
   }
   
   if (input.includes('website') || input.includes('web')) {
     return {
-      response: "We build websites that actually work for your business - automated lead capture, booking systems, everything connects to your workflow. Are you currently getting leads through your website, or is it just an online brochure?",
+      response: "I build websites that actually work for your business - automated lead capture, booking systems, everything connects to your workflow. Are you currently getting leads through your website, or is it just an online brochure?",
       triggerBooking: false
     }
   }
   
   if (input.includes('analytics') || input.includes('data')) {
     return {
-      response: "Most business owners are flying blind on what actually drives growth. We set up dashboards that show which marketing channels bring in money, not just traffic. Do you currently track which lead sources are most profitable?",
+      response: "Most business owners are flying blind on what actually drives growth. I set up dashboards that show which marketing channels bring in money, not just traffic. Do you currently track which lead sources are most profitable?",
       triggerBooking: false
     }
   }

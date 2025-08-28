@@ -45,8 +45,8 @@ export default function Demo() {
         minWidth: 200.00,
         scale: 1.00,
         scaleMobile: 1.00,
-        color: 0x10b981, // Green theme for demo
-        backgroundColor: 0x0a1224,
+        color: 0xffde59, // Yellow theme for demo
+        backgroundColor: 0x000000,
         points: 15,
         maxDistance: 22,
         spacing: 16,

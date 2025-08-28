@@ -9,7 +9,7 @@ export default function Footer() {
           
           {/* Company Name */}
           <div className="text-center">
-            <h3 className="text-2xl font-bold text-white">Amarillo Automation</h3>
+            <h3 className="text-2xl font-bold text-white">Garrett Zamora</h3>
                       </div>
           
           {/* Legal Links */}
@@ -31,7 +31,7 @@ export default function Footer() {
           
           {/* Copyright */}
           <div className="text-gray-400 text-sm text-center">
-            © 2025 Amarillo Automation LLC. All rights reserved.
+            © 2025 Garrett Zamora. All rights reserved.
           </div>
           
         </div>

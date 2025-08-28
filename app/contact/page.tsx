@@ -55,7 +55,7 @@ export default function Contact() {
         scale: 1.00,
         scaleMobile: 1.00,
         color: 0xf59e0b, // Keeping amber theme
-        backgroundColor: 0x0a1224,
+        backgroundColor: 0x000000,
         points: 2.00, // Even fewer points on mobile
         maxDistance: 15.00, // Shorter connections
         spacing: 14.00, // More spacing for cleaner look
@@ -70,7 +70,7 @@ export default function Contact() {
         scale: 1.00,
         scaleMobile: 1.00,
         color: 0xf59e0b, // Keeping amber theme
-        backgroundColor: 0x0a1224,
+        backgroundColor: 0x000000,
         points: 10.00, // Updated desktop settings
         maxDistance: 20.00,
         spacing: 15.00,
@@ -98,7 +98,7 @@ export default function Contact() {
             scale: 1.00,
             scaleMobile: 1.00,
             color: 0xf59e0b,
-            backgroundColor: 0x0a1224,
+            backgroundColor: 0x000000,
             points: 2.00,
             maxDistance: 15.00,
             spacing: 14.00,
@@ -112,7 +112,7 @@ export default function Contact() {
             scale: 1.00,
             scaleMobile: 1.00,
             color: 0xf59e0b,
-            backgroundColor: 0x0a1224,
+            backgroundColor: 0x000000,
             points: 10.00,
             maxDistance: 20.00,
             spacing: 15.00,
@@ -143,7 +143,7 @@ export default function Contact() {
   useEffect(() => {
     window.dataLayer?.push({
       event: 'page_view_enhanced',
-      page_title: 'Contact - Amarillo Automation',
+      page_title: 'Contact - Garrett Zamora',
       page_section: 'contact',
       business_vertical: 'automation_consulting',
       service_offering: 'workflow_automation'
@@ -335,7 +335,7 @@ export default function Contact() {
         form_name: 'main_contact_form'
       })
       
-      alert('There was an error sending your message. Please try again or email us directly at admin@amarilloautomation.com')
+      alert('There was an error sending your message. Please try again or email us directly at garrett@amarilloautomation.com')
     } finally {
       setIsSubmitting(false)
     }
@@ -610,11 +610,11 @@ export default function Contact() {
                       <div>
                         <p className="text-gray-300 text-sm">Email</p>
                         <a 
-                          href="mailto:admin@amarilloautomation.com" 
+                          href="mailto:garrett@amarilloautomation.com" 
                           className="text-white font-semibold hover:text-amber-400 transition-colors"
                           onClick={() => handleContactMethodClick('email')}
                         >
-                          admin@amarilloautomation.com
+                          garrett@amarilloautomation.com
                         </a>
                       </div>
                     </div>
@@ -628,11 +628,11 @@ export default function Contact() {
                       <div>
                         <p className="text-gray-300 text-sm">Emergency Support</p>
                         <a 
-                          href="mailto:247@amarilloautomation.com" 
+                          href="mailto:garrett@amarilloautomation.com" 
                           className="text-white font-semibold hover:text-amber-400 transition-colors"
                           onClick={handleEmergencyClick}
                         >
-                          247@amarilloautomation.com
+                          garrett@amarilloautomation.com
                         </a>
                       </div>
                     </div>

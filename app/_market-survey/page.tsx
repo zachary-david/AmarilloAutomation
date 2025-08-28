@@ -66,7 +66,7 @@ export default function MarketSurvey() {
         scale: 1.00,
         scaleMobile: 1.00,
         color: 0x3b82f6,
-        backgroundColor: 0x0a1224,
+        backgroundColor: 0x000000,
         points: 10,
         maxDistance: 22,
         spacing: 18,

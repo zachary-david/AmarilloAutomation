@@ -7,30 +7,30 @@ interface ChatMessage {
 }
 
 const COMPANY_KNOWLEDGE = `
-Amarillo Automation is a workflow automation company serving West Texas home service businesses.
+Garrett Zamora is a freelance automation consultant and developer specializing in workflow automation and AI solutions for businesses.
 
 SERVICES:
 1. Workflow Automation - Automate repetitive tasks, lead management, scheduling, follow-ups
 2. Lead Generation Systems - Automated lead capture, nurturing, and conversion
 3. AI Agents & Chatbots - 24/7 customer service and lead qualification
 4. Web Development - Professional websites with built-in automation
-5. Meta Marketing - Facebook/Instagram advertising with ROI tracking
+5. Digital Marketing - Facebook/Instagram advertising with ROI tracking
 6. Advanced Analytics - Custom dashboards and reporting
 7. Business Consultation - Strategic automation planning
 
-TOOLS WE INTEGRATE: Zapier, Make.com, GoHighLevel, Airtable, Google Workspace, QuickBooks, Calendly, Mailchimp, HubSpot, Salesforce, Slack, Twilio, and more.
+TOOLS I INTEGRATE: Zapier, Make.com, GoHighLevel, Airtable, Google Workspace, QuickBooks, Google Calendar, Mailchimp, HubSpot, Salesforce, Slack, Twilio, and more.
 
-RESULTS:
+EXPERIENCE:
 - 40+ businesses automated
-- $2M+ in additional revenue generated  
+- $2M+ in additional revenue generated for clients
 - Average 15 hours/week saved per business
 - 40-60% improvement in lead conversion rates
 
-DIFFERENTIATORS:
-- Local West Texas experts (not distant corporation)
+APPROACH:
+- Personal, direct service (not a large agency)
 - Same-day response to inquiries
-- Custom solutions (not templates)
-- No long-term contracts
+- Custom solutions tailored to each business
+- Flexible engagement terms
 - ROI-focused approach
 - Ongoing support included
 
@@ -41,7 +41,7 @@ PROCESS:
 4. Training and ongoing optimization
 
 Always encourage scheduling a free consultation for personalized advice.
-Contact: info@amarilloautomation.com
+Contact: garrett@garrettzamora.com
 `
 
 export async function POST(request: NextRequest) {
@@ -95,7 +95,7 @@ function generateResponse(message: string, context: string): string {
 
   // Tools and integrations
   if (lowerMessage.includes('tool') || lowerMessage.includes('software') || lowerMessage.includes('integrate')) {
-    return "We work with the tools you already use! We integrate with 18+ platforms including Zapier, Google Workspace, QuickBooks, Calendly, and more. The best part? No expensive new software to learn. We connect your existing tools to create powerful automations. What tools are you currently using for your business?"
+    return "We work with the tools you already use! We integrate with 18+ platforms including Zapier, Google Workspace, QuickBooks, Google Calendar, and more. The best part? No expensive new software to learn. We connect your existing tools to create powerful automations. What tools are you currently using for your business?"
   }
 
   // Time savings
@@ -113,16 +113,16 @@ function generateResponse(message: string, context: string): string {
     return "Getting started is easy! We begin with a free 30-minute consultation where we'll review your current processes and identify your biggest automation opportunities. No pressure, no obligation - just valuable insights. From there, we create a custom strategy and can typically have your first automations running within a week. Ready to schedule your free consultation?"
   }
 
-  // Local/Amarillo specific
-  if (lowerMessage.includes('amarillo') || lowerMessage.includes('texas') || lowerMessage.includes('local')) {
-    return "Yes, we're proudly based in Amarillo and serve businesses throughout West Texas! Being local means we understand the unique challenges of businesses in our area, and you get same-day responses instead of dealing with distant call centers. We've helped 40+ local contractors, HVAC companies, plumbers, and other home service businesses. There's something valuable about working with neighbors who truly understand your market!"
+  // Location/personal service specific
+  if (lowerMessage.includes('amarillo') || lowerMessage.includes('texas') || lowerMessage.includes('local') || lowerMessage.includes('freelance') || lowerMessage.includes('garrett')) {
+    return "I'm Garrett Zamora, a freelance automation consultant based in Texas. Working directly with me means you get personal attention and same-day responses instead of dealing with large agencies or call centers. I've helped 40+ contractors, HVAC companies, plumbers, and other businesses across various industries. There's real value in working with someone who takes personal ownership of your project's success!"
   }
 
   // Specific business types
   if (lowerMessage.includes('hvac') || lowerMessage.includes('plumbing') || lowerMessage.includes('roofing') || lowerMessage.includes('contractor')) {
-    return "Perfect! We specialize in home service businesses like yours. We've automated workflows for HVAC companies, plumbers, roofers, and general contractors throughout West Texas. Common automations include instant lead responses, appointment reminders, invoice generation, and review requests. Each business is unique, so we'd love to discuss your specific challenges. What's your biggest operational headache right now?"
+    return "Perfect! I specialize in home service businesses like yours. I've automated workflows for HVAC companies, plumbers, roofers, and general contractors across various markets. Common automations include instant lead responses, appointment reminders, invoice generation, and review requests. Each business is unique, so I'd love to discuss your specific challenges. What's your biggest operational headache right now?"
   }
 
   // Default response
-  return "That's a great question! Amarillo Automation helps West Texas home service businesses save time and increase revenue through smart workflow automation. We connect your existing tools (no new expensive software!) to automate tasks like lead follow-up, scheduling, and customer communications. \n\nOur clients typically save 15+ hours per week and see 40-60% improvements in lead conversion. I'd love to learn more about your specific business challenges. What's the biggest time-waster in your daily operations? \n\nOr, if you'd prefer to speak with our team directly, I can help you schedule a free consultation!"
+  return "That's a great question! I'm Garrett Zamora, and I help businesses save time and increase revenue through smart workflow automation. I connect your existing tools (no new expensive software!) to automate tasks like lead follow-up, scheduling, and customer communications. \n\nMy clients typically save 15+ hours per week and see 40-60% improvements in lead conversion. I'd love to learn more about your specific business challenges. What's the biggest time-waster in your daily operations? \n\nOr, if you'd prefer to speak with me directly, I can help you schedule a free consultation!"
 }

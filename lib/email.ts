@@ -30,9 +30,9 @@ export const generateGeneralFollowUpTemplate = (data: EmailTemplateData): object
       closing: "Feel free to reply with any specific questions or if you'd like to hop on a quick call to discuss your project.",
       signature: {
         name: "⚡ Garrett",
-        company: "Amarillo Automation", 
+        company: "Garrett Zamora", 
         email: "garrett@amarilloautomation.com",
-        website: "amarilloautomation.com"
+        website: "garrettzamora.com"
       }
     }
   }
@@ -68,9 +68,9 @@ export const generateIntroOfferFollowUpTemplate = (data: EmailTemplateData): obj
       },
       signature: {
         name: "⚡ Garrett",
-        company: "Amarillo Automation",
+        company: "Garrett Zamora",
         email: "garrett@amarilloautomation.com", 
-        website: "amarilloautomation.com"
+        website: "garrettzamora.com"
       }
     }
   }

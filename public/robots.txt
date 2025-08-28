@@ -1,4 +1,4 @@
-# Robots.txt for Amarillo Automation
+# Robots.txt for Garrett Zamora
 # Dual-Track Strategy: Optimized for traditional SEO AND AI platform indexing
 # Supporting both immediate profit optimization AND future AI search positioning
 
@@ -70,7 +70,7 @@ User-agent: PageSpeed
 Allow: /
 
 # Specify sitemap location
-Sitemap: https://amarilloautomation.com/sitemap.xml
+Sitemap: https://garrettzamora.com/sitemap.xml
 
 # Block sensitive areas if they exist
 # Disallow: /admin/

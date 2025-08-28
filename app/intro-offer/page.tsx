@@ -49,7 +49,7 @@ export default function IntroOffer() {
         scale: 1.00,
         scaleMobile: 1.00,
         color: 0xf59e0b,
-        backgroundColor: 0x0a1224,
+        backgroundColor: 0x000000,
         points: 2.00, // Even fewer points on mobile
         maxDistance: 15.00, // Shorter connections
         spacing: 14.00, // More spacing for cleaner look
@@ -64,7 +64,7 @@ export default function IntroOffer() {
         scale: 1.00,
         scaleMobile: 1.00,
         color: 0xf59e0b,
-        backgroundColor: 0x0a1224,
+        backgroundColor: 0x000000,
         points: 10.00, // Your updated desktop settings
         maxDistance: 20.00,
         spacing: 15.00,
@@ -92,7 +92,7 @@ export default function IntroOffer() {
             scale: 1.00,
             scaleMobile: 1.00,
             color: 0xf59e0b,
-            backgroundColor: 0x0a1224,
+            backgroundColor: 0x000000,
             points: 2.00,
             maxDistance: 15.00,
             spacing: 14.00,
@@ -106,7 +106,7 @@ export default function IntroOffer() {
             scale: 1.00,
             scaleMobile: 1.00,
             color: 0xf59e0b,
-            backgroundColor: 0x0a1224,
+            backgroundColor: 0x000000,
             points: 3.00,
             maxDistance: 18.00,
             spacing: 11.00,

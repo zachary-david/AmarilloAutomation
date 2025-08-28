@@ -21,7 +21,7 @@ export default function Navigation() {
 
   // Contact info for header (since contact page is hidden)
   const contactInfo = {
-    email: 'admin@amarilloautomation.com'
+    email: 'garrett@amarilloautomation.com'
   }
 
   return (
@@ -31,7 +31,7 @@ export default function Navigation() {
           
           {/* Logo/Brand */}
           <Link href="/" className="text-2xl font-bold text-white hover:text-blue-400 transition-colors">
-            Amarillo Automation
+            Garrett Zamora
           </Link>
           
           {/* Desktop Navigation - Simplified */}

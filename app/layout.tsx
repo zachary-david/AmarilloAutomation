@@ -4,16 +4,17 @@ import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import GoogleTagManager, { GTMNoScript } from './components/GoogleTagManager'
 import CookieBanner from './components/CookieBanner'
+import ChatButton from './components/ChatButton'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: {
-    default: 'Amarillo Automation - Advanced Digital Advertising and Programmatic Solutions',
-    template: '%s | Amarillo Automation'
+    default: 'Garrett Zamora - Digital Marketing, AI Automation & Content Creation for SMBs',
+    template: '%s | Garrett Zamora'
   },
-  description: 'Using tomorrow\'s tools today to help local businesses create simple solutions and digital marketing strategies.',
+  description: 'Digital marketing consultant specializing in automation, AI tools, content creation for SMBs, and modern solutions for local businesses.',
   icons: {
     icon: '/favicon.svg',
     shortcut: '/favicon.svg',
@@ -45,8 +46,11 @@ export const metadata: Metadata = {
     'current profit future positioning',
     'marketing profit and AI visibility',
     'today and tomorrow marketing',
-    'Amarillo marketing consultant',
-    'West Texas automation specialist',
+    'content creation for SMBs',
+    'SMB content marketing',
+    'small business content creation',
+    'digital marketing consultant',
+    'freelance marketing specialist',
     'contractor marketing optimization',
     'home services lead generation',
     'plumber marketing systems',
@@ -118,10 +122,10 @@ export const metadata: Metadata = {
     'voice search optimization',
     'mobile marketing',
     'app development',
-    'Amarillo marketing',
-    'Texas marketing agency',
-    'West Texas advertising',
-    'Panhandle marketing services',
+    'SMB marketing solutions',
+    'content creation services',
+    'small business digital marketing',
+    'freelance marketing consultant',
     'HVAC marketing',
     'plumbing marketing',
     'roofing marketing',
@@ -137,7 +141,7 @@ export const metadata: Metadata = {
     'Salesforce automation',
     'QuickBooks integration',
     'Mailchimp automation',
-    'Calendly integration',
+    'Google Calendar integration',
     'Stripe payment integration',
     'PayPal integration',
     'ChatGPT for business',
@@ -150,9 +154,9 @@ export const metadata: Metadata = {
     'AI customer service',
   ],
   
-  authors: [{ name: 'Amarillo Automation' }],
-  creator: 'Amarillo Automation',
-  publisher: 'Amarillo Automation',
+  authors: [{ name: 'Garrett Zamora' }],
+  creator: 'Garrett Zamora',
+  publisher: 'Garrett Zamora',
   
   robots: {
     index: true,
@@ -172,16 +176,16 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://amarilloautomation.com',
-    siteName: 'Amarillo Automation',
-    title: 'Advanced Digital Advertising and Programmatic Solutions',
-    description: 'Using tomorrow\'s tools today to help local businesses create simple solutions and digital marketing strategies.',
+    url: 'https://garrettzamora.com',
+    siteName: 'Garrett Zamora',
+    title: 'Digital Marketing, AI Automation & Content Creation for SMBs',
+    description: 'Digital marketing consultant specializing in automation, AI tools, content creation for SMBs, and modern solutions for local businesses.',
   },
   
   twitter: {
     card: 'summary_large_image',
-    title: 'Advanced Digital Advertising and Programmatic Solutions | Amarillo Automation',
-    description: 'Using tomorrow\'s tools today to help local businesses create simple solutions and digital marketing strategies.',
+    title: 'Digital Marketing, AI Automation & Content Creation for SMBs | Garrett Zamora',
+    description: 'Digital marketing consultant specializing in automation, AI tools, content creation for SMBs, and modern solutions for local businesses.',
   },
   
   verification: {
@@ -190,13 +194,13 @@ export const metadata: Metadata = {
     // bing: 'your-bing-verification-code',
   },
   
-  category: 'Marketing Profit Optimization & Future Strategy',
+  category: 'Digital Marketing Consulting & Content Creation',
   
   alternates: {
-    canonical: 'https://amarilloautomation.com',
+    canonical: 'https://garrettzamora.com',
   },
   
-  applicationName: 'Amarillo Automation',
+  applicationName: 'Garrett Zamora',
   referrer: 'origin-when-cross-origin',
   
   other: {
@@ -212,7 +216,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: 'dark',
-  themeColor: '#10b981',
+  themeColor: '#ffde59',
 }
 
 export default function RootLayout({
@@ -280,9 +284,9 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "MarketingConsultancy",
-              "name": "Amarillo Automation",
-              "alternateName": "Amarillo Automation - Advanced Digital Marketing and Programmatic Solutions",
-              "url": "https://amarilloautomation.com",
+              "name": "Garrett Zamora",
+              "alternateName": "Garrett Zamora - Digital Marketing & Content Creation Consultant",
+              "url": "https://garrettzamora.com",
               "description": "Using tomorrow\'s tools today to help local businesses create simple solutions and digital marketing strategies.",
               "foundingDate": "2024",
               "address": {
@@ -323,7 +327,7 @@ export default function RootLayout({
               "contactPoint": {
                 "@type": "ContactPoint",
                 "contactType": "customer service",
-                "email": "admin@amarilloautomation.com",
+                "email": "garrett@amarilloautomation.com",
                 "availableLanguage": "English",
                 "serviceArea": {
                   "@type": "Place",
@@ -407,12 +411,12 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "LocalBusiness",
-              "@id": "https://amarilloautomation.com/#business",
-              "name": "Amarillo Automation",
-              "image": "https://amarilloautomation.com/logo.png",
+              "@id": "https://garrettzamora.com/#business",
+              "name": "Garrett Zamora",
+              "image": "https://garrettzamora.com/logo.png",
               "telephone": "",
-              "email": "admin@amarilloautomation.com",
-              "url": "https://amarilloautomation.com",
+              "email": "garrett@amarilloautomation.com",
+              "url": "https://garrettzamora.com",
               "address": {
                 "@type": "PostalAddress",
                 "addressLocality": "Amarillo",
@@ -455,7 +459,7 @@ export default function RootLayout({
                   "name": "Marketing Profit Optimization",
                   "provider": {
                     "@type": "Organization",
-                    "name": "Amarillo Automation"
+                    "name": "Garrett Zamora"
                   },
                   "description": "Guaranteed profitable marketing within 90 days. We eliminate waste, optimize conversions, and track every dollar of ROI.",
                   "serviceType": "Marketing Consulting",
@@ -479,7 +483,7 @@ export default function RootLayout({
                   "name": "Dual-Channel Marketing Strategy",
                   "provider": {
                     "@type": "Organization",
-                    "name": "Amarillo Automation"
+                    "name": "Garrett Zamora"
                   },
                   "description": "The only consultancy that guarantees success across both traditional marketing and AI search channels.",
                   "serviceType": "Strategic Marketing Consulting"
@@ -489,7 +493,7 @@ export default function RootLayout({
                   "name": "Marketing Intelligence Systems", 
                   "provider": {
                     "@type": "Organization",
-                    "name": "Amarillo Automation"
+                    "name": "Garrett Zamora"
                   },
                   "description": "Automated tracking and attribution systems that show exactly which marketing dollars make you money.",
                   "serviceType": "Marketing Technology Implementation"
@@ -565,6 +569,7 @@ export default function RootLayout({
         <GTMNoScript gtmId="GTM-KR6QDVHS" />
         <CookieBanner />
         {children}
+        {/* <ChatButton /> - Hidden until completed and ready to go live */}
       </body>
     </html>
   )
