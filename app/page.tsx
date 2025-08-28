@@ -160,7 +160,7 @@ export default function Homepage() {
               
               <p className="text-lg md:text-xl text-gray-400 mb-8">
                 I help contractors and small businesses grow through proven marketing strategies, 
-                content creation for SMBs, customer management systems, and workflow automation.
+                content creation, customer management systems, and workflow automations.
               </p>
 
               {/* Core Benefits */}
